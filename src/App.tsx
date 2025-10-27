@@ -26,13 +26,13 @@ function App() {
                   <div className="grid grid-12">
                     <div className="span-12">
                       <p>
-                        I work at the intersection of research and industry, applying complex-systems reasoning to real-world decision architectures.
+                        I work at the intersection of computer science and economics.
                       </p>
                       <p>
-                        My academic focus examines how multi-agent intelligence and adaptive systems shape collective behaviour.
+                        In industry, I’m a data scientist helping early-stage SaaS companies grow revenue.
                       </p>
                       <p>
-                        My industry practice translates those principles into data-driven growth strategies across product, pricing, and go-to-market domains.
+                        My academic research centers on reinforcement learning and algorithmic game theory—how agents learn, adapt, and make decisions in complex environments.
                       </p>
                     </div>
                   </div>
@@ -42,12 +42,13 @@ function App() {
                   <h2 className="section-title">Industry</h2>
                   <div className="grid grid-12">
                     <div className="span-12">
-                      <p className="meta">Data Scientist – Growth and Commercial Strategy</p>
+                      <h3>Dovetail — Data Scientist, Growth</h3>
                       <p>
-                        I build analytical frameworks that link product evolution, market dynamics, and customer behaviour.
+                        Work with product, sales, and marketing to help the company win and keep more customers.
                       </p>
+                      <h3>Simon-Kucher &amp; Partners — Consultant</h3>
                       <p>
-                        My work integrates statistical modelling, experimentation, and causal inference to optimize pricing, marketing, and sales systems.
+                        Advised tech firms on how to build, price, and sell their products for sustainable growth.
                       </p>
                     </div>
                   </div>
@@ -70,7 +71,7 @@ function App() {
                 </section>
 
                 <section id="contact" className="section">
-                  <h2 className="section-title">Contact / Links</h2>
+                  <h2 className="section-title">Contact</h2>
                   <p>
                     <a href="/">Email</a> · <a href="/">LinkedIn</a> · <a href="/">Google Scholar</a> · <a href="/">GitHub</a>
                   </p>
