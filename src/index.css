@@ -97,9 +97,13 @@ h1, h2, h3 {
   margin: 0 0 8px 0;
 }
 
-h1 { font-size: var(--h1); font-weight: 600; line-height: var(--lh-heading); max-width: var(--measure); }
+h1 { font-size: var(--h1); font-weight: 700; line-height: var(--lh-heading); max-width: var(--measure); letter-spacing: -0.01em; text-align: center; margin-left: auto; margin-right: auto; }
 
-h2.section-title { font-size: var(--h2); font-weight: 600; letter-spacing: 0.1px; margin-top: var(--space-14); margin-bottom: var(--space-4); line-height: var(--lh-heading); max-width: var(--measure); }
+h2.section-title { font-size: var(--h2); font-weight: 500; letter-spacing: -0.01em; margin-top: var(--space-14); margin-bottom: var(--space-4); line-height: var(--lh-heading); max-width: var(--measure); }
+.hero { padding-top: 96px; padding-bottom: 96px; }
+.hero p { text-align: center; margin-left: auto; margin-right: auto; }
+
+p.meta { font-size: 0.875rem; text-transform: uppercase; letter-spacing: 0.06em; color: var(--muted); }
 
 p { margin: 0 0 var(--space-3) 0; color: var(--fg); max-width: var(--measure); }
 

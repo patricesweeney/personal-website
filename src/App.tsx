@@ -15,34 +15,62 @@ function App() {
       </header>
 
       <main className="container">
-        <h1>Data Scientist & PhD Candidate</h1>
-        <p className="lead">Artificial Intelligence · Complex Systems</p>
+        <section className="hero">
+          <h1>Patrick Sweeney</h1>
+          <p className="lead">Artificial Intelligence × Complex Systems × Applied Growth Data Science</p>
+        </section>
 
         <section id="about" className="section">
-          <h2 className="section-title">About</h2>
+          <h2 className="section-title">About / Summary</h2>
           <div className="grid grid-12">
             <div className="span-12">
               <p>
-                I am a data scientist and PhD candidate in computer science focusing on
-                artificial intelligence and complex systems. I work across modeling,
-                experimentation, and building tools that connect theory to practice.
+                I work at the intersection of research and industry, applying complex-systems reasoning to real-world decision architectures.
+              </p>
+              <p>
+                My academic focus examines how multi-agent intelligence and adaptive systems shape collective behaviour.
+              </p>
+              <p>
+                My industry practice translates those principles into data-driven growth strategies across product, pricing, and go-to-market domains.
               </p>
             </div>
           </div>
         </section>
 
-        <section id="projects" className="section">
-          <h2 className="section-title">Projects</h2>
-          <div className="projects">
-            <article className="project">
-              <h3>Project Title</h3>
-              <p className="muted">A short one-liner about what it does and why it matters.</p>
-            </article>
-            <article className="project">
-              <h3>Another Project</h3>
-              <p className="muted">Add your recent work, papers, tools, or datasets here.</p>
-            </article>
+        <section id="research" className="section">
+          <h2 className="section-title">Research</h2>
+          <div className="grid grid-12">
+            <div className="span-12">
+              <p className="meta">Doctoral Candidate, Computer Science</p>
+              <p className="meta">University of Sydney – Centre for Complex Systems</p>
+              <p>
+                Research focus: artificial intelligence, complex systems, and multi-agent coordination.
+              </p>
+              <p>
+                I study emergent patterns in distributed decision systems, exploring how local intelligence yields global order.
+              </p>
+            </div>
           </div>
+        </section>
+
+        <section id="industry" className="section">
+          <h2 className="section-title">Industry</h2>
+          <div className="grid grid-12">
+            <div className="span-12">
+              <p className="meta">Data Scientist – Growth and Commercial Strategy</p>
+              <p>
+                I build analytical frameworks that link product evolution, market dynamics, and customer behaviour.
+              </p>
+              <p>
+                My work integrates statistical modelling, experimentation, and causal inference to optimize pricing, marketing, and sales systems.
+              </p>
+            </div>
+          </div>
+        </section>
+
+        <section id="contact" className="section">
+          <h2 className="section-title">Contact / Links</h2>
+          <p className="muted">Email · LinkedIn · Google Scholar · GitHub</p>
         </section>
       </main>
 
