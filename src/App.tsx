@@ -71,7 +71,13 @@ function App() {
                 <section id="contact" className="section">
                   <h2 className="section-title">Contact</h2>
                   <p>
-                    <a href="/">Email</a> · <a href="/">LinkedIn</a> · <a href="/">Google Scholar</a> · <a href="/">GitHub</a>
+                    <a href="mailto:patricksweeney018@gmail.com">Email</a>
+                    ·
+                    <a href="https://www.linkedin.com/in/patrickfsweeney" target="_blank" rel="noopener noreferrer">LinkedIn</a>
+                    ·
+                    <a href="https://scholar.google.com/citations?user=Ex-3lBEAAAAJ&hl=en&oi=ao" target="_blank" rel="noopener noreferrer">Google Scholar</a>
+                    ·
+                    <a href="https://github.com/patricesweeney" target="_blank" rel="noopener noreferrer">GitHub</a>
                   </p>
                 </section>
               </>
