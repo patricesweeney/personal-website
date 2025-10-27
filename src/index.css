@@ -76,7 +76,6 @@ a:hover {
 }
 
 .site-header {
-  border-bottom: 1px solid var(--border);
   background: rgba(255, 255, 255, 0.8);
   backdrop-filter: saturate(180%) blur(4px);
 }
@@ -88,7 +87,7 @@ a:hover {
   gap: var(--gutter);
 }
 
-.brand { grid-column: span 6; font-weight: 600; }
+.brand { grid-column: span 6; font-weight: 700; font-size: var(--h1); letter-spacing: -0.01em; line-height: var(--lh-heading); }
 .nav { grid-column: span 6; display: flex; justify-content: flex-end; gap: var(--space-4); }
 
 main.container { padding-top: 0; padding-bottom: var(--space-14); }
@@ -134,7 +133,7 @@ p { margin: 0 0 var(--space-3) 0; color: var(--fg); max-width: var(--measure); }
 }
 
 .projects { display: grid; grid-template-columns: repeat(12, 1fr); gap: var(--gutter); }
-.project { grid-column: span 6; border: 1px solid var(--border); border-radius: 10px; padding: var(--space-4) var(--space-4); }
+.project { grid-column: span 6; border-radius: 10px; padding: var(--space-4) var(--space-4); }
 @media (max-width: 640px) {
   .project { grid-column: span 12; }
 }
@@ -149,6 +148,6 @@ p { margin: 0 0 var(--space-3) 0; color: var(--fg); max-width: var(--measure); }
 
 code, pre, .mono { font-family: 'Geist Mono', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace; }
 
-footer { border-top: 1px solid var(--border); padding: var(--space-4) 0; }
+footer { padding: var(--space-4) 0; }
 
 small { font-size: var(--font-small); }

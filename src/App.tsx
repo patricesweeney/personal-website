@@ -15,10 +15,6 @@ function App() {
       </header>
 
       <main className="container">
-        <section className="hero">
-          <h1>Patrick Sweeney</h1>
-          <p className="lead">Artificial Intelligence × Complex Systems × Applied Growth Data Science</p>
-        </section>
 
         <section id="about" className="section">
           <h2 className="section-title">About / Summary</h2>
