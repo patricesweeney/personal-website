@@ -26,7 +26,7 @@ function App() {
                   <div className="grid grid-12">
                     <div className="span-12">
                       <p>
-                        I work at the intersection of computer science and economics.
+                        I work at the intersection of computer science and economics, based out of Sydney, Australia.
                       </p>
                       <p>
                         In industry, I’m a data scientist helping early-stage SaaS companies grow revenue.
@@ -63,9 +63,7 @@ function App() {
                       <p>
                         Research focus: artificial intelligence, complex systems, and multi-agent coordination.
                       </p>
-                      <p>
-                        I study emergent patterns in distributed decision systems, exploring how local intelligence yields global order.
-                      </p>
+                      
                     </div>
                   </div>
                 </section>
