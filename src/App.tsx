@@ -70,7 +70,9 @@ function App() {
 
         <section id="contact" className="section">
           <h2 className="section-title">Contact / Links</h2>
-          <p className="muted">Email · LinkedIn · Google Scholar · GitHub</p>
+          <p>
+            <a href="/">Email</a> · <a href="/">LinkedIn</a> · <a href="/">Google Scholar</a> · <a href="/">GitHub</a>
+          </p>
         </section>
       </main>
 
