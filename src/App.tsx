@@ -20,11 +20,15 @@ function App() {
 
         <section id="about" className="section">
           <h2 className="section-title">About</h2>
-          <p>
-            I am a data scientist and PhD candidate in computer science focusing on
-            artificial intelligence and complex systems. I work across modeling,
-            experimentation, and building tools that connect theory to practice.
-          </p>
+          <div className="grid grid-12">
+            <div className="span-12">
+              <p>
+                I am a data scientist and PhD candidate in computer science focusing on
+                artificial intelligence and complex systems. I work across modeling,
+                experimentation, and building tools that connect theory to practice.
+              </p>
+            </div>
+          </div>
         </section>
 
         <section id="projects" className="section">
