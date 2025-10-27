@@ -42,11 +42,11 @@ function App() {
                   <h2 className="section-title">Industry</h2>
                   <div className="grid grid-12">
                     <div className="span-12">
-                      <h3>Dovetail — Data Scientist, Growth</h3>
+                      <p className="meta">Dovetail — Data Scientist, Growth</p>
                       <p>
                         Work with product, sales, and marketing to help the company win and keep more customers.
                       </p>
-                      <h3>Simon-Kucher &amp; Partners — Consultant</h3>
+                      <p className="meta">Simon-Kucher &amp; Partners — Consultant</p>
                       <p>
                         Advised tech firms on how to build, price, and sell their products for sustainable growth.
                       </p>
