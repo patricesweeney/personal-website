@@ -93,7 +93,7 @@ function App() {
                   <div className="span-12">
                     <p className="meta">Bayesian Truth Serum</p>
                     <p className="muted">
-                      <a href="https://bayesiantruthserum.com" target="_blank" rel="noopener noreferrer">bayesiantruthserum.com</a>
+                      <a href="https://bayesiantruthserum.org" target="_blank" rel="noopener noreferrer">bayesiantruthserum.org</a>
                     </p>
                     <p>
                       Bayesian Truth Serum is a method for eliciting honest answers to subjective questions by rewarding responses that are both uncommon and surprisingly well-predicted by others. It leverages Bayesian inference to identify answers that reflect genuine private beliefs rather than conformity or guessing.
