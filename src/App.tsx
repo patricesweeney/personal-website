@@ -89,7 +89,23 @@ function App() {
               <>
                 <section className="section">
                   <h2 className="section-title">Projects</h2>
-                  <p className="muted">Project list coming soon.</p>
+                  <div className="projects">
+                    <article className="project">
+                      <h3>Bayesian Truth Serum</h3>
+                      <p className="muted">
+                        <a href="https://bayesiantruthserum.com" target="_blank" rel="noopener noreferrer">bayesiantruthserum.com</a>
+                      </p>
+                      <p>
+                        Bayesian Truth Serum is a method for eliciting honest answers to subjective questions by rewarding responses that are both uncommon and surprisingly well-predicted by others. It leverages Bayesian inference to identify answers that reflect genuine private beliefs rather than conformity or guessing.
+                      </p>
+                      <p>
+                        Based on Dražen Prelec’s paper
+                        {' '}
+                        <a href="https://www.science.org/doi/10.1126/science.1095722" target="_blank" rel="noopener noreferrer">A Bayesian Truth Serum for Subjective Data</a>.
+                        {' '}Implemented as an open source project.
+                      </p>
+                    </article>
+                  </div>
                 </section>
               </>
             }
