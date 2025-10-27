@@ -105,6 +105,15 @@ function App() {
                       {' '}Implemented as an open source project.
                     </p>
                   </div>
+                  <div className="span-12">
+                    <p className="meta">shapmi</p>
+                    <p className="muted">
+                      <a href="https://github.com/patricesweeney/shapmi" target="_blank" rel="noopener noreferrer">github.com/patricesweeney/shapmi</a>
+                    </p>
+                    <p>
+                      Repository scaffold — details coming soon.
+                    </p>
+                  </div>
                 </div>
                 </section>
               </>
