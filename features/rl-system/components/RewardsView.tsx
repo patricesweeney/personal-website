@@ -44,6 +44,10 @@ export function RewardsView() {
           <BlockMath math="\mathrm{CLV}(\pi) = \sum_{t=0}^{\infty} \gamma^t \, p_0(\pi) \, v(p_0(\pi)) \left( \prod_{k=1}^{t} r_k(\pi) \right) \left( \prod_{k=1}^{t} e_k(\pi) \right) \left( \prod_{k=1}^{t} c_k(\pi) \right)" />
 
           <p>
+            This decomposition is <strong>exhaustive by construction</strong>: revenue is price times volume (an accounting identity), and volume change decomposes into retention, expansion, and contraction (a partition). Any policy that increases customer equity must do so through one of these channels—acquisition, pricing, conversion, retention, expansion, or contraction. The decomposition tells you <em>what</em> to optimize; the policy tells you <em>how</em>.
+          </p>
+
+          <p>
             The <strong>state-value function</strong> <InlineMath math="V^\pi(s)" /> is the expected discounted future revenue starting from state <InlineMath math="s" /> and then following <InlineMath math="\pi" />:
           </p>
           <BlockMath math="V^\pi(s) = \mathbb{E}\left[ \sum_{t=0}^{\infty} \gamma^t \, p_0(\pi) \, v(p_0(\pi)) \prod_{k=1}^{t} r_k(\pi) \, e_k(\pi) \, c_k(\pi) \;\middle|\; s_0 = s \right]" />
