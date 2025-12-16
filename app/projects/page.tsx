@@ -1,6 +1,5 @@
-import { ProjectsView } from "@/features/projects/components/ProjectsView";
+import { ProjectsView } from "@/features/projects";
 
 export default function ProjectsPage() {
   return <ProjectsView />;
 }
-
