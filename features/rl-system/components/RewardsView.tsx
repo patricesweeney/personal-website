@@ -24,7 +24,7 @@ export function RewardsView() {
           <p>
             Customer equity can in turn be expressed as the sum of customer lifetime values (CLVs) across present customers <InlineMath math="i \in N" /> and future customers <InlineMath math="i \in M" />:
           </p>
-          <BlockMath math="CE = \sum_{i \in N} CLV_i + \sum_{i \in M} CLV_i" />
+          <BlockMath math="\mathrm{CE} = \sum_{i \in N} \mathrm{CLV}_i + \sum_{i \in M} \mathrm{CLV}_i" />
 
           <p>
             The <strong>state-value function</strong> <InlineMath math="V^\pi(s)" /> is the expected discounted future revenue starting from state <InlineMath math="s" /> and then following <InlineMath math="\pi" />:
