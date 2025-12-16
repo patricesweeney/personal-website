@@ -10,36 +10,34 @@ export function RewardsView() {
       <div className="grid grid-12">
         <div className="span-12">
           <p>
-            Let an MDP have states <InlineMath math="s" />, actions <InlineMath math="a" />, discount <InlineMath math="\gamma \in [0,1)" />, reward <InlineMath math="r_t" />, transition kernel <InlineMath math="P(s'|s,a)" />, and a policy <InlineMath math="\pi(a|s)" /> that maps each state to a distribution over actions.
+            A SaaS company objective is to maximize expected discounted free cash flow. This follows tautologically from the firm's survival imperative. Under competition, firms that do not generate sufficient discounted cash flow relative to rivals lose financing, lose investment, and exit. Shaikh's argument is that this objective is imposed by competitive selection: capital reallocates toward higher risk-adjusted returns, so persistent deviation from discounted profit maximization is not sustainable.
           </p>
 
           <p>
-            <InlineMath math="J(\pi)" /> is the <strong>policy objective</strong>: the expected discounted return when you follow <InlineMath math="\pi" /> from an initial-state distribution <InlineMath math="\rho_0" />. Formally,
-          </p>
-          <BlockMath math="J(\pi) = \mathbb{E}_{s_0 \sim \rho_0, \, a_t \sim \pi(\cdot|s_t), \, s_{t+1} \sim P(\cdot|s_t,a_t)} \left[ \sum_{t=0}^{\infty} \gamma^t r_t \right]" />
-          <p>
-            Equivalently, <InlineMath math="J(\pi) = \mathbb{E}_{s_0 \sim \rho_0}[ V^\pi(s_0) ]" />.
+            This objective decomposes into maximizing return on invested capital (ROIC) and maximizing growth of the invested capital base. Under standard SaaS conditions this is well-approximated by revenue growth, so revenue is taken as the reward signal and denoted <InlineMath math="r" />. The startup industry typically collapses the objective to revenue and ignores ROIC.
           </p>
 
           <p>
-            <InlineMath math="V^\pi(s)" /> is the <strong>state-value function</strong>: the expected discounted return starting in state <InlineMath math="s" /> and then following <InlineMath math="\pi" /> thereafter. Formally,
+            The policy objective is to maximize long-run revenue, also called <strong>customer equity</strong>. Let <InlineMath math="\gamma \in (0,1)" /> be the discount factor. <InlineMath math="\gamma" /> corresponds to both the firm's WACC (the required rate of return) and its effective risk preference: higher capital costs or higher risk aversion imply lower <InlineMath math="\gamma" />.
           </p>
-          <BlockMath math="V^\pi(s) = \mathbb{E}\left[ \sum_{t=0}^{\infty} \gamma^t r_t \mid s_0 = s, \, a_t \sim \pi \right]" />
-          <p>
-            It satisfies the Bellman expectation equation:
-          </p>
-          <BlockMath math="V^\pi(s) = \mathbb{E}_{a \sim \pi(\cdot|s), \, s' \sim P(\cdot|s,a)} \left[ r(s,a,s') + \gamma V^\pi(s') \right]" />
 
           <p>
-            <InlineMath math="Q^\pi(s,a)" /> is the <strong>action-value function</strong>: the expected discounted return if you take action <InlineMath math="a" /> in state <InlineMath math="s" /> at time 0, then follow <InlineMath math="\pi" /> from the next state onward. Formally,
+            A policy <InlineMath math="\pi" /> is a decision rule that selects actions as a function of the company's current state (interpreted broadly to include beliefs from telemetry, sales signals, and finance outcomes). Customer equity under <InlineMath math="\pi" /> is:
           </p>
-          <BlockMath math="Q^\pi(s,a) = \mathbb{E}\left[ \sum_{t=0}^{\infty} \gamma^t r_t \mid s_0 = s, \, a_0 = a, \, a_{t \geq 1} \sim \pi \right]" />
+          <BlockMath math="CE(\pi) = \mathbb{E}\left[ \sum_{t=0}^{\infty} \gamma^t r_t \right]" />
+
           <p>
-            It satisfies:
+            <InlineMath math="V^\pi(s)" /> is the expected discounted future revenue starting from state <InlineMath math="s" /> and then following <InlineMath math="\pi" />:
           </p>
-          <BlockMath math="Q^\pi(s,a) = \mathbb{E}_{s' \sim P(\cdot|s,a)} \left[ r(s,a,s') + \gamma \mathbb{E}_{a' \sim \pi(\cdot|s')} \left[ Q^\pi(s',a') \right] \right]" />
+          <BlockMath math="V^\pi(s) = \mathbb{E}\left[ \sum_{t=0}^{\infty} \gamma^t r_t \mid s_0 = s \right]" />
+
           <p>
-            The linkage is <InlineMath math="V^\pi(s) = \mathbb{E}_{a \sim \pi(\cdot|s)}[ Q^\pi(s,a) ]" />.
+            <InlineMath math="Q^\pi(s,a)" /> is the expected discounted future revenue starting from state <InlineMath math="s" />, taking action <InlineMath math="a" /> immediately, and then following <InlineMath math="\pi" />:
+          </p>
+          <BlockMath math="Q^\pi(s,a) = \mathbb{E}\left[ \sum_{t=0}^{\infty} \gamma^t r_t \mid s_0 = s, \, a_0 = a \right]" />
+
+          <p>
+            The linkage remains <InlineMath math="V^\pi(s) = \mathbb{E}_{a \sim \pi(\cdot|s)}[ Q^\pi(s,a) ]" />.
           </p>
         </div>
       </div>
