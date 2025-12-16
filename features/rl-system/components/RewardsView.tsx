@@ -10,6 +10,10 @@ export function RewardsView() {
       <div className="grid grid-12">
         <div className="span-12">
           <p>
+            The <strong>reward hypothesis</strong> is the claim that any goal-directed behavior can be represented as maximizing the expected discounted sum of a single scalar reward signal over time.
+          </p>
+
+          <p>
             A profit-seeking firm's objective is to maximize <strong>expected discounted free cash flow</strong> (enterprise value).<sup><a href="#ref-1" className="cite">1</a></sup> This decomposes into maximizing <strong>returns on invested capital</strong> and scaling the invested-capital base.<sup><a href="#ref-2" className="cite">2</a></sup> In practice, the latter is often approximated by revenue growth.<sup><a href="#ref-3" className="cite">3</a></sup>
           </p>
 
