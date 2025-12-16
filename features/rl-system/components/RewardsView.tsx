@@ -10,7 +10,7 @@ export function RewardsView() {
       <div className="grid grid-12">
         <div className="span-12">
           <p>
-            A SaaS company objective is to maximize expected discounted free cash flow. This follows tautologically from the firm's survival imperative. Under competition, firms that do not generate sufficient discounted cash flow relative to rivals lose financing, lose investment, and exit. Shaikh's argument is that this objective is imposed by competitive selection: capital reallocates toward higher risk-adjusted returns, so persistent deviation from discounted profit maximization is not sustainable.
+            A SaaS company objective is to maximize expected discounted free cash flow.
           </p>
 
           <p>
