@@ -16,7 +16,7 @@ export function Sidebar() {
   return (
     <aside className="tools-sidebar">
       <div className="sidebar-header">
-        <span className="meta">SaaS Control System</span>
+        <span className="meta">SaaS</span>
       </div>
       <nav className="sidebar-nav">
         {navItems.map((item) => {
