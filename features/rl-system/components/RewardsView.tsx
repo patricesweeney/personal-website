@@ -41,7 +41,7 @@ export function RewardsView() {
           <p>
             ARPA itself decomposes into price <InlineMath math="p" /> and volume <InlineMath math="v(p)" />, where <InlineMath math="v(p)" /> is a price response function. NRR decomposes into a survival function <InlineMath math="s_k" /> for overall retention, and processes for expansion <InlineMath math="e_k" /> and contraction <InlineMath math="c_k" />:
           </p>
-          <BlockMath math="\mathrm{CLV}(\pi) = \sum_{t=0}^{\infty} \gamma^t \, \mathrm{ARPA}_0(\pi) \left( \prod_{k=1}^{t} s_k(\pi) \right) \left( \prod_{k=1}^{t} e_k(\pi) \right) \left( \prod_{k=1}^{t} c_k(\pi) \right)" />
+          <BlockMath math="\mathrm{CLV}(\pi) = \sum_{t=0}^{\infty} \gamma^t \, p(\pi) \, v(p(\pi)) \left( \prod_{k=1}^{t} s_k(\pi) \right) \left( \prod_{k=1}^{t} e_k(\pi) \right) \left( \prod_{k=1}^{t} c_k(\pi) \right)" />
 
           <p>
             The <strong>state-value function</strong> <InlineMath math="V^\pi(s)" /> is the expected discounted future revenue starting from state <InlineMath math="s" /> and then following <InlineMath math="\pi" />:
