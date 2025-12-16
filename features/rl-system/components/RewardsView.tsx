@@ -48,18 +48,24 @@ export function RewardsView() {
           </p>
 
           <p>
-            Customer equity is the global objective, but the company acts sequentially: each period it observes a state and chooses an action. To make decisions, it needs to know the expected future CE from any given position. The <strong>state-value function</strong> answers "what is our expected future customer equity starting from state <InlineMath math="s" />?" and the <strong>state-action value function</strong> answers "what if we take action <InlineMath math="a" /> first?" Writing per-customer revenue and summing over the current and future customer base <InlineMath math="N" /> and <InlineMath math="M" />:
+            Customer equity is the global objective, but the company acts sequentially: each period it observes a state and chooses an action. To make decisions, it needs to know the expected future CE from any given position. Writing per-customer revenue and summing over the current and future customer base <InlineMath math="N" /> and <InlineMath math="M" />:
           </p>
 
           <p>
             The <strong>state-value function</strong> <InlineMath math="V^\pi(s)" /> is the expected discounted future revenue starting from state <InlineMath math="s" /> and then following <InlineMath math="\pi" />:
           </p>
           <BlockMath math="V^\pi(s) = \mathbb{E}\left[ \sum_{t=0}^{\infty} \gamma^t \, p_0(\pi) \, v(p_0(\pi)) \prod_{k=1}^{t} r_k(\pi) \, e_k(\pi) \, c_k(\pi) \;\middle|\; s_0 = s \right]" />
+          <p>
+            This answers: "what is our expected future customer equity starting from state <InlineMath math="s" />?"
+          </p>
 
           <p>
             The <strong>state-action value function</strong> <InlineMath math="Q^\pi(s,a)" /> is the expected discounted future revenue starting from state <InlineMath math="s" />, taking action <InlineMath math="a" /> immediately, and then following <InlineMath math="\pi" />:
           </p>
           <BlockMath math="Q^\pi(s,a) = \mathbb{E}\left[ \sum_{t=0}^{\infty} \gamma^t \, p_0(\pi) \, v(p_0(\pi)) \prod_{k=1}^{t} r_k(\pi) \, e_k(\pi) \, c_k(\pi) \;\middle|\; s_0 = s, \, a_0 = a \right]" />
+          <p>
+            This answers: "what if we take action <InlineMath math="a" /> first?"
+          </p>
 
           <hr className="references-divider" />
 
