@@ -14,13 +14,12 @@ export function RewardsView() {
           </p>
 
           <p>
-            The policy objective is to maximize long-run revenue, also called <strong>customer equity</strong>. Let <InlineMath math="\gamma \in (0,1)" /> be the discount factor. <InlineMath math="\gamma" /> corresponds to both the firm's WACC (the required rate of return) and its effective risk preference: higher capital costs or higher risk aversion imply lower <InlineMath math="\gamma" />.
+            The firm's policy objective is to maximize expected discounted revenue (<strong>customer equity</strong>):
           </p>
-
+          <BlockMath math="\pi^* \in \arg\max_{\pi}\ \mathbb{E}\!\left[\sum_{t=0}^{\infty}\gamma^{t} R_t \right], \qquad \gamma\in(0,1)" />
           <p>
-            A policy <InlineMath math="\pi" /> is a decision rule that selects actions as a function of the company's current state (interpreted broadly to include beliefs from telemetry, sales signals, and finance outcomes). Customer equity under <InlineMath math="\pi" /> is:
+            Here <InlineMath math="\pi" /> is the firm's policy, and <InlineMath math="\gamma" /> is its discount factor, interpretable as a hurdle rate/WACC and, equivalently, an effective risk preference (lower <InlineMath math="\gamma" /> means more impatient or more risk-averse).
           </p>
-          <BlockMath math="CE(\pi) = \mathbb{E}\left[ \sum_{t=0}^{\infty} \gamma^t r_t \right]" />
 
           <p>
             <InlineMath math="V^\pi(s)" /> is the expected discounted future revenue starting from state <InlineMath math="s" /> and then following <InlineMath math="\pi" />:
