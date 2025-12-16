@@ -48,7 +48,7 @@ export function RewardsView() {
           </p>
 
           <p>
-            Customer equity is the global objective, but the company acts sequentially: each period it observes a state and chooses an action. To make decisions, it needs to know the expected future CE from any given position. The <strong>state-value function</strong> answers "what is our expected future customer equity starting from state <InlineMath math="s" />?" and the <strong>state-action value function</strong> answers "what if we take action <InlineMath math="a" /> first?" Writing per-customer revenue and summing over the customer base:
+            Customer equity is the global objective, but the company acts sequentially: each period it observes a state and chooses an action. To make decisions, it needs to know the expected future CE from any given position. The <strong>state-value function</strong> answers "what is our expected future customer equity starting from state <InlineMath math="s" />?" and the <strong>state-action value function</strong> answers "what if we take action <InlineMath math="a" /> first?" Writing per-customer revenue and summing over the current and future customer base <InlineMath math="N" /> and <InlineMath math="M" />:
           </p>
 
           <p>
