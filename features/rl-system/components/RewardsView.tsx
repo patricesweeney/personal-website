@@ -26,7 +26,7 @@ export function RewardsView() {
           </p>
 
           <p>
-            Customer equity can in turn be expressed as the sum of <strong>customer lifetime values</strong> (CLVs) across present customers <InlineMath math="i \in N" /> and future customers <InlineMath math="i \in M" />:
+            Customer equity can in turn be expressed as the sum of <strong>customer lifetime values</strong> (CLVs)<sup><a href="#ref-6" className="cite">6</a></sup> across present customers <InlineMath math="i \in N" /> and future customers <InlineMath math="i \in M" />:
           </p>
           <BlockMath math="\mathrm{CE}(\pi) = \sum_{i \in N} \mathrm{CLV}_i(\pi) + \sum_{i \in M} \mathrm{CLV}_i(\pi)" />
 
@@ -63,6 +63,7 @@ export function RewardsView() {
               <li id="ref-3">Koller, T., Goedhart, M., & Wessels, D. (2025). <em>Valuation: Measuring and managing the value of companies</em>. John Wiley & Sons.</li>
               <li id="ref-4">Rust, R. T., Lemon, K. N., & Zeithaml, V. A. (2004). Return on marketing: Using customer equity to focus marketing strategy. <em>Journal of Marketing</em>, 68(1), 109–127.</li>
               <li id="ref-5">Phillips, R. L. (2021). <em>Pricing and revenue optimization</em>. Stanford University Press.</li>
+              <li id="ref-6">Ascarza, E., Fader, P. S., & Hardie, B. G. (2017). Marketing models for the customer-centric firm. In <em>Handbook of marketing decision models</em> (pp. 297–329). Springer International Publishing.</li>
             </ol>
           </div>
         </div>
