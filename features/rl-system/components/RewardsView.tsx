@@ -44,7 +44,7 @@ export function RewardsView() {
           <BlockMath math="\mathrm{CLV}(\pi) = \sum_{t=0}^{\infty} \gamma^t \, p_0(\pi) \, v(p_0(\pi)) \left( \prod_{k=1}^{t} r_k(\pi) \right) \left( \prod_{k=1}^{t} e_k(\pi) \right) \left( \prod_{k=1}^{t} c_k(\pi) \right)" />
 
           <p>
-            This decomposition is <strong>exhaustive by construction</strong>: initial revenue is price times volume (an accounting identity), and period-over-period revenue change decomposes into retention, expansion, and contraction (a partition of outcomes). Any policy that increases customer equity must do so through one of these channels—acquisition, pricing, conversion, retention, expansion, or contraction. The decomposition tells you <em>what</em> to optimize; the policy tells you <em>how</em>.
+            This decomposition is <strong>exhaustive by construction</strong>: initial revenue is price times volume (an accounting identity), and period-over-period revenue change decomposes into retention, expansion, and contraction (a partition of outcomes). Any policy that increases customer equity must do so through one of these channels—acquisition, pricing, conversion, retention, expansion, or contraction.
           </p>
 
           <p>
