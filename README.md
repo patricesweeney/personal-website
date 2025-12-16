@@ -1,4 +1,4 @@
-# Personal Website (React + Vite + TypeScript)
+# Personal Website (Next.js + TypeScript)
 
 Minimal, clean personal site with sections for About and Projects. Uses the Geist font.
 
@@ -6,14 +6,25 @@ Minimal, clean personal site with sections for About and Projects. Uses the Geis
 
 - `npm run dev` – start the dev server
 - `npm run build` – build for production
-- `npm run preview` – preview the production build
+- `npm run start` – run the production build
+
+## Architecture
+
+Feature-Sliced structure:
+
+```
+app/                    # Next.js App Router
+features/               # Feature slices (home, projects)
+components/ui/          # Shared UI components
+lib/                    # Utilities (cn helper, etc.)
+```
 
 ## Customize
 
-- Update your name in `src/App.tsx` (`brand`, footer text)
-- Edit content in the About and Projects sections
+- Update your name in `app/layout.tsx` (brand, footer text)
+- Edit content in `features/home/components/HomeView.tsx` and `features/projects/components/ProjectsView.tsx`
 - Add links to projects as needed
 
 ## Fonts
 
-Geist Sans and Geist Mono via Fontsource. See imports in `src/main.tsx`. The base typography and layout live in `src/index.css`.
+Geist Sans and Geist Mono via `next/font/google`. Base typography and layout live in `app/globals.css`.
