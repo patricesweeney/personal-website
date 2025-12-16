@@ -6,8 +6,8 @@ import { usePathname } from "next/navigation";
 const navItems = [
   { href: "/tools", label: "Tl;dr" },
   { href: "/tools/rewards", label: "Rewards" },
-  { href: "/tools/states", label: "States" },
   { href: "/tools/actions", label: "Actions" },
+  { href: "/tools/states", label: "States" },
 ];
 
 export function Sidebar() {
