@@ -39,7 +39,7 @@ export function RewardsView() {
           </p>
 
           <p>
-            <InlineMath math="\mathrm{ARPA}" /> itself decomposes into <strong>price</strong> <InlineMath math="p" /> and <strong>volume</strong> <InlineMath math="v(p)" />, where <InlineMath math="v(p)" /> is a <strong>price response function</strong>. <InlineMath math="\mathrm{NRR}" /> decomposes into a <strong>survival function</strong> <InlineMath math="s_k" /> for overall retention, and processes for <strong>expansion</strong> <InlineMath math="e_k" /> and <strong>contraction</strong> <InlineMath math="c_k" />:
+            <InlineMath math="\mathrm{ARPA}" /> itself decomposes into <strong>price</strong> <InlineMath math="p" /> and <strong>volume</strong> <InlineMath math="v(p)" />, where <InlineMath math="v(p)" /> is a <strong>price response function</strong>.<sup><a href="#ref-4" className="cite">4</a></sup> <InlineMath math="\mathrm{NRR}" /> decomposes into a <strong>survival function</strong> <InlineMath math="s_k" /> for overall retention, and processes for <strong>expansion</strong> <InlineMath math="e_k" /> and <strong>contraction</strong> <InlineMath math="c_k" />:
           </p>
           <BlockMath math="\mathrm{CLV}(\pi) = \sum_{t=0}^{\infty} \gamma^t \, p(\pi) \, v(p(\pi)) \left( \prod_{k=1}^{t} s_k(\pi) \right) \left( \prod_{k=1}^{t} e_k(\pi) \right) \left( \prod_{k=1}^{t} c_k(\pi) \right)" />
 
@@ -61,6 +61,7 @@ export function RewardsView() {
               <li id="ref-1">Shaikh, A. (2016). <em>Capitalism: Competition, conflict, crises</em>. Oxford University Press.</li>
               <li id="ref-2">Koller, T., Goedhart, M., & Wessels, D. (2025). <em>Valuation: Measuring and managing the value of companies</em>. John Wiley & Sons.</li>
               <li id="ref-3">Rust, R. T., Lemon, K. N., & Zeithaml, V. A. (2004). Return on marketing: Using customer equity to focus marketing strategy. <em>Journal of Marketing</em>, 68(1), 109–127.</li>
+              <li id="ref-4">Phillips, R. L. (2021). <em>Pricing and revenue optimization</em>. Stanford University Press.</li>
             </ol>
           </div>
         </div>
