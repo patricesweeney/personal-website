@@ -26,7 +26,7 @@ export function RewardsView() {
           </p>
 
           <p>
-            Customer equity can in turn be expressed as the sum of <strong>customer lifetime values</strong> (CLVs)<sup><a href="#ref-6" className="cite">6</a></sup> across present customers <InlineMath math="i \in N" /> and future customers <InlineMath math="i \in M" />:
+            Customer equity can in turn be expressed as the sum of <strong>customer lifetime values</strong> (CLVs)<sup><a href="#ref-5" className="cite">5</a></sup> across present customers <InlineMath math="i \in N" /> and future customers <InlineMath math="i \in M" />:
           </p>
           <BlockMath math="\mathrm{CE}(\pi) = \sum_{i \in N} \mathrm{CLV}_i(\pi) + \sum_{i \in M} \mathrm{CLV}_i(\pi)" />
 
@@ -39,7 +39,7 @@ export function RewardsView() {
           </p>
 
           <p>
-            <InlineMath math="\mathrm{ARPA}" /> itself decomposes into <strong>price</strong> <InlineMath math="p" /> and <strong>volume</strong> <InlineMath math="v(p)" />, where <InlineMath math="v(p)" /> is a <strong>price response function</strong>.<sup><a href="#ref-5" className="cite">5</a></sup> <InlineMath math="\mathrm{NRR}" /> decomposes into a <strong>survival function</strong> <InlineMath math="s_k" /> for overall retention, and processes for <strong>expansion</strong> <InlineMath math="e_k" /> and <strong>contraction</strong> <InlineMath math="c_k" />:
+            <InlineMath math="\mathrm{ARPA}" /> itself decomposes into <strong>price</strong> <InlineMath math="p" /> and <strong>volume</strong> <InlineMath math="v(p)" />, where <InlineMath math="v(p)" /> is a <strong>price response function</strong>.<sup><a href="#ref-6" className="cite">6</a></sup> <InlineMath math="\mathrm{NRR}" /> decomposes into a <strong>survival function</strong> <InlineMath math="s_k" /> for overall retention, and processes for <strong>expansion</strong> <InlineMath math="e_k" /> and <strong>contraction</strong> <InlineMath math="c_k" />:
           </p>
           <BlockMath math="\mathrm{CLV}(\pi) = \sum_{t=0}^{\infty} \gamma^t \, p(\pi) \, v(p(\pi)) \left( \prod_{k=1}^{t} s_k(\pi) \right) \left( \prod_{k=1}^{t} e_k(\pi) \right) \left( \prod_{k=1}^{t} c_k(\pi) \right)" />
 
@@ -62,8 +62,8 @@ export function RewardsView() {
               <li id="ref-2">Costantini, P. (2011). <em>Cash return on capital invested: Ten years of investment analysis with the CROCI economic profit model</em>. Elsevier.</li>
               <li id="ref-3">Koller, T., Goedhart, M., & Wessels, D. (2025). <em>Valuation: Measuring and managing the value of companies</em>. John Wiley & Sons.</li>
               <li id="ref-4">Rust, R. T., Lemon, K. N., & Zeithaml, V. A. (2004). Return on marketing: Using customer equity to focus marketing strategy. <em>Journal of Marketing</em>, 68(1), 109–127.</li>
-              <li id="ref-5">Phillips, R. L. (2021). <em>Pricing and revenue optimization</em>. Stanford University Press.</li>
-              <li id="ref-6">Ascarza, E., Fader, P. S., & Hardie, B. G. (2017). Marketing models for the customer-centric firm. In <em>Handbook of marketing decision models</em> (pp. 297–329). Springer International Publishing.</li>
+              <li id="ref-5">Ascarza, E., Fader, P. S., & Hardie, B. G. (2017). Marketing models for the customer-centric firm. In <em>Handbook of marketing decision models</em> (pp. 297–329). Springer International Publishing.</li>
+              <li id="ref-6">Phillips, R. L. (2021). <em>Pricing and revenue optimization</em>. Stanford University Press.</li>
             </ol>
           </div>
         </div>
