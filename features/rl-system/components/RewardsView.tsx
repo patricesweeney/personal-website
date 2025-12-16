@@ -58,12 +58,12 @@ export function RewardsView() {
           <div className="references">
             <p className="meta">References</p>
             <ol>
-              <li id="ref-1">Shaikh, A. (2016). <em>Capitalism: Competition, conflict, crises</em>. Oxford University Press.</li>
-              <li id="ref-2">Costantini, P. (2011). <em>Cash return on capital invested: Ten years of investment analysis with the CROCI economic profit model</em>. Elsevier.</li>
-              <li id="ref-3">Koller, T., Goedhart, M., & Wessels, D. (2025). <em>Valuation: Measuring and managing the value of companies</em>. John Wiley & Sons.</li>
-              <li id="ref-4">Rust, R. T., Lemon, K. N., & Zeithaml, V. A. (2004). Return on marketing: Using customer equity to focus marketing strategy. <em>Journal of Marketing</em>, 68(1), 109–127.</li>
-              <li id="ref-5">Ascarza, E., Fader, P. S., & Hardie, B. G. (2017). Marketing models for the customer-centric firm. In <em>Handbook of marketing decision models</em> (pp. 297–329). Springer International Publishing.</li>
-              <li id="ref-6">Phillips, R. L. (2021). <em>Pricing and revenue optimization</em>. Stanford University Press.</li>
+              <li id="ref-1"><sup>1</sup> Shaikh, A. (2016). <em>Capitalism: Competition, conflict, crises</em>. Oxford University Press.</li>
+              <li id="ref-2"><sup>2</sup> Costantini, P. (2011). <em>Cash return on capital invested: Ten years of investment analysis with the CROCI economic profit model</em>. Elsevier.</li>
+              <li id="ref-3"><sup>3</sup> Koller, T., Goedhart, M., & Wessels, D. (2025). <em>Valuation: Measuring and managing the value of companies</em>. John Wiley & Sons.</li>
+              <li id="ref-4"><sup>4</sup> Rust, R. T., Lemon, K. N., & Zeithaml, V. A. (2004). Return on marketing: Using customer equity to focus marketing strategy. <em>Journal of Marketing</em>, 68(1), 109–127.</li>
+              <li id="ref-5"><sup>5</sup> Ascarza, E., Fader, P. S., & Hardie, B. G. (2017). Marketing models for the customer-centric firm. In <em>Handbook of marketing decision models</em> (pp. 297–329). Springer International Publishing.</li>
+              <li id="ref-6"><sup>6</sup> Phillips, R. L. (2021). <em>Pricing and revenue optimization</em>. Stanford University Press.</li>
             </ol>
           </div>
         </div>
@@ -89,7 +89,8 @@ export function RewardsView() {
         }
         .references ol {
           margin: var(--space-3) 0 0 0;
-          padding-left: var(--space-5);
+          padding-left: 0;
+          list-style: none;
           color: var(--muted);
         }
         .references li {
