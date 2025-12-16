@@ -10,7 +10,7 @@ export function RewardsView() {
       <div className="grid grid-12">
         <div className="span-12">
           <p>
-            A profit-seeking firm's objective is to maximize expected discounted free cash flow (enterprise value).<sup><a href="#ref-1" className="cite">1</a></sup> This decomposes into maximizing returns on invested capital and scaling the invested-capital base.<sup><a href="#ref-2" className="cite">2</a></sup>
+            A profit-seeking firm's objective is to maximize <strong>expected discounted free cash flow</strong> (enterprise value).<sup><a href="#ref-1" className="cite">1</a></sup> This decomposes into maximizing <strong>returns on invested capital</strong> and scaling the invested-capital base.<sup><a href="#ref-2" className="cite">2</a></sup>
           </p>
 
           <p>
@@ -22,11 +22,11 @@ export function RewardsView() {
           </p>
           <BlockMath math="\mathrm{CE}(\pi) = \mathbb{E}_\pi\!\left[\sum_{t=0}^{\infty}\gamma^{t} r_t \right]" />
           <p>
-            Here <InlineMath math="\pi" /> is the company's policy and <InlineMath math="\gamma" /> is its discount factor (hurdle rate/WACC, or equivalently an effective risk preference).
+            Here <InlineMath math="\pi" /> is the company's <strong>policy</strong> and <InlineMath math="\gamma" /> is its <strong>discount factor</strong> (hurdle rate/WACC, or equivalently an effective risk preference).
           </p>
 
           <p>
-            Customer equity can in turn be expressed as the sum of customer lifetime values (CLVs) across present customers <InlineMath math="i \in N" /> and future customers <InlineMath math="i \in M" />:
+            Customer equity can in turn be expressed as the sum of <strong>customer lifetime values</strong> (CLVs) across present customers <InlineMath math="i \in N" /> and future customers <InlineMath math="i \in M" />:
           </p>
           <BlockMath math="\mathrm{CE}(\pi) = \sum_{i \in N} \mathrm{CLV}_i(\pi) + \sum_{i \in M} \mathrm{CLV}_i(\pi)" />
 
@@ -35,11 +35,11 @@ export function RewardsView() {
           </p>
           <BlockMath math="\mathrm{CLV}(\pi) = \mathrm{ARPA}_0(\pi) + \sum_{t=1}^{\infty} \gamma^t \left( \prod_{k=1}^{t} \mathrm{NRR}_k(\pi) \right) \mathrm{ARPA}_0(\pi)" />
           <p>
-            Here <InlineMath math="\mathrm{ARPA}_0(\pi)" /> is initial revenue and <InlineMath math="\mathrm{NRR}_k(\pi)" /> is net revenue retention in period <InlineMath math="k" />. Each future period's contribution is initial revenue scaled by discounting and the cumulative product of retention.
+            Here <InlineMath math="\mathrm{ARPA}_0(\pi)" /> is <strong>initial revenue</strong> and <InlineMath math="\mathrm{NRR}_k(\pi)" /> is <strong>net revenue retention</strong> in period <InlineMath math="k" />. Each future period's contribution is initial revenue scaled by discounting and the cumulative product of retention.
           </p>
 
           <p>
-            <InlineMath math="\mathrm{ARPA}" /> itself decomposes into price <InlineMath math="p" /> and volume <InlineMath math="v(p)" />, where <InlineMath math="v(p)" /> is a price response function. <InlineMath math="\mathrm{NRR}" /> decomposes into a survival function <InlineMath math="s_k" /> for overall retention, and processes for expansion <InlineMath math="e_k" /> and contraction <InlineMath math="c_k" />:
+            <InlineMath math="\mathrm{ARPA}" /> itself decomposes into <strong>price</strong> <InlineMath math="p" /> and <strong>volume</strong> <InlineMath math="v(p)" />, where <InlineMath math="v(p)" /> is a <strong>price response function</strong>. <InlineMath math="\mathrm{NRR}" /> decomposes into a <strong>survival function</strong> <InlineMath math="s_k" /> for overall retention, and processes for <strong>expansion</strong> <InlineMath math="e_k" /> and <strong>contraction</strong> <InlineMath math="c_k" />:
           </p>
           <BlockMath math="\mathrm{CLV}(\pi) = \sum_{t=0}^{\infty} \gamma^t \, p(\pi) \, v(p(\pi)) \left( \prod_{k=1}^{t} s_k(\pi) \right) \left( \prod_{k=1}^{t} e_k(\pi) \right) \left( \prod_{k=1}^{t} c_k(\pi) \right)" />
 
