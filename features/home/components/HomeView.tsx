@@ -14,7 +14,7 @@ export function HomeView() {
               In industry, I'm a data scientist helping early-stage SaaS companies grow revenue.
             </p>
             <p>
-              My academic research centers on Bayesian reinforcement learning and algorithmic game theory—how agents learn, adapt, and make decisions in complex environments.
+              My academic research centers on Bayesian reinforcement learning and game theory—how agents learn, adapt, and make decisions in complex environments.
             </p>
           </div>
         </div>
