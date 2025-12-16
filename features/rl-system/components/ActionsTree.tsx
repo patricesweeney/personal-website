@@ -270,7 +270,7 @@ export function ActionsTree() {
                     </button>
                     <div className={`items-wrapper ${isOpen ? "open" : ""}`}>
                       <div className="items-inner">
-                        {cat.subcategories === sub.items ? null : sub.items.map((item) => (
+                        {sub.items.map((item) => (
                           <div key={item.label} className="item" title={item.description}>
                             <span className={`dot dot-${item.advantage}`} />
                             <div className="item-content">
