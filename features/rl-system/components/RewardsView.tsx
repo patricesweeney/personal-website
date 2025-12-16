@@ -39,19 +39,19 @@ export function RewardsView() {
           </p>
 
           <p>
-            <InlineMath math="\mathrm{ARPA}" /> itself decomposes into <strong>price</strong> <InlineMath math="p" /> and <strong>volume</strong> <InlineMath math="v(p)" />, where <InlineMath math="v(p)" /> is a <strong>price response function</strong>.<sup><a href="#ref-6" className="cite">6</a></sup> <InlineMath math="\mathrm{NRR}" /> decomposes into a <strong>survival function</strong> <InlineMath math="s_k" /> for overall retention, and processes for <strong>expansion</strong> <InlineMath math="e_k" /> and <strong>contraction</strong> <InlineMath math="c_k" />:
+            <InlineMath math="\mathrm{ARPA}_0" /> itself decomposes into <strong>initial price</strong> <InlineMath math="p_0" /> and <strong>volume</strong> <InlineMath math="v(p_0)" />, where <InlineMath math="v(\cdot)" /> is a <strong>price response function</strong>.<sup><a href="#ref-6" className="cite">6</a></sup> <InlineMath math="\mathrm{NRR}" /> decomposes into a <strong>per-period retention factor</strong> <InlineMath math="s_k" />, and factors for <strong>expansion</strong> <InlineMath math="e_k" /> and <strong>contraction</strong> <InlineMath math="c_k" />:
           </p>
-          <BlockMath math="\mathrm{CLV}(\pi) = \sum_{t=0}^{\infty} \gamma^t \, p(\pi) \, v(p(\pi)) \left( \prod_{k=1}^{t} s_k(\pi) \right) \left( \prod_{k=1}^{t} e_k(\pi) \right) \left( \prod_{k=1}^{t} c_k(\pi) \right)" />
+          <BlockMath math="\mathrm{CLV}(\pi) = \sum_{t=0}^{\infty} \gamma^t \, p_0(\pi) \, v(p_0(\pi)) \left( \prod_{k=1}^{t} s_k(\pi) \right) \left( \prod_{k=1}^{t} e_k(\pi) \right) \left( \prod_{k=1}^{t} c_k(\pi) \right)" />
 
           <p>
             The <strong>state-value function</strong> <InlineMath math="V^\pi(s)" /> is the expected discounted future revenue starting from state <InlineMath math="s" /> and then following <InlineMath math="\pi" />:
           </p>
-          <BlockMath math="V^\pi(s) = \mathbb{E}\left[ \sum_{t=0}^{\infty} \gamma^t \, p(\pi) \, v(p(\pi)) \prod_{k=1}^{t} s_k(\pi) \, e_k(\pi) \, c_k(\pi) \;\middle|\; s_0 = s \right]" />
+          <BlockMath math="V^\pi(s) = \mathbb{E}\left[ \sum_{t=0}^{\infty} \gamma^t \, p_0(\pi) \, v(p_0(\pi)) \prod_{k=1}^{t} s_k(\pi) \, e_k(\pi) \, c_k(\pi) \;\middle|\; s_0 = s \right]" />
 
           <p>
             The <strong>state-action value function</strong> <InlineMath math="Q^\pi(s,a)" /> is the expected discounted future revenue starting from state <InlineMath math="s" />, taking action <InlineMath math="a" /> immediately, and then following <InlineMath math="\pi" />:
           </p>
-          <BlockMath math="Q^\pi(s,a) = \mathbb{E}\left[ \sum_{t=0}^{\infty} \gamma^t \, p(\pi) \, v(p(\pi)) \prod_{k=1}^{t} s_k(\pi) \, e_k(\pi) \, c_k(\pi) \;\middle|\; s_0 = s, \, a_0 = a \right]" />
+          <BlockMath math="Q^\pi(s,a) = \mathbb{E}\left[ \sum_{t=0}^{\infty} \gamma^t \, p_0(\pi) \, v(p_0(\pi)) \prod_{k=1}^{t} s_k(\pi) \, e_k(\pi) \, c_k(\pi) \;\middle|\; s_0 = s, \, a_0 = a \right]" />
 
           <hr className="references-divider" />
 
