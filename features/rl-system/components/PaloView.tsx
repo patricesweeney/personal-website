@@ -3,43 +3,39 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
 
-const nodes = [
+const elements = [
   {
-    id: "perceive",
-    label: "Perceive",
-    description: "Observe the environment through noisy, partial measurements — impressions, clicks, leads, churn, qualitative signals.",
+    id: "company",
+    label: "Company",
+    description: "The agent: makes decisions, runs experiments, updates beliefs, and refines strategy based on feedback.",
   },
   {
-    id: "act",
-    label: "Act",
-    description: "Choose an intervention: launch a campaign, adjust pricing, change messaging, run an experiment.",
+    id: "market",
+    label: "Market",
+    description: "The environment: customers, competitors, channels, and constraints. You never touch it directly — only through actions.",
   },
   {
-    id: "learn",
-    label: "Learn",
-    description: "Update beliefs about hidden states — demand, trust, willingness to pay — given new observations and rewards.",
+    id: "observations",
+    label: "Observations",
+    description: "Noisy, partial measurements from the market: impressions, clicks, leads, demos, churn, qualitative feedback, competitor signals.",
   },
   {
-    id: "optimize",
-    label: "Optimize",
-    description: "Refine the policy to select better actions that maximize expected cumulative reward.",
+    id: "rewards",
+    label: "Rewards",
+    description: "Scalar feedback encoding success: profit, ARR, NRR, LTV, retention, or a shaped proxy you optimize for.",
+  },
+  {
+    id: "actions",
+    label: "Actions",
+    description: "Interventions you take: launch campaigns, adjust pricing, change messaging, run experiments, allocate budget.",
   },
 ];
 
 export function PaloView() {
-  const [activeNode, setActiveNode] = useState<string | null>(null);
-  const [flowIndex, setFlowIndex] = useState(0);
+  const [activeElement, setActiveElement] = useState<string | null>(null);
 
-  // Positions for circular layout (top, right, bottom, left)
-  const positions = [
-    { x: 150, y: 40 },   // Perceive - top
-    { x: 260, y: 150 },  // Act - right
-    { x: 150, y: 260 },  // Learn - bottom
-    { x: 40, y: 150 },   // Optimize - left
-  ];
-
-  const activeData = activeNode
-    ? nodes.find((n) => n.id === activeNode)
+  const activeData = activeElement
+    ? elements.find((e) => e.id === activeElement)
     : null;
 
   return (
@@ -48,150 +44,247 @@ export function PaloView() {
       <div className="grid grid-12">
         <div className="span-12">
           <p className="muted" style={{ marginBottom: "var(--space-8)" }}>
-            Perceive → Act → Learn → Optimize. The core decision-making cycle.
+            The agent-environment interaction. Hover to explore each component.
           </p>
 
           <div className="loop-container">
             <svg
-              viewBox="0 0 300 300"
+              viewBox="0 0 500 280"
               className="loop-diagram"
-              style={{ maxWidth: 400, width: "100%", height: "auto" }}
+              style={{ maxWidth: 600, width: "100%", height: "auto" }}
             >
-              {/* Connection arrows */}
               <defs>
                 <marker
-                  id="arrowhead"
-                  markerWidth="10"
-                  markerHeight="7"
-                  refX="9"
-                  refY="3.5"
+                  id="arrow-muted"
+                  markerWidth="8"
+                  markerHeight="6"
+                  refX="7"
+                  refY="3"
                   orient="auto"
                 >
-                  <polygon
-                    points="0 0, 10 3.5, 0 7"
-                    fill="var(--muted)"
-                  />
+                  <polygon points="0 0, 8 3, 0 6" fill="var(--muted)" />
                 </marker>
                 <marker
-                  id="arrowhead-active"
-                  markerWidth="10"
-                  markerHeight="7"
-                  refX="9"
-                  refY="3.5"
+                  id="arrow-active"
+                  markerWidth="8"
+                  markerHeight="6"
+                  refX="7"
+                  refY="3"
                   orient="auto"
                 >
-                  <polygon
-                    points="0 0, 10 3.5, 0 7"
-                    fill="var(--fg)"
-                  />
+                  <polygon points="0 0, 8 3, 0 6" fill="var(--fg)" />
                 </marker>
               </defs>
 
-              {/* Curved paths between nodes */}
-              {[0, 1, 2, 3].map((i) => {
-                const next = (i + 1) % 4;
-                const from = positions[i];
-                const to = positions[next];
-                
-                // Calculate control points for curved arrows
-                const midX = (from.x + to.x) / 2;
-                const midY = (from.y + to.y) / 2;
-                const centerX = 150;
-                const centerY = 150;
-                
-                // Push control point toward center for curve
-                const ctrlX = midX + (centerX - midX) * 0.3;
-                const ctrlY = midY + (centerY - midY) * 0.3;
+              {/* Company Box (Left) */}
+              <motion.g
+                onMouseEnter={() => setActiveElement("company")}
+                onMouseLeave={() => setActiveElement(null)}
+                style={{ cursor: "pointer" }}
+                whileHover={{ scale: 1.02 }}
+              >
+                <motion.rect
+                  x="40"
+                  y="90"
+                  width="120"
+                  height="100"
+                  rx="8"
+                  fill="var(--bg)"
+                  stroke={activeElement === "company" ? "var(--fg)" : "var(--border)"}
+                  strokeWidth={activeElement === "company" ? "2" : "1"}
+                  initial={{ opacity: 0, x: -20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ duration: 0.4 }}
+                />
+                <motion.text
+                  x="100"
+                  y="145"
+                  textAnchor="middle"
+                  fontSize="14"
+                  fontWeight="600"
+                  fill={activeElement === "company" ? "var(--fg)" : "var(--muted)"}
+                  style={{ pointerEvents: "none", fontFamily: "var(--font-geist-sans), system-ui" }}
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ duration: 0.4, delay: 0.2 }}
+                >
+                  Company
+                </motion.text>
+              </motion.g>
 
-                // Offset start and end points from node centers
-                const angle = Math.atan2(to.y - from.y, to.x - from.x);
-                const startX = from.x + Math.cos(angle) * 35;
-                const startY = from.y + Math.sin(angle) * 35;
-                const endX = to.x - Math.cos(angle) * 35;
-                const endY = to.y - Math.sin(angle) * 35;
+              {/* Market Box (Right) */}
+              <motion.g
+                onMouseEnter={() => setActiveElement("market")}
+                onMouseLeave={() => setActiveElement(null)}
+                style={{ cursor: "pointer" }}
+                whileHover={{ scale: 1.02 }}
+              >
+                <motion.rect
+                  x="340"
+                  y="90"
+                  width="120"
+                  height="100"
+                  rx="8"
+                  fill="var(--bg)"
+                  stroke={activeElement === "market" ? "var(--fg)" : "var(--border)"}
+                  strokeWidth={activeElement === "market" ? "2" : "1"}
+                  initial={{ opacity: 0, x: 20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ duration: 0.4 }}
+                />
+                <motion.text
+                  x="400"
+                  y="145"
+                  textAnchor="middle"
+                  fontSize="14"
+                  fontWeight="600"
+                  fill={activeElement === "market" ? "var(--fg)" : "var(--muted)"}
+                  style={{ pointerEvents: "none", fontFamily: "var(--font-geist-sans), system-ui" }}
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ duration: 0.4, delay: 0.2 }}
+                >
+                  Market
+                </motion.text>
+              </motion.g>
 
-                return (
-                  <motion.path
-                    key={i}
-                    d={`M ${startX} ${startY} Q ${ctrlX} ${ctrlY} ${endX} ${endY}`}
-                    fill="none"
-                    stroke="var(--border)"
-                    strokeWidth="2"
-                    markerEnd="url(#arrowhead)"
-                    initial={{ pathLength: 0 }}
-                    animate={{ pathLength: 1 }}
-                    transition={{ duration: 0.8, delay: i * 0.2 }}
-                  />
-                );
-              })}
+              {/* Top Arrow: Observations (Market → Company, right to left) */}
+              <motion.g
+                onMouseEnter={() => setActiveElement("observations")}
+                onMouseLeave={() => setActiveElement(null)}
+                style={{ cursor: "pointer" }}
+              >
+                <motion.line
+                  x1="340"
+                  y1="60"
+                  x2="165"
+                  y2="60"
+                  stroke={activeElement === "observations" ? "var(--fg)" : "var(--muted)"}
+                  strokeWidth={activeElement === "observations" ? "2" : "1.5"}
+                  markerEnd={activeElement === "observations" ? "url(#arrow-active)" : "url(#arrow-muted)"}
+                  initial={{ pathLength: 0 }}
+                  animate={{ pathLength: 1 }}
+                  transition={{ duration: 0.5, delay: 0.3 }}
+                />
+                <motion.text
+                  x="252"
+                  y="45"
+                  textAnchor="middle"
+                  fontSize="12"
+                  fill={activeElement === "observations" ? "var(--fg)" : "var(--muted)"}
+                  style={{ pointerEvents: "none", fontFamily: "var(--font-geist-sans), system-ui" }}
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ duration: 0.3, delay: 0.5 }}
+                >
+                  Observations
+                </motion.text>
+              </motion.g>
 
-              {/* Animated flow indicator */}
+              {/* Top Arrow: Rewards (Market → Company, right to left, below observations) */}
+              <motion.g
+                onMouseEnter={() => setActiveElement("rewards")}
+                onMouseLeave={() => setActiveElement(null)}
+                style={{ cursor: "pointer" }}
+              >
+                <motion.line
+                  x1="340"
+                  y1="80"
+                  x2="165"
+                  y2="80"
+                  stroke={activeElement === "rewards" ? "var(--fg)" : "var(--muted)"}
+                  strokeWidth={activeElement === "rewards" ? "2" : "1.5"}
+                  markerEnd={activeElement === "rewards" ? "url(#arrow-active)" : "url(#arrow-muted)"}
+                  initial={{ pathLength: 0 }}
+                  animate={{ pathLength: 1 }}
+                  transition={{ duration: 0.5, delay: 0.4 }}
+                />
+                <motion.text
+                  x="252"
+                  y="75"
+                  textAnchor="middle"
+                  fontSize="12"
+                  fill={activeElement === "rewards" ? "var(--fg)" : "var(--muted)"}
+                  style={{ pointerEvents: "none", fontFamily: "var(--font-geist-sans), system-ui" }}
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ duration: 0.3, delay: 0.6 }}
+                >
+                  Rewards
+                </motion.text>
+              </motion.g>
+
+              {/* Bottom Arrow: Actions (Company → Market, left to right) */}
+              <motion.g
+                onMouseEnter={() => setActiveElement("actions")}
+                onMouseLeave={() => setActiveElement(null)}
+                style={{ cursor: "pointer" }}
+              >
+                <motion.line
+                  x1="160"
+                  y1="220"
+                  x2="335"
+                  y2="220"
+                  stroke={activeElement === "actions" ? "var(--fg)" : "var(--muted)"}
+                  strokeWidth={activeElement === "actions" ? "2" : "1.5"}
+                  markerEnd={activeElement === "actions" ? "url(#arrow-active)" : "url(#arrow-muted)"}
+                  initial={{ pathLength: 0 }}
+                  animate={{ pathLength: 1 }}
+                  transition={{ duration: 0.5, delay: 0.5 }}
+                />
+                <motion.text
+                  x="252"
+                  y="245"
+                  textAnchor="middle"
+                  fontSize="12"
+                  fill={activeElement === "actions" ? "var(--fg)" : "var(--muted)"}
+                  style={{ pointerEvents: "none", fontFamily: "var(--font-geist-sans), system-ui" }}
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ duration: 0.3, delay: 0.7 }}
+                >
+                  Actions
+                </motion.text>
+              </motion.g>
+
+              {/* Animated flow dots */}
               <motion.circle
-                r="4"
+                r="3"
                 fill="var(--fg)"
-                initial={{ opacity: 0 }}
                 animate={{
+                  cx: [340, 165],
+                  cy: [60, 60],
                   opacity: [0, 1, 1, 0],
-                  cx: positions.map(p => p.x),
-                  cy: positions.map(p => p.y),
                 }}
                 transition={{
-                  duration: 4,
+                  duration: 2,
                   repeat: Infinity,
                   ease: "easeInOut",
-                  times: [0, 0.1, 0.9, 1],
+                  repeatDelay: 1,
                 }}
               />
-
-              {/* Nodes */}
-              {nodes.map((node, i) => {
-                const pos = positions[i];
-                const isActive = activeNode === node.id;
-
-                return (
-                  <g key={node.id}>
-                    <motion.circle
-                      cx={pos.x}
-                      cy={pos.y}
-                      r="30"
-                      fill="var(--bg)"
-                      stroke={isActive ? "var(--fg)" : "var(--border)"}
-                      strokeWidth={isActive ? "2" : "1"}
-                      style={{ cursor: "pointer" }}
-                      whileHover={{ scale: 1.08 }}
-                      onMouseEnter={() => setActiveNode(node.id)}
-                      onMouseLeave={() => setActiveNode(null)}
-                      initial={{ scale: 0 }}
-                      animate={{ scale: 1 }}
-                      transition={{ duration: 0.3, delay: i * 0.1 }}
-                    />
-                    <motion.text
-                      x={pos.x}
-                      y={pos.y}
-                      textAnchor="middle"
-                      dominantBaseline="middle"
-                      fontSize="11"
-                      fontWeight={isActive ? "600" : "400"}
-                      fill={isActive ? "var(--fg)" : "var(--muted)"}
-                      style={{ 
-                        pointerEvents: "none",
-                        fontFamily: "var(--font-geist-sans), system-ui, sans-serif",
-                      }}
-                      initial={{ opacity: 0 }}
-                      animate={{ opacity: 1 }}
-                      transition={{ duration: 0.3, delay: i * 0.1 + 0.2 }}
-                    >
-                      {node.label}
-                    </motion.text>
-                  </g>
-                );
-              })}
+              <motion.circle
+                r="3"
+                fill="var(--fg)"
+                animate={{
+                  cx: [160, 335],
+                  cy: [220, 220],
+                  opacity: [0, 1, 1, 0],
+                }}
+                transition={{
+                  duration: 2,
+                  repeat: Infinity,
+                  ease: "easeInOut",
+                  delay: 1.5,
+                  repeatDelay: 1,
+                }}
+              />
             </svg>
 
             {/* Description panel */}
             <div className="loop-description">
               <motion.div
-                key={activeNode || "default"}
+                key={activeElement || "default"}
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.2 }}
@@ -202,7 +295,7 @@ export function PaloView() {
                     <p>{activeData.description}</p>
                   </>
                 ) : (
-                  <p className="muted">Hover over a node to see details.</p>
+                  <p className="muted">Hover over a component to see details.</p>
                 )}
               </motion.div>
             </div>
@@ -227,13 +320,11 @@ export function PaloView() {
         }
         @media (min-width: 768px) {
           .loop-container {
-            flex-direction: row;
-            align-items: flex-start;
-            gap: var(--space-10);
+            flex-direction: column;
+            align-items: center;
           }
           .loop-description {
-            text-align: left;
-            flex: 1;
+            text-align: center;
           }
         }
       `}</style>
