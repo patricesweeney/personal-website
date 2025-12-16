@@ -10,15 +10,15 @@ export function RewardsView() {
       <div className="grid grid-12">
         <div className="span-12">
           <p>
-            A SaaS company objective is to maximize expected discounted free cash flow.<sup><a href="#ref-1" className="cite">1</a></sup> This objective decomposes into maximizing return on invested capital (ROIC) and maximizing growth of the invested capital base.<sup><a href="#ref-2" className="cite">2</a></sup> Under standard SaaS conditions this is well-approximated by revenue growth, so revenue is taken as the reward signal and denoted <InlineMath math="r" />.
+            A profit-seeking firm's objective is to maximize expected discounted free cash flow (enterprise value).<sup><a href="#ref-1" className="cite">1</a></sup> This decomposes into maximizing returns on invested capital and scaling the invested-capital base.<sup><a href="#ref-2" className="cite">2</a></sup>
           </p>
 
           <p>
-            The firm's policy objective is to maximize expected discounted revenue (<strong>customer equity</strong>):
+            For early-stage SaaS, free cash flow is often negative, noisy, and lagging, so a workable proxy is <strong>customer equity</strong>, expected discounted revenue from the customer base. Accordingly, take revenue as the reward signal <InlineMath math="r_t" />. Therefore, a SaaS startup's policy objective is:
           </p>
-          <BlockMath math="\pi^* \in \arg\max_{\pi}\ \mathbb{E}\!\left[\sum_{t=0}^{\infty}\gamma^{t} R_t \right], \qquad \gamma\in(0,1)" />
+          <BlockMath math="\pi^* \in \arg\max_{\pi}\ \mathbb{E}\!\left[\sum_{t=0}^{\infty}\gamma^{t} r_t \right], \qquad \gamma\in(0,1)" />
           <p>
-            Here <InlineMath math="\pi" /> is the firm's policy, and <InlineMath math="\gamma" /> is its discount factor, interpretable as a hurdle rate/WACC and, equivalently, an effective risk preference (lower <InlineMath math="\gamma" /> means more impatient or more risk-averse).
+            Here <InlineMath math="\pi" /> is the company's policy and <InlineMath math="\gamma" /> is its discount factor (hurdle rate/WACC, or equivalently an effective risk preference).
           </p>
 
           <p>
