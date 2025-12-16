@@ -71,6 +71,14 @@ export function RewardsView() {
             This answers: "what if we take action <InlineMath math="a" /> first?"
           </p>
 
+          <p>
+            The <strong>advantage function</strong> <InlineMath math="A^\pi(s,a)" /> is the difference between the state-action value and the state value:
+          </p>
+          <BlockMath math="A^\pi(s,a) = Q^\pi(s,a) - V^\pi(s)" />
+          <p>
+            This answers: "how much better is action <InlineMath math="a" /> than the average action under <InlineMath math="\pi" />?" A positive advantage means the action outperforms the policy's expected performance from that state.
+          </p>
+
           <hr className="references-divider" />
 
           <div className="references">
