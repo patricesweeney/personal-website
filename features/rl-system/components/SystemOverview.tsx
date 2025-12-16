@@ -1,7 +1,7 @@
 "use client";
 
-import { useState } from "react";
-import { motion } from "framer-motion";
+import { useState, useEffect } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 import "katex/dist/katex.min.css";
 import { InlineMath } from "react-katex";
 
@@ -33,12 +33,40 @@ const elements = [
   },
 ];
 
+interface RewardDot {
+  id: number;
+  isPositive: boolean;
+}
+
 export function SystemOverview() {
   const [activeElement, setActiveElement] = useState<string | null>(null);
+  const [speed, setSpeed] = useState(1);
+  const [quality, setQuality] = useState(70);
+  const [rewardDots, setRewardDots] = useState<RewardDot[]>([]);
+  const [dotCounter, setDotCounter] = useState(0);
 
   const activeData = activeElement
     ? elements.find((e) => e.id === activeElement)
     : null;
+
+  // Base duration for animations (modified by speed)
+  const baseDuration = 2 / speed;
+  const spawnInterval = 1500 / speed;
+
+  // Spawn reward dots periodically
+  useEffect(() => {
+    const interval = setInterval(() => {
+      const isPositive = Math.random() * 100 < quality;
+      const newDot: RewardDot = {
+        id: dotCounter,
+        isPositive,
+      };
+      setRewardDots((prev) => [...prev.slice(-5), newDot]); // Keep max 6 dots
+      setDotCounter((c) => c + 1);
+    }, spawnInterval);
+
+    return () => clearInterval(interval);
+  }, [quality, speed, dotCounter, spawnInterval]);
 
   return (
     <section className="section" style={{ paddingTop: "var(--space-6)" }}>
@@ -250,7 +278,7 @@ export function SystemOverview() {
                 </motion.text>
               </motion.g>
 
-              {/* Animated flow dots */}
+              {/* Observation flow dot */}
               <motion.circle
                 r="3"
                 fill="var(--fg)"
@@ -260,12 +288,14 @@ export function SystemOverview() {
                   opacity: [0, 1, 1, 0],
                 }}
                 transition={{
-                  duration: 2,
+                  duration: baseDuration,
                   repeat: Infinity,
                   ease: "easeInOut",
-                  repeatDelay: 1,
+                  repeatDelay: baseDuration * 0.5,
                 }}
               />
+
+              {/* Action flow dot */}
               <motion.circle
                 r="3"
                 fill="var(--fg)"
@@ -275,14 +305,70 @@ export function SystemOverview() {
                   opacity: [0, 1, 1, 0],
                 }}
                 transition={{
-                  duration: 2,
+                  duration: baseDuration,
                   repeat: Infinity,
                   ease: "easeInOut",
-                  delay: 1.5,
-                  repeatDelay: 1,
+                  delay: baseDuration * 0.75,
+                  repeatDelay: baseDuration * 0.5,
                 }}
               />
+
+              {/* Reward dots (green/red based on quality) */}
+              <AnimatePresence>
+                {rewardDots.map((dot) => (
+                  <motion.circle
+                    key={dot.id}
+                    r="4"
+                    fill={dot.isPositive ? "#22c55e" : "#ef4444"}
+                    initial={{ cx: 340, cy: 80, opacity: 0 }}
+                    animate={{ 
+                      cx: 165, 
+                      cy: 80, 
+                      opacity: [0, 1, 1, 0],
+                    }}
+                    exit={{ opacity: 0 }}
+                    transition={{
+                      duration: baseDuration,
+                      ease: "easeInOut",
+                    }}
+                  />
+                ))}
+              </AnimatePresence>
             </svg>
+
+            {/* Controls */}
+            <div className="loop-controls">
+              <div className="control-group">
+                <label className="control-label">
+                  <span className="meta">Speed</span>
+                  <span className="control-value">{speed.toFixed(1)}x</span>
+                </label>
+                <input
+                  type="range"
+                  min="0.3"
+                  max="2"
+                  step="0.1"
+                  value={speed}
+                  onChange={(e) => setSpeed(parseFloat(e.target.value))}
+                  className="control-slider"
+                />
+              </div>
+              <div className="control-group">
+                <label className="control-label">
+                  <span className="meta">Decision Quality</span>
+                  <span className="control-value">{quality}%</span>
+                </label>
+                <input
+                  type="range"
+                  min="0"
+                  max="100"
+                  step="5"
+                  value={quality}
+                  onChange={(e) => setQuality(parseInt(e.target.value))}
+                  className="control-slider"
+                />
+              </div>
+            </div>
 
             {/* Description panel */}
             <div className="loop-description">
@@ -321,10 +407,74 @@ export function SystemOverview() {
         .loop-diagram {
           display: block;
         }
+        .loop-controls {
+          display: flex;
+          gap: var(--space-8);
+          width: 100%;
+          max-width: 500px;
+          justify-content: center;
+        }
+        .control-group {
+          display: flex;
+          flex-direction: column;
+          gap: var(--space-2);
+          flex: 1;
+          max-width: 200px;
+        }
+        .control-label {
+          display: flex;
+          justify-content: space-between;
+          align-items: baseline;
+        }
+        .control-value {
+          font-size: var(--font-small);
+          font-weight: 600;
+          font-family: var(--font-geist-mono), monospace;
+        }
+        .control-slider {
+          -webkit-appearance: none;
+          appearance: none;
+          width: 100%;
+          height: 4px;
+          background: var(--border);
+          border-radius: 2px;
+          outline: none;
+          cursor: pointer;
+        }
+        .control-slider::-webkit-slider-thumb {
+          -webkit-appearance: none;
+          appearance: none;
+          width: 16px;
+          height: 16px;
+          background: var(--fg);
+          border-radius: 50%;
+          cursor: pointer;
+          transition: transform 0.15s;
+        }
+        .control-slider::-webkit-slider-thumb:hover {
+          transform: scale(1.2);
+        }
+        .control-slider::-moz-range-thumb {
+          width: 16px;
+          height: 16px;
+          background: var(--fg);
+          border-radius: 50%;
+          cursor: pointer;
+          border: none;
+        }
         .loop-description {
           min-height: 60px;
           text-align: center;
           max-width: 500px;
+        }
+        @media (max-width: 500px) {
+          .loop-controls {
+            flex-direction: column;
+            gap: var(--space-4);
+          }
+          .control-group {
+            max-width: 100%;
+          }
         }
       `}</style>
     </section>
