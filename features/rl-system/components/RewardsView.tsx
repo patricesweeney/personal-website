@@ -10,73 +10,60 @@ export function RewardsView() {
       <div className="grid grid-12">
         <div className="span-12">
           <p>
-            The <strong>reward hypothesis</strong> is the claim that any goal-directed behavior can be represented as maximizing the expected discounted sum of a single scalar reward signal over time.
+            A company wants to maximize how much cash it pulls in over time, discounted for risk and waiting. That number—expected discounted free cash flow—is what the stock market calls enterprise value.<sup><a href="#ref-1" className="cite">1</a></sup>
           </p>
 
           <p>
-            A profit-seeking firm's goal is to maximize <strong>expected discounted free cash flow</strong> (enterprise value).<sup><a href="#ref-1" className="cite">1</a></sup> This decomposes into maximizing <strong>returns on invested capital</strong> and scaling the invested-capital base.<sup><a href="#ref-2" className="cite">2</a></sup> In practice, the latter is often approximated by revenue growth.<sup><a href="#ref-3" className="cite">3</a></sup>
-          </p>
-
-          <p>
-            For early-stage SaaS, free cash flow is often negative, noisy, and lagging, so a workable proxy is <strong>customer equity</strong>,<sup><a href="#ref-4" className="cite">4</a></sup> expected discounted revenue from the present and future customer base. Accordingly, take revenue as the reward signal <InlineMath math="r_t" />. Therefore, a SaaS startup's policy objective is:
+            Early-stage SaaS rarely has positive cash flow, so we use a proxy: <strong>customer equity</strong>,<sup><a href="#ref-2" className="cite">2</a></sup> the present value of all revenue from current and future customers. Revenue becomes our reward signal <InlineMath math="r_t" />. The goal is to find the policy <InlineMath math="\pi" /> that maximizes it:
           </p>
           <BlockMath math="\pi^* \in \arg\max_{\pi}\ \mathrm{CE}(\pi), \qquad \gamma\in(0,1)" />
-          <p>
-            where
-          </p>
           <BlockMath math="\mathrm{CE}(\pi) = \mathbb{E}_\pi\!\left[\sum_{t=0}^{\infty}\gamma^{t} r_t \right]" />
           <p>
-            Here <InlineMath math="\pi" /> is the company's <strong>policy</strong> and <InlineMath math="\gamma" /> is its <strong>discount factor</strong> (hurdle rate/WACC, or equivalently an effective risk preference).
+            The discount factor <InlineMath math="\gamma" /> captures impatience and risk—a dollar next year is worth less than a dollar today.
           </p>
 
           <p>
-            Customer equity can in turn be expressed as the sum of <strong>customer lifetime values</strong> (CLVs)<sup><a href="#ref-5" className="cite">5</a></sup> across present customers <InlineMath math="i \in N" /> and future customers <InlineMath math="i \in M" />:
+            Customer equity is the sum of individual <strong>customer lifetime values</strong> (CLVs)<sup><a href="#ref-3" className="cite">3</a></sup>—some customers you have now, some you'll acquire later:
           </p>
           <BlockMath math="\mathrm{CE}(\pi) = \sum_{i \in N} \mathrm{CLV}_i(\pi) + \sum_{i \in M} \mathrm{CLV}_i(\pi)" />
 
           <p>
-            where, for a given customer, CLV under policy <InlineMath math="\pi" /> is:
+            Each customer's CLV is what they pay upfront, plus what they keep paying over time (adjusted for churn and growth):
           </p>
           <BlockMath math="\mathrm{CLV}(\pi) = \mathrm{ARPA}_0(\pi) + \sum_{t=1}^{\infty} \gamma^t \left( \prod_{k=1}^{t} \mathrm{NRR}_k(\pi) \right) \mathrm{ARPA}_0(\pi)" />
           <p>
-            Here <InlineMath math="\mathrm{ARPA}_0(\pi)" /> is <strong>initial revenue</strong> and <InlineMath math="\mathrm{NRR}_k(\pi)" /> is <strong>net revenue retention</strong> in period <InlineMath math="k" />. Each future period's contribution is initial revenue scaled by discounting and the cumulative product of retention.
+            <InlineMath math="\mathrm{ARPA}_0" /> is initial revenue per account. <InlineMath math="\mathrm{NRR}_k" /> is net revenue retention in period <InlineMath math="k" />—how much of last period's revenue survives and grows.
           </p>
 
           <p>
-            <InlineMath math="\mathrm{ARPA}_0" /> itself decomposes into <strong>initial price</strong> <InlineMath math="p_0" /> and <strong>volume</strong> <InlineMath math="v(p_0)" />, where <InlineMath math="v(\cdot)" /> is a <strong>price response function</strong>.<sup><a href="#ref-6" className="cite">6</a></sup> <InlineMath math="\mathrm{NRR}" /> decomposes into a <strong>per-period retention factor</strong> <InlineMath math="r_k" />, and factors for <strong>expansion</strong> <InlineMath math="e_k" /> and <strong>contraction</strong> <InlineMath math="c_k" />:
+            We can break this down further. Initial revenue is price <InlineMath math="p_0" /> times volume <InlineMath math="v(p_0)" />, where volume depends on price through some response function.<sup><a href="#ref-4" className="cite">4</a></sup> Period-over-period change splits into retention <InlineMath math="r_k" />, expansion <InlineMath math="e_k" />, and contraction <InlineMath math="c_k" />:
           </p>
-          <BlockMath math="\mathrm{CLV}(\pi) = \sum_{t=0}^{\infty} \gamma^t \, p_0(\pi) \, v(p_0(\pi)) \left( \prod_{k=1}^{t} r_k(\pi) \right) \left( \prod_{k=1}^{t} e_k(\pi) \right) \left( \prod_{k=1}^{t} c_k(\pi) \right)" />
+          <BlockMath math="\mathrm{CLV}(\pi) = \sum_{t=0}^{\infty} \gamma^t \, p_0(\pi) \, v(p_0(\pi)) \prod_{k=1}^{t} r_k(\pi) \, e_k(\pi) \, c_k(\pi)" />
 
           <p>
-            This decomposition is <strong>exhaustive by construction</strong>: initial revenue is price times volume (an accounting identity), and period-over-period revenue change decomposes into retention, expansion, and contraction (a partition of outcomes). Any policy that increases customer equity must do so through one of these channels—acquisition, pricing, conversion, retention, expansion, or contraction.
-          </p>
-
-          <p>
-            Customer equity is the global objective, but the company acts sequentially: each period it observes a state and chooses an action. To make decisions, it needs to know the expected future CE from any given position. Writing per-customer revenue and summing over the current and future customer base <InlineMath math="N" /> and <InlineMath math="M" />:
+            This covers all the ways revenue can move: you acquire customers (volume), set a price, keep them (retention), grow them (expansion), or lose pieces of them (contraction). Any policy that raises customer equity works through one of these levers.
           </p>
 
           <p>
-            The <strong>state-value function</strong> <InlineMath math="V^\pi(s)" /> is the expected discounted future revenue starting from state <InlineMath math="s" /> and then following <InlineMath math="\pi" />:
+            Customer equity is the goal, but you act one period at a time. To decide what to do, you need to know what future CE looks like from where you stand.
+          </p>
+
+          <p>
+            The <strong>state-value function</strong> <InlineMath math="V^\pi(s)" /> answers: "starting from state <InlineMath math="s" />, what's my expected future CE if I follow policy <InlineMath math="\pi" />?"
           </p>
           <BlockMath math="V^\pi(s) = \mathbb{E}\left[ \sum_{t=0}^{\infty} \gamma^t \, p_0(\pi) \, v(p_0(\pi)) \prod_{k=1}^{t} r_k(\pi) \, e_k(\pi) \, c_k(\pi) \;\middle|\; s_0 = s \right]" />
-          <p>
-            This answers: "what is our expected future customer equity starting from state <InlineMath math="s" />?"
-          </p>
 
           <p>
-            The <strong>state-action value function</strong> <InlineMath math="Q^\pi(s,a)" /> is the expected discounted future revenue starting from state <InlineMath math="s" />, taking action <InlineMath math="a" /> immediately, and then following <InlineMath math="\pi" />:
+            The <strong>state-action value function</strong> <InlineMath math="Q^\pi(s,a)" /> answers: "what if I take action <InlineMath math="a" /> first, then follow <InlineMath math="\pi" />?"
           </p>
           <BlockMath math="Q^\pi(s,a) = \mathbb{E}\left[ \sum_{t=0}^{\infty} \gamma^t \, p_0(\pi) \, v(p_0(\pi)) \prod_{k=1}^{t} r_k(\pi) \, e_k(\pi) \, c_k(\pi) \;\middle|\; s_0 = s, \, a_0 = a \right]" />
-          <p>
-            This answers: "what if we take action <InlineMath math="a" /> first?"
-          </p>
 
           <p>
-            The <strong>advantage function</strong> <InlineMath math="A^\pi(s,a)" /> is the difference between the state-action value and the state value:
+            The <strong>advantage function</strong> <InlineMath math="A^\pi(s,a)" /> answers: "how much better is action <InlineMath math="a" /> than whatever I'd normally do?"
           </p>
           <BlockMath math="A^\pi(s,a) = Q^\pi(s,a) - V^\pi(s)" />
           <p>
-            This answers: "how much better is action <InlineMath math="a" /> than the average action under <InlineMath math="\pi" />?" A positive advantage means the action outperforms the policy's expected performance from that state.
+            Positive advantage means the action beats the baseline. Negative means you're better off sticking with the default.
           </p>
 
           <hr className="references-divider" />
@@ -84,12 +71,10 @@ export function RewardsView() {
           <div className="references">
             <p className="meta">References</p>
             <ol>
-              <li id="ref-1"><sup>1</sup> Shaikh, A. (2016). <em>Capitalism: Competition, conflict, crises</em>. Oxford University Press.</li>
-              <li id="ref-2"><sup>2</sup> Costantini, P. (2011). <em>Cash return on capital invested: Ten years of investment analysis with the CROCI economic profit model</em>. Elsevier.</li>
-              <li id="ref-3"><sup>3</sup> Koller, T., Goedhart, M., & Wessels, D. (2025). <em>Valuation: Measuring and managing the value of companies</em>. John Wiley & Sons.</li>
-              <li id="ref-4"><sup>4</sup> Rust, R. T., Lemon, K. N., & Zeithaml, V. A. (2004). Return on marketing: Using customer equity to focus marketing strategy. <em>Journal of Marketing</em>, 68(1), 109–127.</li>
-              <li id="ref-5"><sup>5</sup> Ascarza, E., Fader, P. S., & Hardie, B. G. (2017). Marketing models for the customer-centric firm. In <em>Handbook of marketing decision models</em> (pp. 297–329). Springer International Publishing.</li>
-              <li id="ref-6"><sup>6</sup> Phillips, R. L. (2021). <em>Pricing and revenue optimization</em>. Stanford University Press.</li>
+              <li id="ref-1"><sup>1</sup> Koller, T., Goedhart, M., & Wessels, D. (2025). <em>Valuation: Measuring and managing the value of companies</em>. John Wiley & Sons.</li>
+              <li id="ref-2"><sup>2</sup> Rust, R. T., Lemon, K. N., & Zeithaml, V. A. (2004). Return on marketing: Using customer equity to focus marketing strategy. <em>Journal of Marketing</em>, 68(1), 109–127.</li>
+              <li id="ref-3"><sup>3</sup> Ascarza, E., Fader, P. S., & Hardie, B. G. (2017). Marketing models for the customer-centric firm. In <em>Handbook of marketing decision models</em> (pp. 297–329). Springer International Publishing.</li>
+              <li id="ref-4"><sup>4</sup> Phillips, R. L. (2021). <em>Pricing and revenue optimization</em>. Stanford University Press.</li>
             </ol>
           </div>
         </div>

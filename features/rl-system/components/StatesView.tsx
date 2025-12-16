@@ -9,53 +9,81 @@ export function StatesView() {
       <div className="grid grid-12">
         <div className="span-12">
           <p>
-            A defining problem in SaaS is the <strong>sheer volume of data</strong>—product telemetry, CRM records, billing events, support tickets, survey responses—most of which is irrelevant to good decision-making. The challenge isn't access to information; it's that signal is buried in noise.
+            SaaS companies drown in data—telemetry, CRM, billing, tickets, surveys—and most of it is noise. The problem isn't getting information; it's figuring out what matters.
           </p>
           <p>
-            Critically, <strong>we don't get states for free</strong>. We get <em>observations</em>: raw, high-dimensional, often redundant streams of data. A <strong>state</strong> is a name that must be <em>earned</em>—it refers to a compressed representation that is sufficient for predicting future rewards and selecting actions. The goal of representation learning is to transform observations into states.
+            You don't get <strong>states</strong> for free. You get <em>observations</em>: raw, high-dimensional, redundant. A state is a compressed summary that's good enough to act on. If two observations map to the same state, the right action should be the same for both. That's the bar.
           </p>
 
           <h3>Observations</h3>
           <p>
-            A SaaS company's observation modalities fall into three classes:
+            The raw inputs come in three flavors:
           </p>
           <ObservationsMindMap />
 
           <h3 style={{ marginTop: "var(--space-8)" }}>Representation learning</h3>
           <p>
-            The transformation from observations to states is the domain of <strong>representation learning</strong>: finding low-dimensional structure in high-dimensional data that preserves the information relevant to a task.
+            The job is to compress observations into states—lower-dimensional summaries that keep what matters and throw away what doesn't. This works because most data has structure: a customer isn't really 10,000 independent event features. Those features are correlated, driven by a few underlying factors like engagement, sophistication, and intent.
           </p>
+
+          <h4>Static representations</h4>
           <p>
-            The key insight is that real-world observations typically lie on or near a <strong>manifold</strong>—a lower-dimensional surface embedded in the high-dimensional observation space. A customer isn't really described by 10,000 event features; those features are correlated and driven by a handful of latent factors (engagement level, sophistication, purchase intent).
-          </p>
-          <p>
-            The main approaches to learning these representations:
+            Static methods take a snapshot and compress it. They assume the mapping from observations to states doesn't change over time.
           </p>
           <ul>
             <li>
-              <strong>Linear methods</strong> (PCA, factor analysis): Find directions of maximum variance or latent factors. Fast and interpretable, but assume the manifold is flat.
+              <strong>Linear methods</strong> (PCA, factor analysis): Find the directions of most variance. Fast and interpretable, but assume linear structure.
             </li>
             <li>
-              <strong>Kernel methods</strong> (kernel PCA, spectral embedding): Capture nonlinear structure by operating in an implicit feature space. The manifold can curve, but the mapping is fixed.
+              <strong>Kernel methods</strong> (kernel PCA, spectral embedding): Handle curves by implicitly working in a richer space. Still a fixed mapping.
             </li>
             <li>
-              <strong>Neighborhood methods</strong> (Isomap, LLE, t-SNE, UMAP): Preserve local distances or neighborhoods. Good for visualization and clustering, but the embedding isn't parameterized—new points require re-running.
+              <strong>Neighborhood methods</strong> (t-SNE, UMAP): Preserve local structure—nearby points stay nearby. Great for visualization, but you can't embed new points without re-running.
             </li>
             <li>
-              <strong>Autoencoders</strong> (VAE, sparse AE): Learn an encoder-decoder pair that compresses observations through a bottleneck. Parameterized, so new observations can be embedded directly. Can be regularized to encourage structure (sparsity, disentanglement).
+              <strong>Autoencoders</strong> (VAE, sparse AE): Learn to compress and reconstruct through a bottleneck. New observations embed directly. Can enforce sparsity or disentanglement.
             </li>
             <li>
-              <strong>Contrastive methods</strong> (SimCLR, CLIP): Learn representations by pulling similar observations together and pushing dissimilar ones apart. Doesn't require reconstruction—only similarity judgments.
+              <strong>Contrastive methods</strong> (SimCLR, CLIP): Learn by pulling similar things together and pushing different things apart. No reconstruction needed—only similarity.
+            </li>
+          </ul>
+
+          <h4>Dynamic representations</h4>
+          <p>
+            Static methods ignore time. But for decisions, history often matters: a customer who logged in yesterday after six months of silence is different from one who logs in daily. Dynamic methods learn representations that evolve.
+          </p>
+          <ul>
+            <li>
+              <strong>Recurrent models</strong> (LSTM, GRU): Process sequences step by step, updating a hidden state. The state summarizes everything seen so far.
+            </li>
+            <li>
+              <strong>State-space models</strong> (Kalman filters, HMMs): Assume a latent state evolves according to known dynamics, and observations are noisy glimpses of it. Good when you have a model of how things change.
+            </li>
+            <li>
+              <strong>Transformers</strong>: Attend to the full history at once, weighting what's relevant. No fixed summary—recompute attention for each decision.
+            </li>
+            <li>
+              <strong>World models</strong>: Learn to predict what happens next, and use the predictor's internal state as the representation. The state is whatever's useful for forecasting.
             </li>
           </ul>
           <p>
-            For SaaS applications, the choice depends on the goal: linear methods for interpretable health scores, autoencoders for dense customer embeddings, contrastive methods when you have implicit similarity signals (e.g., customers who respond to the same campaigns).
+            For SaaS: static methods work for health scores and segmentation; dynamic methods matter when you care about trajectories—churn prediction, lifecycle stage, next-best-action.
           </p>
           <p>
-            The test of a good representation isn't reconstruction fidelity—it's whether the state is <strong>sufficient for action selection</strong>. Two customers with identical states should warrant identical policies. If they don't, the representation is missing something decision-relevant.
+            The test of a good state isn't whether you can reconstruct the original data. It's whether two observations that map to the same state should get the same action. If they shouldn't, you're missing something.
           </p>
         </div>
       </div>
+
+      <style jsx>{`
+        h4 {
+          font-size: 15px;
+          font-weight: 600;
+          margin-top: var(--space-6);
+          margin-bottom: var(--space-3);
+          color: var(--fg);
+        }
+      `}</style>
     </section>
   );
 }

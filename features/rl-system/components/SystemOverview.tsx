@@ -9,27 +9,27 @@ const elements = [
   {
     id: "company",
     label: "Company",
-    description: "Makes decisions, runs experiments, updates beliefs, and refines strategy based on feedback.",
+    description: "The decision-maker. Takes actions, watches what happens, updates its picture of the world, tries again.",
   },
   {
     id: "market",
     label: "Market",
-    description: "The environment: customers, competitors, channels, and constraints. You never touch it directly — only through actions.",
+    description: "Everything outside your control: customers, competitors, channels, constraints. You can't touch it directly—only poke it with actions and watch what comes back.",
   },
   {
     id: "observations",
     label: "Observations",
-    description: "Noisy, partial measurements from the market: impressions, clicks, leads, demos, churn, qualitative feedback, competitor signals.",
+    description: "What you actually see: clicks, signups, churn, support tickets, survey responses, competitor moves. Noisy, partial, often late.",
   },
   {
     id: "rewards",
     label: "Rewards",
-    description: "Scalar feedback encoding success: profit, ARR, NRR, LTV, retention, or a shaped proxy you optimize for.",
+    description: "The score. Whatever number you're trying to make go up: revenue, retention, profit, or some proxy you've chosen to optimize.",
   },
   {
     id: "actions",
     label: "Actions",
-    description: "Interventions you take: launch campaigns, adjust pricing, change messaging, run experiments, allocate budget.",
+    description: "What you can do: change the price, launch a campaign, tweak the onboarding, run an experiment, hire a rep.",
   },
 ];
 
@@ -74,7 +74,7 @@ export function SystemOverview() {
       <div className="grid grid-12">
         <div className="span-12">
           <p>
-            A SaaS business is a <strong>control loop</strong> where the company repeatedly acts under uncertainty about the true world. The environment has a hidden <strong>state</strong> <InlineMath math="s_t" /> (the actual situation of the world at time <InlineMath math="t" />, not directly seen), the company chooses an <strong>action</strong> <InlineMath math="a_t" /> (an intervention it can take), the environment returns a <strong>reward</strong> <InlineMath math="r_t" /> (a scalar feedback signal encoding how good that outcome was under the company's objective), and the company receives an <strong>observation</strong> <InlineMath math="o_t" /> (a noisy, partial measurement generated from the hidden state). Market dynamics specify how actions change states <InlineMath math="P(s_{t+1} \mid s_t, a_t)" /> and how states generate observations <InlineMath math="P(o_t \mid s_t)" />, so the company maintains a belief over states and selects actions to maximize expected cumulative reward.
+            A SaaS business is a <strong>loop</strong>. You do something, watch what happens, learn, repeat. The catch: you never see the world directly. There's some true situation out there—call it the <strong>state</strong> <InlineMath math="s" />—but all you get are noisy readings: clicks, signups, churn numbers, angry emails. Those are <strong>observations</strong> <InlineMath math="o" />. You pick an <strong>action</strong> <InlineMath math="a" /> (change a price, run a campaign), and the world hands back a <strong>reward</strong> <InlineMath math="r" /> (revenue went up, or it didn't). Your job: figure out what's actually going on from the readings you get, then choose actions that make the score go up over time.
           </p>
 
           {/* Control Loop Diagram */}
@@ -390,9 +390,6 @@ export function SystemOverview() {
             </div>
           </div>
 
-          <p>
-            "The market" is just the external environment of customers, competitors, channels, budgets, and constraints, and you never touch it directly. You only ever make contact through observations (instrument readings like impressions, clicks, leads, demos, churn, qualitative feedback, competitor signals) and rewards (whatever you treat as success: profit, ARR, NRR, LTV, retention, or a shaped proxy). Everything else is inference: hidden states like "true demand," "trust," "willingness to pay," and "competitive pressure" are latent variables you hypothesize to explain your observations and rewards; actions are your experiments; and control is choosing actions that improve expected reward given what you can actually measure.
-          </p>
         </div>
       </div>
 
