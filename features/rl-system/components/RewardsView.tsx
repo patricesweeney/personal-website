@@ -39,7 +39,7 @@ export function RewardsView() {
           </p>
 
           <p>
-            ARPA itself decomposes into price <InlineMath math="p" /> and volume <InlineMath math="v(p)" />, where <InlineMath math="v(p)" /> is a price response function. NRR decomposes into a survival function <InlineMath math="s_k" /> for overall retention, and processes for expansion <InlineMath math="e_k" /> and contraction <InlineMath math="c_k" />:
+            <InlineMath math="\mathrm{ARPA}" /> itself decomposes into price <InlineMath math="p" /> and volume <InlineMath math="v(p)" />, where <InlineMath math="v(p)" /> is a price response function. <InlineMath math="\mathrm{NRR}" /> decomposes into a survival function <InlineMath math="s_k" /> for overall retention, and processes for expansion <InlineMath math="e_k" /> and contraction <InlineMath math="c_k" />:
           </p>
           <BlockMath math="\mathrm{CLV}(\pi) = \sum_{t=0}^{\infty} \gamma^t \, p(\pi) \, v(p(\pi)) \left( \prod_{k=1}^{t} s_k(\pi) \right) \left( \prod_{k=1}^{t} e_k(\pi) \right) \left( \prod_{k=1}^{t} c_k(\pi) \right)" />
 
