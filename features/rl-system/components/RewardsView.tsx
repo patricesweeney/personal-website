@@ -16,7 +16,11 @@ export function RewardsView() {
           <p>
             For early-stage SaaS, free cash flow is often negative, noisy, and lagging, so a workable proxy is <strong>customer equity</strong>,<sup><a href="#ref-3" className="cite">3</a></sup> expected discounted revenue from the present and future customer base. Accordingly, take revenue as the reward signal <InlineMath math="r_t" />. Therefore, a SaaS startup's policy objective is:
           </p>
-          <BlockMath math="\pi^* \in \arg\max_{\pi}\ \mathbb{E}\!\left[\sum_{t=0}^{\infty}\gamma^{t} r_t \right], \qquad \gamma\in(0,1)" />
+          <BlockMath math="\pi^* \in \arg\max_{\pi}\ \mathrm{CE}(\pi), \qquad \gamma\in(0,1)" />
+          <p>
+            where
+          </p>
+          <BlockMath math="\mathrm{CE}(\pi) = \mathbb{E}_\pi\!\left[\sum_{t=0}^{\infty}\gamma^{t} r_t \right]" />
           <p>
             Here <InlineMath math="\pi" /> is the company's policy and <InlineMath math="\gamma" /> is its discount factor (hurdle rate/WACC, or equivalently an effective risk preference).
           </p>
@@ -24,7 +28,7 @@ export function RewardsView() {
           <p>
             Customer equity can in turn be expressed as the sum of customer lifetime values (CLVs) across present customers <InlineMath math="i \in N" /> and future customers <InlineMath math="i \in M" />:
           </p>
-          <BlockMath math="\mathrm{CE} = \sum_{i \in N} \mathrm{CLV}_i + \sum_{i \in M} \mathrm{CLV}_i" />
+          <BlockMath math="\mathrm{CE}(\pi) = \sum_{i \in N} \mathrm{CLV}_i(\pi) + \sum_{i \in M} \mathrm{CLV}_i(\pi)" />
 
           <p>
             The <strong>state-value function</strong> <InlineMath math="V^\pi(s)" /> is the expected discounted future revenue starting from state <InlineMath math="s" /> and then following <InlineMath math="\pi" />:
