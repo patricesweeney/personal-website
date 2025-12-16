@@ -10,19 +10,20 @@ Minimal, clean personal site with sections for About and Projects. Uses the Geis
 
 ## Architecture
 
-Vertical Slice structure:
+Feature-Sliced Design (FSD):
 
 ```
-app/                    # Next.js App Router (routing only)
-features/               # Feature slices (home, projects, tools)
+app/                    # Next.js App Router
+features/               # Feature slices (home, projects)
   home/
     components/
     index.ts            # Barrel export
   projects/
     components/
     index.ts
-components/ui/          # Shared UI components (Shadcn)
-lib/                    # Shared infrastructure (utils, db clients)
+shared/                 # Cross-cutting reusable code
+  ui/                   # Design system components
+  lib/                  # Utilities (cn helper, etc.)
 ```
 
 ## Customize
