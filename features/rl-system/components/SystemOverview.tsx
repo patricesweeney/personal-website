@@ -305,7 +305,7 @@ export function SystemOverview() {
           </div>
 
           <p>
-            In a market framing, "the market" is just the external environment of customers, competitors, channels, budgets, and constraints, and you never touch it directly. You only ever make contact through observations (instrument readings like impressions, clicks, leads, demos, churn, qualitative feedback, competitor signals) and rewards (whatever you treat as success: profit, ARR, NRR, LTV, retention, or a shaped proxy). Everything else is inference: hidden states like "true demand," "trust," "willingness to pay," and "competitive pressure" are latent variables you hypothesize to explain your observations and rewards; actions are your experiments; and control is choosing actions that improve expected reward given what you can actually measure.
+            "The market" is just the external environment of customers, competitors, channels, budgets, and constraints, and you never touch it directly. You only ever make contact through observations (instrument readings like impressions, clicks, leads, demos, churn, qualitative feedback, competitor signals) and rewards (whatever you treat as success: profit, ARR, NRR, LTV, retention, or a shaped proxy). Everything else is inference: hidden states like "true demand," "trust," "willingness to pay," and "competitive pressure" are latent variables you hypothesize to explain your observations and rewards; actions are your experiments; and control is choosing actions that improve expected reward given what you can actually measure.
           </p>
         </div>
       </div>
