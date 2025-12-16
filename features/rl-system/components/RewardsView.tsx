@@ -33,9 +33,9 @@ export function RewardsView() {
           <p>
             where, for a given customer, CLV under policy <InlineMath math="\pi" /> is:
           </p>
-          <BlockMath math="\mathrm{CLV}(\pi) = \mathrm{ARPA}_0(\pi) + \sum_{t=1}^{\infty} \left( \prod_{k=1}^{t} \gamma_k \, \mathrm{NRR}_k(\pi) \right) \mathrm{ARPA}_0(\pi)" />
+          <BlockMath math="\mathrm{CLV}(\pi) = \mathrm{ARPA}_0(\pi) + \sum_{t=1}^{\infty} \gamma^t \left( \prod_{k=1}^{t} \mathrm{NRR}_k(\pi) \right) \mathrm{ARPA}_0(\pi)" />
           <p>
-            Here <InlineMath math="\mathrm{ARPA}_0(\pi)" /> is initial revenue, <InlineMath math="\mathrm{NRR}_k(\pi)" /> is net revenue retention in period <InlineMath math="k" />, and <InlineMath math="\gamma_k" /> is the per-period discount factor. Each future period's contribution is initial revenue scaled by the cumulative product of discounting and retention.
+            Here <InlineMath math="\mathrm{ARPA}_0(\pi)" /> is initial revenue and <InlineMath math="\mathrm{NRR}_k(\pi)" /> is net revenue retention in period <InlineMath math="k" />. Each future period's contribution is initial revenue scaled by discounting and the cumulative product of retention.
           </p>
 
           <p>
