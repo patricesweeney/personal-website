@@ -31,11 +31,11 @@ export function RewardsView() {
           <BlockMath math="\mathrm{CE}(\pi) = \sum_{i \in N} \mathrm{CLV}_i(\pi) + \sum_{i \in M} \mathrm{CLV}_i(\pi)" />
 
           <p>
-            To a first approximation, individual CLV under policy <InlineMath math="\pi" /> is:
+            where individual CLV under policy <InlineMath math="\pi" /> is:
           </p>
-          <BlockMath math="\mathrm{CLV}_i(\pi) = \frac{\mathrm{ARPA}_{i,0}(\pi) \cdot \gamma \, \mathrm{NRR}_i(\pi)}{1 - \gamma \, \mathrm{NRR}_i(\pi)}" />
+          <BlockMath math="\mathrm{CLV}_i(\pi) = \sum_{t=0}^{\infty} \gamma^t \, \mathrm{ARPA}_{i,0}(\pi) \prod_{k=1}^{t} \mathrm{NRR}_{i,k}(\pi), \qquad \prod_{k=1}^{0}(\cdot) = 1" />
           <p>
-            This assumes constant per-customer revenue growth rate <InlineMath math="\mathrm{NRR}_i(\pi)" /> (net revenue retention) and initial average revenue <InlineMath math="\mathrm{ARPA}_{i,0}(\pi)" /> under the policy. The formula is a geometric series that converges when <InlineMath math="\gamma \, \mathrm{NRR}_i(\pi) < 1" />—i.e., the product of the discount factor and retention rate must be less than one, which holds whenever the firm's hurdle rate exceeds net revenue growth.
+            Here <InlineMath math="\mathrm{ARPA}_{i,0}(\pi)" /> is initial revenue from customer <InlineMath math="i" /> and <InlineMath math="\mathrm{NRR}_{i,k}(\pi)" /> is the net revenue retention in period <InlineMath math="k" />. The product accumulates retention over time: revenue at <InlineMath math="t" /> is initial revenue scaled by all intervening retention rates.
           </p>
 
           <p>
