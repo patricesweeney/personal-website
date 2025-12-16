@@ -31,11 +31,11 @@ export function RewardsView() {
           <BlockMath math="\mathrm{CE}(\pi) = \sum_{i \in N} \mathrm{CLV}_i(\pi) + \sum_{i \in M} \mathrm{CLV}_i(\pi)" />
 
           <p>
-            where individual CLV under policy <InlineMath math="\pi" /> is:
+            where, for a given customer, CLV under policy <InlineMath math="\pi" /> is:
           </p>
-          <BlockMath math="\mathrm{CLV}_i(\pi) = \mathrm{ARPA}_{i,0}(\pi) + \sum_{t=1}^{\infty} \left( \prod_{k=1}^{t} \gamma_k \, \mathrm{NRR}_{i,k}(\pi) \right) \mathrm{ARPA}_{i,0}(\pi)" />
+          <BlockMath math="\mathrm{CLV}(\pi) = \mathrm{ARPA}_0(\pi) + \sum_{t=1}^{\infty} \left( \prod_{k=1}^{t} \gamma_k \, \mathrm{NRR}_k(\pi) \right) \mathrm{ARPA}_0(\pi)" />
           <p>
-            Here <InlineMath math="\mathrm{ARPA}_{i,0}(\pi)" /> is initial revenue from customer <InlineMath math="i" />, <InlineMath math="\mathrm{NRR}_{i,k}(\pi)" /> is net revenue retention in period <InlineMath math="k" />, and <InlineMath math="\gamma_k" /> is the per-period discount factor. Each future period's contribution is initial revenue scaled by the cumulative product of discounting and retention.
+            Here <InlineMath math="\mathrm{ARPA}_0(\pi)" /> is initial revenue, <InlineMath math="\mathrm{NRR}_k(\pi)" /> is net revenue retention in period <InlineMath math="k" />, and <InlineMath math="\gamma_k" /> is the per-period discount factor. Each future period's contribution is initial revenue scaled by the cumulative product of discounting and retention.
           </p>
 
           <p>
