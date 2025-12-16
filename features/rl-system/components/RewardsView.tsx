@@ -14,7 +14,7 @@ export function RewardsView() {
           </p>
 
           <p>
-            This objective decomposes into maximizing return on invested capital (ROIC) and maximizing growth of the invested capital base. Under standard SaaS conditions this is well-approximated by revenue growth, so revenue is taken as the reward signal and denoted <InlineMath math="r" />. The startup industry typically collapses the objective to revenue and ignores ROIC.
+            This objective decomposes into maximizing return on invested capital (ROIC) and maximizing growth of the invested capital base. Under standard SaaS conditions this is well-approximated by revenue growth, so revenue is taken as the reward signal and denoted <InlineMath math="r" />.
           </p>
 
           <p>
