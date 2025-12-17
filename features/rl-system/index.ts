@@ -9,4 +9,5 @@ export { RevenueDecomposition } from "./components/RevenueDecomposition";
 export { ValueFunctionVisual } from "./components/ValueFunctionVisual";
 export { CausalMediationDemo } from "./components/CausalMediationDemo";
 export { FirmBoundaryDemo } from "./components/FirmBoundaryDemo";
+export { BayesianTestingDemo } from "./components/BayesianTestingDemo";
 

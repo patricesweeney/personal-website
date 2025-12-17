@@ -20,12 +20,12 @@ import {
   LucideIcon,
 } from "lucide-react";
 
-type Advantage = "high" | "mid" | "low";
+type IdentificationRegime = "randomized" | "quasi" | "targeted";
 
 interface Item {
   label: string;
   description: string;
-  advantage: Advantage;
+  identification: IdentificationRegime;
 }
 
 interface Subcategory {
@@ -47,50 +47,50 @@ const categories: Category[] = [
         name: "Features",
         icon: Blocks,
         items: [
-          { label: "Build", description: "new features, workflows, modules", advantage: "mid" },
-          { label: "Remove", description: "deprecations, simplifications, unbundling", advantage: "high" },
-          { label: "Recompose", description: "bundling inside product, default flows, opinionated templates", advantage: "high" },
+          { label: "Build", description: "new features, workflows, modules", identification: "quasi" },
+          { label: "Remove", description: "deprecations, simplifications, unbundling", identification: "quasi" },
+          { label: "Recompose", description: "bundling inside product, default flows, opinionated templates", identification: "quasi" },
         ],
       },
       {
         name: "User experience",
         icon: Sparkles,
         items: [
-          { label: "Improve onboarding", description: "guided setup, checklists, tours, templates, sample data", advantage: "high" },
-          { label: "Fix information architecture", description: "navigation, labels, depth, global search/command palette", advantage: "mid" },
-          { label: "Simplify core flows", description: "remove steps, obvious primary actions, defaults, bulk edit", advantage: "high" },
-          { label: "Improve affordances and feedback", description: "empty states, inline validation, progress indicators, optimistic UI", advantage: "mid" },
-          { label: "Reduce cognitive load", description: "progressive disclosure, templates/presets, standardized patterns", advantage: "mid" },
+          { label: "Improve onboarding", description: "guided setup, checklists, tours, templates, sample data", identification: "randomized" },
+          { label: "Fix information architecture", description: "navigation, labels, depth, global search/command palette", identification: "quasi" },
+          { label: "Simplify core flows", description: "remove steps, obvious primary actions, defaults, bulk edit", identification: "randomized" },
+          { label: "Improve affordances and feedback", description: "empty states, inline validation, progress indicators, optimistic UI", identification: "randomized" },
+          { label: "Reduce cognitive load", description: "progressive disclosure, templates/presets, standardized patterns", identification: "randomized" },
         ],
       },
       {
         name: "Reliability",
         icon: Activity,
         items: [
-          { label: "Improve availability", description: "uptime, outage minutes, error-rate, successful request ratio", advantage: "mid" },
-          { label: "Improve resilience and recovery", description: "incident frequency, blast radius, MTTR, rollback quality, graceful degradation", advantage: "mid" },
-          { label: "Improve performance", description: "latency (p95/p99), throughput, tail behavior under load, rate-limit behavior", advantage: "mid" },
-          { label: "Improve correctness and integrity", description: "data accuracy, sync correctness, consistency, duplication/loss, idempotency", advantage: "high" },
-          { label: "Improve durability and continuity", description: "backups, restore tests, disaster recovery, RPO/RTO", advantage: "mid" },
+          { label: "Improve availability", description: "uptime, outage minutes, error-rate, successful request ratio", identification: "quasi" },
+          { label: "Improve resilience and recovery", description: "incident frequency, blast radius, MTTR, rollback quality, graceful degradation", identification: "quasi" },
+          { label: "Improve performance", description: "latency (p95/p99), throughput, tail behavior under load, rate-limit behavior", identification: "quasi" },
+          { label: "Improve correctness and integrity", description: "data accuracy, sync correctness, consistency, duplication/loss, idempotency", identification: "quasi" },
+          { label: "Improve durability and continuity", description: "backups, restore tests, disaster recovery, RPO/RTO", identification: "quasi" },
         ],
       },
       {
         name: "Trust & security",
         icon: Lock,
         items: [
-          { label: "Add security controls", description: "SSO, MFA, RBAC, audit logs", advantage: "mid" },
-          { label: "Publish compliance certifications", description: "SOC2, ISO, HIPAA badges, data residency options", advantage: "high" },
-          { label: "Implement privacy controls", description: "retention, deletion, consent controls", advantage: "mid" },
+          { label: "Add security controls", description: "SSO, MFA, RBAC, audit logs", identification: "quasi" },
+          { label: "Publish compliance certifications", description: "SOC2, ISO, HIPAA badges, data residency options", identification: "quasi" },
+          { label: "Implement privacy controls", description: "retention, deletion, consent controls", identification: "quasi" },
         ],
       },
       {
         name: "Integrations & extensibility",
         icon: Plug,
         items: [
-          { label: "Build APIs/SDKs", description: "endpoints, rate limits, auth", advantage: "mid" },
-          { label: "Build connectors", description: "warehouse, CRM, billing, identity", advantage: "high" },
-          { label: "Expand marketplace surface", description: "app listings, install paths", advantage: "mid" },
-          { label: "Enable migration", description: "import/export, mapping, backfills", advantage: "high" },
+          { label: "Build APIs/SDKs", description: "endpoints, rate limits, auth", identification: "quasi" },
+          { label: "Build connectors", description: "warehouse, CRM, billing, identity", identification: "quasi" },
+          { label: "Expand marketplace surface", description: "app listings, install paths", identification: "quasi" },
+          { label: "Enable migration", description: "import/export, mapping, backfills", identification: "quasi" },
         ],
       },
     ],
@@ -102,71 +102,71 @@ const categories: Category[] = [
         name: "Package structure",
         icon: Package,
         items: [
-          { label: "Add/remove packages", description: "tiers, editions, SKUs", advantage: "mid" },
-          { label: "Add/remove base platform", description: "core offering, platform fee", advantage: "mid" },
-          { label: "Add/remove add-ons", description: "modules, feature packs, premium features", advantage: "mid" },
-          { label: "Add/remove GBB constraint", description: "good/better/best fencing, upgrade paths", advantage: "high" },
+          { label: "Add/remove packages", description: "tiers, editions, SKUs", identification: "quasi" },
+          { label: "Add/remove base platform", description: "core offering, platform fee", identification: "quasi" },
+          { label: "Add/remove add-ons", description: "modules, feature packs, premium features", identification: "quasi" },
+          { label: "Add/remove GBB constraint", description: "good/better/best fencing, upgrade paths", identification: "quasi" },
         ],
       },
       {
         name: "Product configuration",
         icon: Blocks,
         items: [
-          { label: "Move feature up/down", description: "reposition in tier hierarchy", advantage: "high" },
-          { label: "Add/remove package from platform", description: "bundle composition", advantage: "mid" },
-          { label: "Add/remove feature as add-on", description: "unbundle or rebundle capabilities", advantage: "high" },
+          { label: "Move feature up/down", description: "reposition in tier hierarchy", identification: "quasi" },
+          { label: "Add/remove package from platform", description: "bundle composition", identification: "quasi" },
+          { label: "Add/remove feature as add-on", description: "unbundle or rebundle capabilities", identification: "quasi" },
         ],
       },
       {
         name: "Price metric",
         icon: Gauge,
         items: [
-          { label: "Add price metric", description: "seats, usage, outcomes, API calls", advantage: "mid" },
-          { label: "Remove price metric", description: "simplify pricing dimensions", advantage: "high" },
+          { label: "Add price metric", description: "seats, usage, outcomes, API calls", identification: "quasi" },
+          { label: "Remove price metric", description: "simplify pricing dimensions", identification: "quasi" },
         ],
       },
       {
         name: "Price model",
         icon: Activity,
         items: [
-          { label: "Add/remove base fee", description: "platform fee, minimum commit", advantage: "mid" },
-          { label: "Add/remove usage allowance", description: "included units, pooled credits", advantage: "mid" },
-          { label: "Add/remove cap", description: "spend limits, usage ceilings", advantage: "mid" },
-          { label: "Change marginal rate shape", description: "flat, tiered, volume, step-down", advantage: "high" },
+          { label: "Add/remove base fee", description: "platform fee, minimum commit", identification: "quasi" },
+          { label: "Add/remove usage allowance", description: "included units, pooled credits", identification: "quasi" },
+          { label: "Add/remove cap", description: "spend limits, usage ceilings", identification: "quasi" },
+          { label: "Change marginal rate shape", description: "flat, tiered, volume, step-down", identification: "quasi" },
         ],
       },
       {
         name: "Price level",
         icon: DollarSign,
         items: [
-          { label: "Increase price level", description: "raise rates, reduce discounts", advantage: "high" },
-          { label: "Decrease price level", description: "lower rates, increase discounts", advantage: "low" },
+          { label: "Increase price level", description: "raise rates, reduce discounts", identification: "quasi" },
+          { label: "Decrease price level", description: "lower rates, increase discounts", identification: "targeted" },
         ],
       },
       {
         name: "Freemium strategy",
         icon: Sparkles,
         items: [
-          { label: "Add/remove freemium", description: "faux free, perpetual free tier", advantage: "mid" },
-          { label: "Add/remove free trial", description: "time-based, usage-based trials", advantage: "mid" },
+          { label: "Add/remove freemium", description: "faux free, perpetual free tier", identification: "quasi" },
+          { label: "Add/remove free trial", description: "time-based, usage-based trials", identification: "randomized" },
         ],
       },
       {
         name: "Deal mechanics",
         icon: Percent,
         items: [
-          { label: "Offer discounts", description: "volume, term, promo codes, negotiated", advantage: "low" },
-          { label: "Offer credits", description: "usage credits, implementation credits", advantage: "mid" },
-          { label: "Offer guarantees", description: "refund terms, performance guarantees", advantage: "high" },
+          { label: "Offer discounts", description: "volume, term, promo codes, negotiated", identification: "targeted" },
+          { label: "Offer credits", description: "usage credits, implementation credits", identification: "targeted" },
+          { label: "Offer guarantees", description: "refund terms, performance guarantees", identification: "quasi" },
         ],
       },
       {
         name: "Contract structure",
         icon: FileText,
         items: [
-          { label: "Set term length", description: "monthly/annual/multi-year", advantage: "mid" },
-          { label: "Configure billing", description: "upfront, net terms, invoicing, PO support", advantage: "mid" },
-          { label: "Configure renewal", description: "auto-renew, true-ups, ramp schedules", advantage: "high" },
+          { label: "Set term length", description: "monthly/annual/multi-year", identification: "targeted" },
+          { label: "Configure billing", description: "upfront, net terms, invoicing, PO support", identification: "targeted" },
+          { label: "Configure renewal", description: "auto-renew, true-ups, ramp schedules", identification: "targeted" },
         ],
       },
     ],
@@ -178,62 +178,62 @@ const categories: Category[] = [
         name: "Performance marketing",
         icon: Target,
         items: [
-          { label: "Change targeting settings", description: "vertical, region, company size, ICP criteria", advantage: "mid" },
-          { label: "Increase/decrease channel spend", description: "paid ads, outbound, SEO, marketplace listing", advantage: "mid" },
-          { label: "Add/remove partner", description: "resellers, integrators, referral partners", advantage: "mid" },
-          { label: "Improve copy", description: "headlines, CTAs, email subject lines, ad text", advantage: "high" },
-          { label: "Improve creative", description: "images, videos, landing page design", advantage: "mid" },
+          { label: "Change targeting settings", description: "vertical, region, company size, ICP criteria", identification: "quasi" },
+          { label: "Increase/decrease channel spend", description: "paid ads, outbound, SEO, marketplace listing", identification: "quasi" },
+          { label: "Add/remove partner", description: "resellers, integrators, referral partners", identification: "quasi" },
+          { label: "Improve copy", description: "headlines, CTAs, email subject lines, ad text", identification: "randomized" },
+          { label: "Improve creative", description: "images, videos, landing page design", identification: "randomized" },
         ],
       },
       {
         name: "Brand marketing",
         icon: Palette,
         items: [
-          { label: "Change targeting settings", description: "audience, persona, awareness segments", advantage: "mid" },
-          { label: "Increase/decrease channel spend", description: "sponsorships, events, PR, content syndication", advantage: "mid" },
-          { label: "Improve copy", description: "messaging, tone, narrative, taglines", advantage: "high" },
-          { label: "Improve creative", description: "brand visuals, video content, event materials", advantage: "mid" },
+          { label: "Change targeting settings", description: "audience, persona, awareness segments", identification: "quasi" },
+          { label: "Increase/decrease channel spend", description: "sponsorships, events, PR, content syndication", identification: "quasi" },
+          { label: "Improve copy", description: "messaging, tone, narrative, taglines", identification: "randomized" },
+          { label: "Improve creative", description: "brand visuals, video content, event materials", identification: "randomized" },
         ],
       },
       {
         name: "Pre-sale lifecycle",
         icon: Bell,
         items: [
-          { label: "Send lead nurture", description: "drip sequences, newsletters, educational emails", advantage: "high" },
-          { label: "Offer lead magnets", description: "guides, templates, webinars, free tools", advantage: "high" },
-          { label: "Run retargeting", description: "abandoned cart, site visitors, engaged leads", advantage: "mid" },
+          { label: "Send lead nurture", description: "drip sequences, newsletters, educational emails", identification: "randomized" },
+          { label: "Offer lead magnets", description: "guides, templates, webinars, free tools", identification: "randomized" },
+          { label: "Run retargeting", description: "abandoned cart, site visitors, engaged leads", identification: "randomized" },
         ],
       },
       {
         name: "Sales motion",
         icon: Handshake,
         items: [
-          { label: "Send outreach", description: "cold emails, sequences, ABM touches", advantage: "mid" },
-          { label: "Qualify leads", description: "scoring, BANT/MEDDIC, disqualification", advantage: "mid" },
-          { label: "Run demos", description: "discovery calls, product walkthroughs", advantage: "mid" },
-          { label: "Manage trials/POCs", description: "setup, check-ins, success criteria", advantage: "mid" },
-          { label: "Deliver proposals", description: "quotes, contracts, procurement docs, security reviews", advantage: "mid" },
+          { label: "Send outreach", description: "cold emails, sequences, ABM touches", identification: "targeted" },
+          { label: "Qualify leads", description: "scoring, BANT/MEDDIC, disqualification", identification: "targeted" },
+          { label: "Run demos", description: "discovery calls, product walkthroughs", identification: "targeted" },
+          { label: "Manage trials/POCs", description: "setup, check-ins, success criteria", identification: "targeted" },
+          { label: "Deliver proposals", description: "quotes, contracts, procurement docs, security reviews", identification: "targeted" },
         ],
       },
       {
         name: "Post-sale lifecycle",
         icon: Bell,
         items: [
-          { label: "Send activation nudges", description: "in-product prompts, email, push", advantage: "high" },
-          { label: "Send expansion prompts", description: "cross-sell, upsell, usage-based prompts", advantage: "high" },
-          { label: "Run retention motions", description: "renewal sequences, save offers, winback", advantage: "high" },
+          { label: "Send activation nudges", description: "in-product prompts, email, push", identification: "randomized" },
+          { label: "Send expansion prompts", description: "cross-sell, upsell, usage-based prompts", identification: "randomized" },
+          { label: "Run retention motions", description: "renewal sequences, save offers, winback", identification: "targeted" },
         ],
       },
       {
         name: "Customer success",
         icon: HeartHandshake,
         items: [
-          { label: "Deliver implementation", description: "kickoff calls, configuration, migration, training sessions", advantage: "mid" },
-          { label: "Run business reviews", description: "QBRs, success plans, usage reports, value assessments", advantage: "high" },
-          { label: "Handle support tickets", description: "triage, escalation, incident comms, postmortems, credits", advantage: "mid" },
-          { label: "Send renewal communications", description: "renewal notices, pricing updates, contract terms", advantage: "mid" },
-          { label: "Pitch expansion", description: "upsell proposals, seat additions, new use cases", advantage: "high" },
-          { label: "Request references", description: "case study interviews, review requests, referral asks", advantage: "high" },
+          { label: "Deliver implementation", description: "kickoff calls, configuration, migration, training sessions", identification: "targeted" },
+          { label: "Run business reviews", description: "QBRs, success plans, usage reports, value assessments", identification: "targeted" },
+          { label: "Handle support tickets", description: "triage, escalation, incident comms, postmortems, credits", identification: "targeted" },
+          { label: "Send renewal communications", description: "renewal notices, pricing updates, contract terms", identification: "quasi" },
+          { label: "Pitch expansion", description: "upsell proposals, seat additions, new use cases", identification: "targeted" },
+          { label: "Request references", description: "case study interviews, review requests, referral asks", identification: "targeted" },
         ],
       },
     ],
@@ -272,7 +272,7 @@ export function ActionsTree() {
                       <div className="items-inner">
                         {sub.items.map((item) => (
                           <div key={item.label} className="item" title={item.description}>
-                            <span className={`dot dot-${item.advantage}`} />
+                            <span className={`dot dot-${item.identification}`} />
                             <div className="item-content">
                               <span className="item-label">{item.label}</span>
                               <span className="item-desc">{item.description}</span>
@@ -287,6 +287,20 @@ export function ActionsTree() {
             </div>
           </div>
         ))}
+      </div>
+      <div className="legend">
+        <div className="legend-item">
+          <span className="dot dot-randomized" />
+          <span>Randomized</span>
+        </div>
+        <div className="legend-item">
+          <span className="dot dot-quasi" />
+          <span>Quasi-random</span>
+        </div>
+        <div className="legend-item">
+          <span className="dot dot-targeted" />
+          <span>Targeted</span>
+        </div>
       </div>
 
       <style jsx>{`
@@ -400,16 +414,37 @@ export function ActionsTree() {
           margin-top: 5px;
         }
 
-        .dot-high {
+        .dot-randomized {
           background: #22c55e;
         }
 
-        .dot-mid {
+        .dot-quasi {
           background: #eab308;
         }
 
-        .dot-low {
+        .dot-targeted {
           background: #ef4444;
+        }
+
+        .legend {
+          display: flex;
+          gap: 16px;
+          justify-content: flex-end;
+          margin-top: 20px;
+          padding-top: 16px;
+          border-top: 1px solid var(--border);
+        }
+
+        .legend-item {
+          display: flex;
+          align-items: center;
+          gap: 6px;
+          font-size: 11px;
+          color: var(--muted);
+        }
+
+        .legend-item .dot {
+          margin-top: 0;
         }
 
         .item-content {

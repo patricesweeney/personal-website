@@ -14,6 +14,11 @@ const ActionsTree = dynamic(
   { ssr: false }
 );
 
+const BayesianTestingDemo = dynamic(
+  () => import("./BayesianTestingDemo").then((mod) => mod.BayesianTestingDemo),
+  { ssr: false }
+);
+
 
 export function ActionsView() {
   return (
@@ -41,171 +46,79 @@ export function ActionsView() {
           </p>
           <ActionsTree />
 
-          <h3 id="causal-inference">Causal inference</h3>
+          <h3 id="identification">Identification</h3>
           <p>
-            Causal inference asks: what happens if we <em>intervene</em>? This differs from prediction. Observing that customers who use feature X have higher retention doesn't mean enabling X for everyone will improve retention—maybe engaged customers both use X and stick around.
+            <strong>Identification</strong> is the problem of determining whether—and under what assumptions—causal effects can be recovered from data. In SaaS, actions are rarely randomized: discounts go to at-risk customers, features ship to power users, sales reps prioritize high-value leads. The question is whether you can still learn what <em>would have happened</em> under different actions.
           </p>
-          <p>
-            <strong>Static setting.</strong> Pearl's structural causal models<sup><a href="#ref-1" className="cite">1</a></sup> formalize this with the <InlineMath math="\mathrm{do}" />-operator. The causal effect of action <InlineMath math="a" /> is <InlineMath math="\mathbb{E}[Y \mid \mathrm{do}(A=a)]" />—the expected outcome when we <em>set</em> <InlineMath math="A=a" />, not merely observe it. Under the right assumptions (no unmeasured confounding, positivity), this equals <InlineMath math="\mathbb{E}[Y(a)]" /> in potential outcomes notation.
-          </p>
-          <p>
-            <strong>Dynamic setting.</strong> SaaS involves sequences of actions over time: onboarding flows, pricing changes, feature releases. Robins' g-methods<sup><a href="#ref-2" className="cite">2</a></sup> extend causal inference to these sequential settings. The <strong>g-formula</strong> identifies the effect of a treatment <em>strategy</em>—a sequence of actions <InlineMath math="\bar{a} = (a_0, a_1, \ldots, a_T)" />—by iteratively adjusting for time-varying confounders:
-          </p>
-          <BlockMath math="\mathbb{E}[Y(\bar{a})] = \sum_{\bar{l}} \mathbb{E}[Y \mid \bar{A}=\bar{a}, \bar{L}=\bar{l}] \prod_t P(L_t \mid \bar{A}_{t-1}, \bar{L}_{t-1})" />
-          <p>
-            This is the foundation for understanding RL through a causal lens: the value function <InlineMath math="V^\pi(s)" /> is the expected outcome under policy <InlineMath math="\pi" />, which is exactly a g-formula computation. The Q-value <InlineMath math="Q^\pi(s,a)" /> asks what happens if we intervene with action <InlineMath math="a" /> now, then follow <InlineMath math="\pi" /> thereafter.
-          </p>
+          <ol className="identification-list">
+            <li>
+              <strong>Randomized assignment.</strong> A/B tests, holdouts, cluster randomization. Identification by design.
+            </li>
+            <li>
+              <strong>Quasi-random assignment.</strong> Rollouts, thresholds, policy switches, cohort cutovers, DiD/RD style variation. Identification by design assumptions.
+            </li>
+            <li>
+              <strong>Targeted assignment.</strong> Sales, CS, pricing discretion, support prioritization, save offers, human or heuristic targeting. Identification by modeling plus strong ignorability/overlap assumptions or instruments.
+            </li>
+          </ol>
 
-          <div className="terminology-table">
-            <table>
-              <thead>
-                <tr>
-                  <th>Concept</th>
-                  <th>Computer Science</th>
-                  <th>Economics</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td>Expected outcome from a state</td>
-                  <td>Value function <InlineMath math="V(s)" /></td>
-                  <td>Conditional mean <InlineMath math="\mathbb{E}[Y \mid X=x]" /></td>
-                </tr>
-                <tr>
-                  <td>Expected outcome from taking action</td>
-                  <td>Q-value <InlineMath math="Q(s,a)" /></td>
-                  <td>Potential outcome <InlineMath math="Y(a)" />, CATE</td>
-                </tr>
-                <tr>
-                  <td>Improvement over baseline</td>
-                  <td>Advantage <InlineMath math="A(s,a)" /></td>
-                  <td>Treatment effect <InlineMath math="\tau" />, uplift</td>
-                </tr>
-                <tr>
-                  <td>Decision rule</td>
-                  <td>Policy <InlineMath math="\pi(a|s)" /></td>
-                  <td>Decision rule, targeting rule</td>
-                </tr>
-                <tr>
-                  <td>Learning from logged data</td>
-                  <td>Off-policy evaluation<sup><a href="#ref-3" className="cite">3</a></sup></td>
-                  <td>Observational causal inference<sup><a href="#ref-4" className="cite">4</a></sup></td>
-                </tr>
-                <tr>
-                  <td>Action selection bias</td>
-                  <td>Behavior policy mismatch<sup><a href="#ref-3" className="cite">3</a></sup></td>
-                  <td>Selection on observables/unobservables<sup><a href="#ref-5" className="cite">5</a></sup></td>
-                </tr>
-                <tr>
-                  <td>Correcting for selection</td>
-                  <td>Importance sampling<sup><a href="#ref-6" className="cite">6</a></sup>, doubly robust<sup><a href="#ref-7" className="cite">7</a></sup></td>
-                  <td>IPW<sup><a href="#ref-8" className="cite">8</a></sup>, AIPW<sup><a href="#ref-9" className="cite">9</a></sup></td>
-                </tr>
-                <tr>
-                  <td>Identification strategies</td>
-                  <td>Causal graph identifiability<sup><a href="#ref-10" className="cite">10</a></sup></td>
-                  <td>IV<sup><a href="#ref-11" className="cite">11</a></sup>, RDD<sup><a href="#ref-12" className="cite">12</a></sup>, DiD<sup><a href="#ref-13" className="cite">13</a></sup></td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
+          <h3 id="randomized-assignment">Randomized assignment</h3>
 
-          <hr className="references-divider" />
+          <p>
+            <strong>Generalized Bayes</strong> updates beliefs by exponentiating negative loss. After observing action <InlineMath math="a_t" /> and reward <InlineMath math="r_t" />, beliefs update as:
+          </p>
+          <BlockMath math="p_{t+1}(\theta) \propto p_t(\theta) \, \exp\bigl(-\eta \, \ell(\theta; a_t, r_t)\bigr)" />
+          <p>
+            where <InlineMath math="\eta > 0" /> controls how strongly the data influences beliefs—higher <InlineMath math="\eta" /> means more trust in data, lower <InlineMath math="\eta" /> means more conservatism. After <InlineMath math="t" /> observations <InlineMath math="\mathcal{D}_t = \{(a_s, r_s)\}_{s=1}^t" />, this accumulates to:
+          </p>
+          <BlockMath math="p_t(\theta) \propto p_0(\theta) \, \exp\left(-\eta \sum_{s=1}^t \ell(\theta; a_s, r_s)\right)" />
 
-          <div className="references">
-            <p className="meta">References</p>
-            <ol>
-              <li id="ref-1"><sup>1</sup> Pearl, J. (2009). <em>Causality: Models, reasoning, and inference</em> (2nd ed.). Cambridge University Press.</li>
-              <li id="ref-2"><sup>2</sup> Robins, J. M. (1986). A new approach to causal inference in mortality studies with a sustained exposure period. <em>Mathematical Modelling</em>, 7(9–12), 1393–1512.</li>
-              <li id="ref-3"><sup>3</sup> Precup, D., Sutton, R. S., & Singh, S. (2000). Eligibility traces for off-policy policy evaluation. <em>Proceedings of the 17th International Conference on Machine Learning</em>, 759–766.</li>
-              <li id="ref-4"><sup>4</sup> Rosenbaum, P. R., & Rubin, D. B. (1983). The central role of the propensity score in observational studies for causal effects. <em>Biometrika</em>, 70(1), 41–55.</li>
-              <li id="ref-5"><sup>5</sup> Heckman, J. J. (1979). Sample selection bias as a specification error. <em>Econometrica</em>, 47(1), 153–161.</li>
-              <li id="ref-6"><sup>6</sup> Kahn, H., & Marshall, A. W. (1953). Methods of reducing sample size in Monte Carlo computations. <em>Journal of the Operations Research Society of America</em>, 1(5), 263–278.</li>
-              <li id="ref-7"><sup>7</sup> Dudík, M., Langford, J., & Li, L. (2011). Doubly robust policy evaluation and learning. <em>Proceedings of the 28th International Conference on Machine Learning</em>, 1097–1104.</li>
-              <li id="ref-8"><sup>8</sup> Horvitz, D. G., & Thompson, D. J. (1952). A generalization of sampling without replacement from a finite universe. <em>Journal of the American Statistical Association</em>, 47(260), 663–685.</li>
-              <li id="ref-9"><sup>9</sup> Robins, J. M., Rotnitzky, A., & Zhao, L. P. (1994). Estimation of regression coefficients when some regressors are not always observed. <em>Journal of the American Statistical Association</em>, 89(427), 846–866.</li>
-              <li id="ref-10"><sup>10</sup> Shpitser, I., & Pearl, J. (2006). Identification of joint interventional distributions in recursive semi-Markovian causal models. <em>Proceedings of the 21st National Conference on Artificial Intelligence</em>, 1219–1226.</li>
-              <li id="ref-11"><sup>11</sup> Angrist, J. D., Imbens, G. W., & Rubin, D. B. (1996). Identification of causal effects using instrumental variables. <em>Journal of the American Statistical Association</em>, 91(434), 444–455.</li>
-              <li id="ref-12"><sup>12</sup> Imbens, G. W., & Lemieux, T. (2008). Regression discontinuity designs: A guide to practice. <em>Journal of Econometrics</em>, 142(2), 615–635.</li>
-              <li id="ref-13"><sup>13</sup> Bertrand, M., Duflo, E., & Mullainathan, S. (2004). How much should we trust differences-in-differences estimates? <em>Quarterly Journal of Economics</em>, 119(1), 249–275.</li>
-            </ol>
-          </div>
+          <p>
+            This update can be understood variationally: the posterior <InlineMath math="p_t" /> minimizes the expected loss plus a KL penalty for complexity:
+          </p>
+          <BlockMath math="p_t = \arg\min_p \left\{ \underbrace{\mathbb{E}_p\left[\sum_{s=1}^t \ell(\theta; a_s, r_s)\right]}_{\text{accuracy}} + \underbrace{\frac{1}{\eta} D_{\mathrm{KL}}[p(\theta) \| p_0(\theta)]}_{\text{complexity}} \right\}" />
+
+          <p>
+            For decision-making, actions combine <strong>exploitation</strong> (expected reward) and <strong>exploration</strong> (information gain). The expected reward for arm <InlineMath math="a" /> is the posterior mean:
+          </p>
+          <BlockMath math="\mu_t(a) = \mathbb{E}_{p_t(\theta)}[\theta_a]" />
+
+          <p>
+            The epistemic value (information gain) measures how much pulling arm <InlineMath math="a" /> would teach us about <InlineMath math="\theta" />:
+          </p>
+          <BlockMath math="\mathrm{IG}_t(a) = \mathbb{E}_{r \sim p_t(r|a)} \left[ D_{\mathrm{KL}}[p_t(\theta|r,a) \| p_t(\theta)] \right]" />
+          <p>
+            where <InlineMath math="p_t(\theta|r,a)" /> is the hypothetical posterior if we observed reward <InlineMath math="r" /> from arm <InlineMath math="a" />:
+          </p>
+          <BlockMath math="p_t(\theta|r,a) \propto p_t(\theta) \, \exp\bigl(-\eta \, \ell(\theta; a, r)\bigr)" />
+
+          <p>
+            To compute this, we need the posterior predictive distribution <InlineMath math="p_t(r|a)" /> over possible rewards. Two common choices:
+          </p>
+          <ul>
+            <li><strong>Model-based:</strong> integrate over current beliefs about parameters</li>
+            <li><strong>Loss-induced:</strong> use the loss function as a pseudo-likelihood</li>
+          </ul>
+
+          <p>
+            The decision rule trades off reward and information with exchange rate <InlineMath math="\kappa" /> (how much one nat of information is worth in reward units):
+          </p>
+          <BlockMath math="a_t = \arg\max_a \quad \mu_t(a) + \kappa \, \mathrm{IG}_t(a)" />
+
+          <p>
+            For stochastic policies, add softmax with temperature <InlineMath math="\beta" />:
+          </p>
+          <BlockMath math="P(a_t = a) \propto \exp\bigl(\beta [\mu_t(a) + \kappa \, \mathrm{IG}_t(a)]\bigr)" />
         </div>
       </div>
 
       <style jsx>{`
-        .action-categories {
-          margin: var(--space-3) 0 var(--space-4) var(--space-4);
-          padding: 0;
+        .identification-list {
+          margin: var(--space-4) 0;
+          padding-left: var(--space-5);
         }
-        .action-categories li {
-          margin-bottom: var(--space-2);
-        }
-        .cite {
-          color: var(--muted);
-          text-decoration: none;
-          font-size: 0.75em;
-        }
-        .cite:hover {
-          color: var(--fg);
-          text-decoration: underline;
-        }
-        .terminology-table {
-          margin: var(--space-5) 0;
-          border: 1px solid var(--border);
-          border-radius: 8px;
-          overflow: hidden;
-        }
-        .terminology-table table {
-          width: 100%;
-          border-collapse: collapse;
-          font-size: 14px;
-        }
-        .terminology-table th,
-        .terminology-table td {
-          padding: 12px 16px;
-          text-align: left;
-          border-bottom: 1px solid var(--border);
-        }
-        .terminology-table th {
-          background: var(--bg);
-          font-weight: 600;
-          font-size: 12px;
-          text-transform: uppercase;
-          letter-spacing: 0.5px;
-          color: var(--muted);
-        }
-        .terminology-table tbody tr:last-child td {
-          border-bottom: none;
-        }
-        .terminology-table tbody tr:hover {
-          background: color-mix(in srgb, var(--fg) 2%, transparent);
-        }
-        .terminology-table td:first-child {
-          font-weight: 500;
-          color: var(--fg);
-        }
-        .terminology-table td:not(:first-child) {
-          color: var(--muted);
-          font-family: var(--font-geist-mono), monospace;
-          font-size: 13px;
-        }
-        .references-divider {
-          border: none;
-          border-top: 1px solid var(--border);
-          margin: var(--space-10) 0 var(--space-6) 0;
-        }
-        .references {
-          font-size: var(--font-small);
-        }
-        .references ol {
-          margin: var(--space-3) 0 0 0;
-          padding-left: 0;
-          list-style: none;
-          color: var(--muted);
-        }
-        .references li {
-          margin-bottom: var(--space-2);
+        .identification-list li {
+          margin-bottom: var(--space-3);
         }
       `}</style>
     </section>

@@ -28,13 +28,16 @@ const navItems: NavItem[] = [
       { id: "value-functions", label: "Value functions" },
     ]
   },
-  { 
-    href: "/saas/actions", 
+  {
+    href: "/saas/actions",
     label: "Actions",
     subItems: [
       { id: "crossing-the-boundary", label: "Crossing the boundary" },
       { id: "canonical-actions", label: "Canonical actions" },
-      { id: "causal-inference", label: "Causal inference" },
+      { id: "identification", label: "Identification" },
+      { id: "randomized-assignment", label: "Randomized assignment" },
+      { id: "quasi-random-assignment", label: "" },
+      { id: "targeted-assignment", label: "" },
     ]
   },
   { 
