@@ -15,13 +15,13 @@ export function StatesView() {
             You don't get <strong>states</strong> for free. You get <em>observations</em>: raw, high-dimensional, redundant. A state is a compressed summary that's good enough to act on. If two observations map to the same state, the right action should be the same for both. That's the bar.
           </p>
 
-          <h3>Observations</h3>
+          <h3 id="observations">Observations</h3>
           <p>
             The raw inputs come in three flavors:
           </p>
           <ObservationsMindMap />
 
-          <h3 style={{ marginTop: "var(--space-8)" }}>Representation learning</h3>
+          <h3 id="representation-learning" style={{ marginTop: "var(--space-8)" }}>Representation learning</h3>
           <p>
             The job is to compress observations into states—lower-dimensional summaries that keep what matters and throw away what doesn't. This works because most data has structure: a customer isn't really 10,000 independent event features. Those features are correlated, driven by a few underlying factors like engagement, sophistication, and intent.
           </p>

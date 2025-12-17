@@ -12,6 +12,7 @@ export function ActionsView() {
       <h2 className="section-title" style={{ marginTop: 0 }}>Actions</h2>
       <div className="grid grid-12">
         <div className="span-12">
+          <h3 id="crossing-the-boundary">Crossing the boundary</h3>
           <p>
             An <strong>action</strong> is anything that crosses the boundary between the company and its customers. A feature they use. A price they see. A message they read.
           </p>
@@ -25,12 +26,14 @@ export function ActionsView() {
             The implication: if it doesn't cross the boundary, it doesn't directly affect revenue. Meetings, planning, refactoring—none of it has financial impact on its own. Any value it creates is <em>derived</em> from the actions it eventually enables.
           </p>
 
-          <p style={{ marginTop: "var(--space-6)" }}>
+          <h3 id="canonical-actions">Canonical actions</h3>
+          <p>
             So what counts as an action? Everything a SaaS company does that customers can observe falls into three buckets: <strong>product</strong> (what you build), <strong>pricing</strong> (what you charge), and <strong>promotion</strong> (how you sell it).
           </p>
           <ActionsTree />
 
-          <p style={{ marginTop: "var(--space-6)" }}>
+          <h3 id="identification">Identification</h3>
+          <p>
             For any action, two questions matter. First: what happens if I do this? That's the <strong>Q-value</strong> <InlineMath math="Q^\pi(s,a)" />—the expected future CE from taking action <InlineMath math="a" /> now and then reverting to the usual policy. Second: is that better than what I'd normally do? That's the <strong>advantage</strong> <InlineMath math="A^\pi(s,a) = Q^\pi(s,a) - V^\pi(s)" />.
           </p>
           <p>

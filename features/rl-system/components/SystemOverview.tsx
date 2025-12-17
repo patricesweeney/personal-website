@@ -70,11 +70,21 @@ export function SystemOverview() {
 
   return (
     <section className="section" style={{ paddingTop: "var(--space-6)" }}>
-      <h2 className="section-title" style={{ marginTop: 0 }}>Tl;dr</h2>
+      <h2 className="section-title" style={{ marginTop: 0 }}>Problem</h2>
       <div className="grid grid-12">
         <div className="span-12">
           <p>
-            A SaaS business is a <strong>loop</strong>. You do something, watch what happens, learn, repeat. The catch: you never see the world directly. There's some true situation out there—call it the <strong>state</strong> <InlineMath math="s" />—but all you get are noisy readings: clicks, signups, churn numbers, angry emails. Those are <strong>observations</strong> <InlineMath math="o" />. You pick an <strong>action</strong> <InlineMath math="a" /> (change a price, run a campaign), and the world hands back a <strong>reward</strong> <InlineMath math="r" /> (revenue went up, or it didn't). Your job: figure out what's actually going on from the readings you get, then choose actions that make the score go up over time.
+            A SaaS business is a <strong>loop</strong>:
+          </p>
+          <ol className="loop-steps">
+            <li>You take an <strong>action</strong> <InlineMath math="a" />—change a price, run a campaign, ship a feature.</li>
+            <li>The world hands back <strong>observations</strong> <InlineMath math="o" />—clicks, signups, churn numbers, angry emails.</li>
+            <li>You get a <strong>reward</strong> <InlineMath math="r" />—revenue went up, or it didn't.</li>
+            <li>You update your picture of the <strong>state</strong> <InlineMath math="s" />—what's actually going on out there.</li>
+            <li>You pick your next action. Repeat.</li>
+          </ol>
+          <p>
+            The catch: you never see the state directly. You only get noisy readings, and you have to figure out what's actually going on from what you observe.
           </p>
 
           {/* Control Loop Diagram */}
@@ -133,7 +143,7 @@ export function SystemOverview() {
                   textAnchor="middle"
                   fontSize="14"
                   fontWeight="600"
-                  fill={activeElement === "company" ? "var(--fg)" : "var(--muted)"}
+                  fill="var(--fg)"
                   style={{ pointerEvents: "none", fontFamily: "var(--font-geist-sans), system-ui" }}
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
@@ -169,7 +179,7 @@ export function SystemOverview() {
                   textAnchor="middle"
                   fontSize="14"
                   fontWeight="600"
-                  fill={activeElement === "market" ? "var(--fg)" : "var(--muted)"}
+                  fill="var(--fg)"
                   style={{ pointerEvents: "none", fontFamily: "var(--font-geist-sans), system-ui" }}
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
@@ -202,7 +212,7 @@ export function SystemOverview() {
                   y="45"
                   textAnchor="middle"
                   fontSize="12"
-                  fill={activeElement === "observations" ? "var(--fg)" : "var(--muted)"}
+                  fill="var(--fg)"
                   style={{ pointerEvents: "none", fontFamily: "var(--font-geist-sans), system-ui" }}
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
@@ -235,7 +245,7 @@ export function SystemOverview() {
                   y="75"
                   textAnchor="middle"
                   fontSize="12"
-                  fill={activeElement === "rewards" ? "var(--fg)" : "var(--muted)"}
+                  fill="var(--fg)"
                   style={{ pointerEvents: "none", fontFamily: "var(--font-geist-sans), system-ui" }}
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
@@ -268,7 +278,7 @@ export function SystemOverview() {
                   y="245"
                   textAnchor="middle"
                   fontSize="12"
-                  fill={activeElement === "actions" ? "var(--fg)" : "var(--muted)"}
+                  fill="var(--fg)"
                   style={{ pointerEvents: "none", fontFamily: "var(--font-geist-sans), system-ui" }}
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
@@ -394,6 +404,13 @@ export function SystemOverview() {
       </div>
 
       <style jsx>{`
+        .loop-steps {
+          margin: var(--space-3) 0 var(--space-4) 0;
+          padding-left: var(--space-5);
+        }
+        .loop-steps li {
+          margin-bottom: var(--space-2);
+        }
         .loop-container {
           display: flex;
           flex-direction: column;

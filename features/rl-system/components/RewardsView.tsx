@@ -18,7 +18,7 @@ export function RewardsView() {
             A company wants to maximize how much cash it pulls in over time, discounted for risk and waiting. That number—expected discounted free cash flow—is what the stock market calls enterprise value.<sup><a href="#ref-1" className="cite">1</a></sup>
           </p>
 
-          <h3>Customer equity</h3>
+          <h3 id="customer-equity">Customer equity</h3>
           <p>
             Early-stage SaaS rarely has positive cash flow, so we use a proxy: <strong>customer equity (CE)</strong>,<sup><a href="#ref-2" className="cite">2</a></sup> the present value of all revenue from current and future customers. Revenue becomes our reward signal <InlineMath math="r_t" />. The goal is to find the policy <InlineMath math="\pi" /> that maximizes it:
           </p>
@@ -30,7 +30,7 @@ export function RewardsView() {
 
           <CustomerEquityVisual />
 
-          <h3>Customer lifetime value</h3>
+          <h3 id="customer-lifetime-value">Customer lifetime value</h3>
           <p>
             Customer equity is the sum of individual <strong>customer lifetime values</strong> (CLVs)<sup><a href="#ref-3" className="cite">3</a></sup>—some customers you have now, some you'll acquire later:
           </p>
@@ -57,7 +57,7 @@ export function RewardsView() {
 
           <RevenueDecomposition />
 
-          <h3>Near-decomposability of CLV</h3>
+          <h3 id="near-decomposability-of-clv">Near-decomposability of CLV</h3>
           <p>
             A useful property: this system is <strong>nearly decomposable</strong>.<sup><a href="#ref-5" className="cite">5</a></sup> Take logs:
           </p>
@@ -72,7 +72,7 @@ export function RewardsView() {
             Near-decomposability means these cross-elasticities are small. Price and volume are tightly coupled (large <InlineMath math="|\partial \log v / \partial \log p|" />). But retention, expansion, and contraction depend mostly on post-sale experience—the cross-terms with price are weak. You can optimize subsystems semi-independently: pricing doesn't require a full retention model, retention interventions don't re-solve pricing. The coupling exists, but local optimization gets you most of the way.
           </p>
 
-          <h3>Value functions</h3>
+          <h3 id="value-functions">Value functions</h3>
           <p>
             Customer equity is the goal, but you act one period at a time. To decide what to do, you need to know what future CE looks like from where you stand.
           </p>

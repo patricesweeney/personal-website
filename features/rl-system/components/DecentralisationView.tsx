@@ -6,7 +6,7 @@ import { InlineMath, BlockMath } from "react-katex";
 export function DecentralisationView() {
   return (
     <section className="section" style={{ paddingTop: "var(--space-6)" }}>
-      <h2 className="section-title" style={{ marginTop: 0 }}>Decentralisation</h2>
+      <h2 className="section-title" style={{ marginTop: 0 }}>Incentives</h2>
       <div className="grid grid-12">
         <div className="span-12">
           <p>
@@ -16,7 +16,7 @@ export function DecentralisationView() {
             In theory, all teams share the same goal: maximize expected customer equity <InlineMath math="\mathrm{CE}(\pi)" />. Each team <InlineMath math="i" /> should pick actions <InlineMath math="a_i" /> that maximize <InlineMath math="Q^\pi(s, a_i, a_{-i})" /> given the joint action profile. The company wins together or loses together.
           </p>
 
-          <h3>The credit assignment problem</h3>
+          <h3 id="the-credit-assignment-problem">The credit assignment problem</h3>
           <p>
             In practice, learning from shared rewards is hard.<sup><a href="#ref-5" className="cite">5</a></sup> When team <InlineMath math="i" /> takes action <InlineMath math="a_i" />, the outcome depends on what everyone else did too—plus luck:
           </p>
@@ -28,7 +28,7 @@ export function DecentralisationView() {
             This is the <strong>credit assignment problem</strong>: when the company succeeds, who deserves credit? When it fails, who's at fault? With shared rewards and high variance, individual teams can't tell whether their actions helped or hurt. Learning stalls.
           </p>
 
-          <h3>The gold standard: counterfactual baselines</h3>
+          <h3 id="the-gold-standard-counterfactual-baselines">The gold standard: counterfactual baselines</h3>
           <p>
             The clean solution is to reward each team for their <em>marginal contribution</em>: the actual outcome minus a counterfactual where their action is replaced with some default.<sup><a href="#ref-5" className="cite">5</a>,<a href="#ref-6" className="cite">6</a></sup>
           </p>
@@ -40,7 +40,7 @@ export function DecentralisationView() {
             COMA<sup><a href="#ref-7" className="cite">7</a></sup> applies this in deep RL: use a centralized critic to estimate the counterfactual baseline, then train decentralized actors on the difference. Each team learns from a signal that isolates their contribution.
           </p>
 
-          <h3>Why this is hard in practice</h3>
+          <h3 id="why-this-is-hard-in-practice">Why this is hard in practice</h3>
           <p>
             The economics literature calls this problem <strong>moral hazard in teams</strong>.<sup><a href="#ref-2" className="cite">2</a>,<a href="#ref-3" className="cite">3</a></sup> If you can't observe each team's contribution, you can't reward it. Teams face weak incentives and free-ride on others' effort. Tournaments<sup><a href="#ref-4" className="cite">4</a></sup> and relative performance evaluation help, but the core problem remains: shared outcomes make individual accountability hard.
           </p>
