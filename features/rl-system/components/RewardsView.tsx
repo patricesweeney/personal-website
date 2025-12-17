@@ -5,6 +5,7 @@ import { InlineMath, BlockMath } from "react-katex";
 import { JacobianHeatmap } from "./JacobianHeatmap";
 import { CustomerEquityVisual } from "./CustomerEquityVisual";
 import { CLVTrajectoryVisual } from "./CLVTrajectoryVisual";
+import { RevenueDecomposition } from "./RevenueDecomposition";
 
 export function RewardsView() {
   return (
@@ -52,6 +53,8 @@ export function RewardsView() {
           <p>
             This covers all the ways revenue can move: you acquire customers (volume), set a price, keep them (retention), grow them (expansion), or lose pieces of them (contraction). Any policy that raises customer equity works through one of these levers.
           </p>
+
+          <RevenueDecomposition />
 
           <h3>Near-decomposability of CLV</h3>
           <p>

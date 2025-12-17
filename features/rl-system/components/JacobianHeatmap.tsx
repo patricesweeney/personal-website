@@ -186,7 +186,7 @@ export function JacobianHeatmap() {
           align-items: center;
           justify-content: center;
           font-size: 12px;
-          font-family: var(--font-geist-mono), monospace;
+          font-family: var(--font-geist-sans), system-ui, sans-serif;
           border-radius: 4px;
           transition: opacity 0.15s ease;
         }

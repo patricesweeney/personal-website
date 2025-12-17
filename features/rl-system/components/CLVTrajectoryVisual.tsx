@@ -101,12 +101,6 @@ export function CLVTrajectoryVisual() {
   const totalDiscountedRevenue = trajectory.reduce((sum, p) => sum + p.discountedRevenue, 0);
   const displayCLV = isDiscounted ? totalDiscountedRevenue : totalRevenue;
 
-  // Y-axis labels (NRR percentages)
-  const yLabels = [
-    { value: nrrCap, label: `${(nrrCap * 100).toFixed(0)}%` },
-    { value: 1.0, label: "100%" },
-  ];
-
   return (
     <div className="clv-visual">
       <div className="controls">
@@ -161,21 +155,6 @@ export function CLVTrajectoryVisual() {
       </div>
 
       <div className="chart-area">
-        <div className="y-axis">
-          {yLabels.map((label) => (
-            <span
-              key={label.value}
-              className="y-label"
-              style={{
-                bottom: `${((label.value - 1) / (nrrCap - 1 + 0.001)) * 60 + 20}%`,
-              }}
-            >
-              {label.label}
-            </span>
-          ))}
-          <span className="y-axis-title">NRR</span>
-        </div>
-
         <div className="chart">
           <svg
             viewBox={`0 0 100 ${chartHeight}`}
@@ -266,6 +245,7 @@ export function CLVTrajectoryVisual() {
           border: 1px solid var(--border);
           border-radius: 8px;
           margin-top: var(--space-4);
+          margin-bottom: var(--space-5);
         }
 
         .controls {
@@ -296,36 +276,6 @@ export function CLVTrajectoryVisual() {
           display: flex;
           gap: var(--space-3);
           align-items: flex-end;
-        }
-
-        .y-axis {
-          display: flex;
-          flex-direction: column;
-          justify-content: flex-end;
-          position: relative;
-          width: 36px;
-          height: ${chartHeight}px;
-          flex-shrink: 0;
-        }
-
-        .y-label {
-          position: absolute;
-          right: 4px;
-          font-family: var(--font-geist-mono), monospace;
-          font-size: 9px;
-          color: var(--muted);
-          transform: translateY(50%);
-        }
-
-        .y-axis-title {
-          position: absolute;
-          top: 50%;
-          left: 0;
-          font-size: 10px;
-          color: var(--muted);
-          transform: rotate(-90deg) translateX(-50%);
-          transform-origin: left center;
-          white-space: nowrap;
         }
 
         .chart {
@@ -371,7 +321,8 @@ export function CLVTrajectoryVisual() {
         .churn-line {
           stroke: var(--muted);
           stroke-width: 1;
-          stroke-dasharray: 4 2;
+          stroke-dasharray: 1 4;
+          stroke-linecap: round;
           vector-effect: non-scaling-stroke;
         }
 
@@ -496,10 +447,6 @@ export function CLVTrajectoryVisual() {
           .chart-area {
             flex-direction: column;
             align-items: stretch;
-          }
-
-          .y-axis {
-            display: none;
           }
 
           .summary {
