@@ -21,10 +21,9 @@ export function ActionsView() {
 
           <FirmBoundaryDemo />
 
-          <p>
-            This isn't just semantics. It's a causal claim: internal work <InlineMath math="X" /> can only affect revenue <InlineMath math="R" /> <em>through</em> actions <InlineMath math="A" />.
+          <p style={{ marginTop: "var(--space-6)" }}>
+            The implication: if it doesn't cross the boundary, it doesn't directly affect revenue. Meetings, planning, refactoring—none of it has financial impact on its own. Any value it creates is <em>derived</em> from the actions it eventually enables.
           </p>
-          <BlockMath math="X \to A \to R" />
 
           <p style={{ marginTop: "var(--space-6)" }}>
             So what counts as an action? Everything a SaaS company does that customers can observe falls into three buckets: <strong>product</strong> (what you build), <strong>pricing</strong> (what you charge), and <strong>promotion</strong> (how you sell it).
