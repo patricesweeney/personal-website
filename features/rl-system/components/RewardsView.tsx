@@ -48,7 +48,7 @@ export function RewardsView() {
           <p>
             We can break this down further. Initial revenue is price <InlineMath math="p_0" /> times volume <InlineMath math="v(p_0)" />, where volume depends on price through some response function.<sup><a href="#ref-4" className="cite">4</a></sup> Period-over-period change splits into retention <InlineMath math="r_k" />, expansion <InlineMath math="e_k" />, and contraction <InlineMath math="c_k" />:
           </p>
-          <BlockMath math="\mathrm{CLV}(\pi) = \sum_{t=0}^{\infty} \gamma^t \, p_0(\pi) \, v(p_0(\pi)) \prod_{k=1}^{t} r_k(\pi) \, e_k(\pi) \, c_k(\pi)" />
+          <BlockMath math="\mathrm{CLV}(\pi) = \sum_{t=0}^{\infty} \gamma^t \, \underbrace{p_0(\pi) \, v(p_0(\pi))}_{\text{Land ARPA}} \prod_{k=1}^{t} \underbrace{r_k(\pi) \, e_k(\pi) \, c_k(\pi)}_{\text{NRR}}" />
 
           <p>
             This covers all the ways revenue can move: you acquire customers (volume), set a price, keep them (retention), grow them (expansion), or lose pieces of them (contraction). Any policy that raises customer equity works through one of these levers.
