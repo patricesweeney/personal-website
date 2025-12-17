@@ -50,6 +50,18 @@ export function JacobianHeatmap() {
     <div className="jacobian-container">
       <div className="jacobian-header">
         <span>CLV Elasticity Matrix</span>
+        <div className="slider-container">
+          <label>Coupling strength</label>
+          <input
+            type="range"
+            min="0"
+            max="1"
+            step="0.05"
+            value={coupling}
+            onChange={(e) => setCoupling(Number(e.target.value))}
+          />
+          <span className="slider-value">{(coupling * 100).toFixed(0)}%</span>
+        </div>
       </div>
 
       <div className="matrix-grid">
@@ -117,19 +129,6 @@ export function JacobianHeatmap() {
         <span className="block-label post-sale">Post-sale</span>
       </div>
 
-      <div className="slider-container">
-        <label>Coupling strength</label>
-        <input
-          type="range"
-          min="0"
-          max="1"
-          step="0.05"
-          value={coupling}
-          onChange={(e) => setCoupling(Number(e.target.value))}
-        />
-        <span className="slider-value">{(coupling * 100).toFixed(0)}%</span>
-      </div>
-
       <style jsx>{`
         .jacobian-container {
           margin: var(--space-6) 0;
@@ -140,7 +139,12 @@ export function JacobianHeatmap() {
         }
 
         .jacobian-header {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
           margin-bottom: var(--space-5);
+          flex-wrap: wrap;
+          gap: var(--space-3);
         }
 
         .jacobian-header > span {
@@ -153,9 +157,6 @@ export function JacobianHeatmap() {
           align-items: center;
           gap: var(--space-3);
           font-size: 12px;
-          margin-top: var(--space-5);
-          padding-top: var(--space-4);
-          border-top: 1px solid var(--border);
         }
 
         .slider-container label {

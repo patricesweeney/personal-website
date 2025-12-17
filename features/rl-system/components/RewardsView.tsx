@@ -64,11 +64,12 @@ export function RewardsView() {
           <p>
             Linearize locally. The Jacobian entries are elasticities:<sup><a href="#ref-6" className="cite">6</a></sup> <InlineMath math="\partial \log \mathrm{CLV} / \partial \log x" /> for each component <InlineMath math="x" />. The off-diagonal entries—cross-elasticities like <InlineMath math="\partial \log r / \partial \log p" />—measure coupling between subsystems.
           </p>
+
+          <JacobianHeatmap />
+
           <p>
             Near-decomposability means these cross-elasticities are small. Price and volume are tightly coupled (large <InlineMath math="|\partial \log v / \partial \log p|" />). But retention, expansion, and contraction depend mostly on post-sale experience—the cross-terms with price are weak. You can optimize subsystems semi-independently: pricing doesn't require a full retention model, retention interventions don't re-solve pricing. The coupling exists, but local optimization gets you most of the way.
           </p>
-
-          <JacobianHeatmap />
 
           <h3>Value functions</h3>
           <p>
