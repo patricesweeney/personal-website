@@ -62,7 +62,7 @@ export function RewardsView() {
           </p>
           <BlockMath math="\log \mathrm{CLV}(\pi) = \log p(\pi) + \log v(\pi) + \sum_k \left( \log r_k(\pi) + \log e_k(\pi) + \log c_k(\pi) \right)" />
           <p>
-            Linearize locally. The Jacobian entries are elasticities: <InlineMath math="\partial \log \mathrm{CLV} / \partial \log x" /> for each component <InlineMath math="x" />. The off-diagonal entries—cross-elasticities like <InlineMath math="\partial \log r / \partial \log p" />—measure coupling between subsystems.
+            Linearize locally. The Jacobian entries are elasticities:<sup><a href="#ref-6" className="cite">6</a></sup> <InlineMath math="\partial \log \mathrm{CLV} / \partial \log x" /> for each component <InlineMath math="x" />. The off-diagonal entries—cross-elasticities like <InlineMath math="\partial \log r / \partial \log p" />—measure coupling between subsystems.
           </p>
           <p>
             Near-decomposability means these cross-elasticities are small. Price and volume are tightly coupled (large <InlineMath math="|\partial \log v / \partial \log p|" />). But retention, expansion, and contraction depend mostly on post-sale experience—the cross-terms with price are weak. You can optimize subsystems semi-independently: pricing doesn't require a full retention model, retention interventions don't re-solve pricing. The coupling exists, but local optimization gets you most of the way.
@@ -103,6 +103,7 @@ export function RewardsView() {
               <li id="ref-3"><sup>3</sup> Ascarza, E., Fader, P. S., & Hardie, B. G. (2017). Marketing models for the customer-centric firm. In <em>Handbook of marketing decision models</em> (pp. 297–329). Springer International Publishing.</li>
               <li id="ref-4"><sup>4</sup> Phillips, R. L. (2021). <em>Pricing and revenue optimization</em>. Stanford University Press.</li>
               <li id="ref-5"><sup>5</sup> Simon, H. A., & Ando, A. (1961). Aggregation of variables in dynamic systems. <em>Econometrica</em>, 29(2), 111–138.</li>
+              <li id="ref-6"><sup>6</sup> Mas-Colell, A., Whinston, M. D., & Green, J. R. (1995). <em>Microeconomic Theory</em>. Oxford University Press.</li>
             </ol>
           </div>
         </div>
