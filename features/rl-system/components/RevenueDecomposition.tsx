@@ -576,11 +576,12 @@ export function RevenueDecomposition() {
         }
 
         .revenue-line {
-          stroke: #22c55e;
+          stroke: var(--fg);
+          stroke-dasharray: 6 3;
         }
 
         .optimal-line {
-          stroke: #22c55e;
+          stroke: var(--fg);
           stroke-width: 1;
           stroke-dasharray: 4 2;
           vector-effect: non-scaling-stroke;
@@ -842,7 +843,13 @@ export function RevenueDecomposition() {
         }
 
         .legend-color.revenue {
-          background: #22c55e;
+          background: repeating-linear-gradient(
+            to right,
+            var(--fg) 0px,
+            var(--fg) 4px,
+            transparent 4px,
+            transparent 6px
+          );
         }
 
         .legend-color.optimal {
@@ -862,8 +869,8 @@ export function RevenueDecomposition() {
           height: 12px;
           background: repeating-linear-gradient(
             to bottom,
-            #22c55e 0px,
-            #22c55e 4px,
+            var(--fg) 0px,
+            var(--fg) 4px,
             transparent 4px,
             transparent 6px
           );
