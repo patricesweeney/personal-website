@@ -6,6 +6,7 @@ import { JacobianHeatmap } from "./JacobianHeatmap";
 import { CustomerEquityVisual } from "./CustomerEquityVisual";
 import { CLVTrajectoryVisual } from "./CLVTrajectoryVisual";
 import { RevenueDecomposition } from "./RevenueDecomposition";
+import { ValueFunctionVisual } from "./ValueFunctionVisual";
 
 export function RewardsView() {
   return (
@@ -93,6 +94,8 @@ export function RewardsView() {
           <p>
             Positive advantage means the action beats the baseline. Negative means you're better off sticking with the default.
           </p>
+
+          <ValueFunctionVisual />
 
           <hr className="references-divider" />
 
