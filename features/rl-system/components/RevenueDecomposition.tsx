@@ -229,7 +229,7 @@ export function RevenueDecomposition() {
           className={view === "arpa" ? "active" : ""} 
           onClick={() => setView("arpa")}
         >
-          ARPA
+          Land ARPA
         </button>
         <button 
           className={view === "nrr" ? "active" : ""} 
