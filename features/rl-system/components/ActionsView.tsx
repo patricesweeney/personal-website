@@ -4,6 +4,7 @@ import "katex/dist/katex.min.css";
 import { InlineMath, BlockMath } from "react-katex";
 import { ActionsTree } from "./ActionsTree";
 import { ActionValueCalculator } from "./ActionValueCalculator";
+import { FirmBoundaryDemo } from "./FirmBoundaryDemo";
 
 export function ActionsView() {
   return (
@@ -12,7 +13,21 @@ export function ActionsView() {
       <div className="grid grid-12">
         <div className="span-12">
           <p>
-            Everything a SaaS company does falls into three buckets: <strong>product</strong> (what you build), <strong>pricing</strong> (what you charge), and <strong>promotion</strong> (how you sell it).
+            An <strong>action</strong> is anything that crosses the boundary between the company and its customers. A feature they use. A price they see. A message they read.
+          </p>
+          <p>
+            Internally, you can hold as many meetings, write as many specs, and refactor as much code as you like. None of it touches revenue until it ships—until something crosses the boundary and makes contact with a customer.
+          </p>
+
+          <FirmBoundaryDemo />
+
+          <p>
+            This isn't just semantics. It's a causal claim: internal work <InlineMath math="X" /> can only affect revenue <InlineMath math="R" /> <em>through</em> actions <InlineMath math="A" />.
+          </p>
+          <BlockMath math="X \to A \to R" />
+
+          <p style={{ marginTop: "var(--space-6)" }}>
+            So what counts as an action? Everything a SaaS company does that customers can observe falls into three buckets: <strong>product</strong> (what you build), <strong>pricing</strong> (what you charge), and <strong>promotion</strong> (how you sell it).
           </p>
           <ActionsTree />
 
@@ -48,6 +63,13 @@ export function ActionsView() {
       </div>
 
       <style jsx>{`
+        .action-categories {
+          margin: var(--space-3) 0 var(--space-4) var(--space-4);
+          padding: 0;
+        }
+        .action-categories li {
+          margin-bottom: var(--space-2);
+        }
         .cite {
           color: var(--muted);
           text-decoration: none;
