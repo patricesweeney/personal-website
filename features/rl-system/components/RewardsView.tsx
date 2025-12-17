@@ -21,8 +21,8 @@ export function RewardsView() {
           <p>
             Early-stage SaaS rarely has positive cash flow, so we use a proxy: <strong>customer equity (CE)</strong>,<sup><a href="#ref-2" className="cite">2</a></sup> the present value of all revenue from current and future customers. Revenue becomes our reward signal <InlineMath math="r_t" />. The goal is to find the policy <InlineMath math="\pi" /> that maximizes it:
           </p>
-          <BlockMath math="\pi^* \in \arg\max_{\pi}\ \mathrm{Customer\ Equity}(\pi), \qquad \gamma\in(0,1)" />
-          <BlockMath math="\mathrm{Customer\ Equity}(\pi) = \mathbb{E}_\pi\!\left[\sum_{t=0}^{\infty}\gamma^{t} r_t \right]" />
+          <BlockMath math="\pi^* \in \arg\max_{\pi}\ \mathrm{Customer\ Equity}(\pi)" />
+          <BlockMath math="\mathrm{Customer\ Equity}(\pi) = \mathbb{E}_\pi\!\left[\sum_{t=0}^{\infty}\gamma^{t} r_t \right], \qquad \gamma\in(0,1)" />
           <p>
             The discount factor <InlineMath math="\gamma" /> captures impatience and risk—a dollar next year is worth less than a dollar today.
           </p>
