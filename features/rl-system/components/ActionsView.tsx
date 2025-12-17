@@ -1,10 +1,23 @@
 "use client";
 
+import dynamic from "next/dynamic";
 import "katex/dist/katex.min.css";
 import { InlineMath, BlockMath } from "react-katex";
-import { ActionsTree } from "./ActionsTree";
-import { ActionValueCalculator } from "./ActionValueCalculator";
-import { FirmBoundaryDemo } from "./FirmBoundaryDemo";
+
+const FirmBoundaryDemo = dynamic(
+  () => import("./FirmBoundaryDemo").then((mod) => mod.FirmBoundaryDemo),
+  { ssr: false }
+);
+
+const ActionsTree = dynamic(
+  () => import("./ActionsTree").then((mod) => mod.ActionsTree),
+  { ssr: false }
+);
+
+const ActionValueCalculator = dynamic(
+  () => import("./ActionValueCalculator").then((mod) => mod.ActionValueCalculator),
+  { ssr: false }
+);
 
 export function ActionsView() {
   return (

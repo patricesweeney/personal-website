@@ -1,6 +1,11 @@
 "use client";
 
-import { ObservationsMindMap } from "./ObservationsMindMap";
+import dynamic from "next/dynamic";
+
+const ObservationsMindMap = dynamic(
+  () => import("./ObservationsMindMap").then((mod) => mod.ObservationsMindMap),
+  { ssr: false }
+);
 
 export function StatesView() {
   return (

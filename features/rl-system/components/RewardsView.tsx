@@ -1,12 +1,33 @@
 "use client";
 
+import dynamic from "next/dynamic";
 import "katex/dist/katex.min.css";
 import { InlineMath, BlockMath } from "react-katex";
-import { JacobianHeatmap } from "./JacobianHeatmap";
-import { CustomerEquityVisual } from "./CustomerEquityVisual";
-import { CLVTrajectoryVisual } from "./CLVTrajectoryVisual";
-import { RevenueDecomposition } from "./RevenueDecomposition";
-import { ValueFunctionVisual } from "./ValueFunctionVisual";
+
+const JacobianHeatmap = dynamic(
+  () => import("./JacobianHeatmap").then((mod) => mod.JacobianHeatmap),
+  { ssr: false }
+);
+
+const CustomerEquityVisual = dynamic(
+  () => import("./CustomerEquityVisual").then((mod) => mod.CustomerEquityVisual),
+  { ssr: false }
+);
+
+const CLVTrajectoryVisual = dynamic(
+  () => import("./CLVTrajectoryVisual").then((mod) => mod.CLVTrajectoryVisual),
+  { ssr: false }
+);
+
+const RevenueDecomposition = dynamic(
+  () => import("./RevenueDecomposition").then((mod) => mod.RevenueDecomposition),
+  { ssr: false }
+);
+
+const ValueFunctionVisual = dynamic(
+  () => import("./ValueFunctionVisual").then((mod) => mod.ValueFunctionVisual),
+  { ssr: false }
+);
 
 export function RewardsView() {
   return (
