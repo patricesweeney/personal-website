@@ -8,6 +8,7 @@ const navItems = [
   { href: "/saas/rewards", label: "Rewards" },
   { href: "/saas/actions", label: "Actions" },
   { href: "/saas/states", label: "States" },
+  { href: "/saas/decentralisation", label: "Decentralisation" },
 ];
 
 export function Sidebar() {

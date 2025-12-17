@@ -122,6 +122,14 @@ h3 {
   margin: 0 0 8px 0;
 }
 
+h3 {
+  font-size: 1.125rem;
+  font-weight: 600;
+  line-height: var(--lh-heading);
+  margin-top: var(--space-8);
+  margin-bottom: var(--space-3);
+}
+
 h1 {
   font-size: var(--h1);
   font-weight: 700;
