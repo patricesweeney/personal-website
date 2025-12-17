@@ -97,6 +97,10 @@ export function RewardsView() {
 
           <ValueFunctionVisual />
 
+          <p>
+            So far we've talked about actions in the abstract. In the <a href="/saas/actions">next section</a>, we make this concrete for SaaS. It turns out there's a finite set of actions a SaaS company can take to make contact with the market and gain advantage.
+          </p>
+
           <hr className="references-divider" />
 
           <div className="references">
