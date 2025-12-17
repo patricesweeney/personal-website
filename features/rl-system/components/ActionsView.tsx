@@ -14,10 +14,6 @@ const ActionsTree = dynamic(
   { ssr: false }
 );
 
-const ActionValueCalculator = dynamic(
-  () => import("./ActionValueCalculator").then((mod) => mod.ActionValueCalculator),
-  { ssr: false }
-);
 
 export function ActionsView() {
   return (
@@ -47,25 +43,17 @@ export function ActionsView() {
 
           <h3 id="causal-inference">Causal inference</h3>
           <p>
-            For any action, two questions matter. First: what happens if I do this? That's the <strong>Q-value</strong> <InlineMath math="Q^\pi(s,a)" />—the expected future CE from taking action <InlineMath math="a" /> now and then reverting to the usual policy. Second: is that better than what I'd normally do? That's the <strong>advantage</strong> <InlineMath math="A^\pi(s,a) = Q^\pi(s,a) - V^\pi(s)" />.
+            Causal inference asks: what happens if we <em>intervene</em>? This differs from prediction. Observing that customers who use feature X have higher retention doesn't mean enabling X for everyone will improve retention—maybe engaged customers both use X and stick around.
           </p>
           <p>
-            These are causal questions, not correlational ones. The Q-value asks what happens if you <em>make</em> something happen, not what you'd expect to see when it happens on its own.<sup><a href="#ref-1" className="cite">1</a>,<a href="#ref-2" className="cite">2</a></sup>
-          </p>
-          <BlockMath math="Q^\pi(s,a) = \mathbb{E}[Y \mid \mathrm{do}(A=a), S=s]" />
-          <p>
-            The advantage is then the treatment effect—how much better off you are for having acted, compared to the baseline.<sup><a href="#ref-3" className="cite">3</a></sup> In marketing, this is called <strong>uplift</strong>:<sup><a href="#ref-4" className="cite">4</a></sup>
-          </p>
-          <BlockMath math="A^\pi(s,a) = \mathbb{E}[Y(a) - Y(\pi) \mid S=s] = \tau(s,a)" />
-          <p>
-            Positive advantage means the action <em>causes</em> higher CE than doing nothing special. Correlation won't cut it—you need to know the counterfactual.
-          </p>
-
-          <p style={{ marginTop: "var(--space-6)" }}>
-            <strong>Why is this hard in SaaS?</strong> Estimating <InlineMath math="V" />, <InlineMath math="Q" />, and <InlineMath math="A" /> requires knowing what <em>would have happened</em> under different actions. But you only observe what actually happened. You can't rerun history with a different pricing page. Confounders are everywhere: the customers who received a discount were already at risk of churning—that's <em>why</em> you gave them the discount. Naively comparing outcomes conflates selection with effect.
+            <strong>Static setting.</strong> Pearl's structural causal models<sup><a href="#ref-1" className="cite">1</a></sup> formalize this with the <InlineMath math="\mathrm{do}" />-operator. The causal effect of action <InlineMath math="a" /> is <InlineMath math="\mathbb{E}[Y \mid \mathrm{do}(A=a)]" />—the expected outcome when we <em>set</em> <InlineMath math="A=a" />, not merely observe it. Under the right assumptions (no unmeasured confounding, positivity), this equals <InlineMath math="\mathbb{E}[Y(a)]" /> in potential outcomes notation.
           </p>
           <p>
-            This is traditionally the domain of <strong>econometrics</strong>—the study of causal inference from observational data.<sup><a href="#ref-5" className="cite">5</a></sup> Economists have spent decades developing tools to estimate treatment effects without randomization: instrumental variables, regression discontinuity, difference-in-differences, synthetic controls.<sup><a href="#ref-6" className="cite">6</a></sup> The reinforcement learning literature rediscovered many of the same ideas under different names.
+            <strong>Dynamic setting.</strong> SaaS involves sequences of actions over time: onboarding flows, pricing changes, feature releases. Robins' g-methods<sup><a href="#ref-2" className="cite">2</a></sup> extend causal inference to these sequential settings. The <strong>g-formula</strong> identifies the effect of a treatment <em>strategy</em>—a sequence of actions <InlineMath math="\bar{a} = (a_0, a_1, \ldots, a_T)" />—by iteratively adjusting for time-varying confounders:
+          </p>
+          <BlockMath math="\mathbb{E}[Y(\bar{a})] = \sum_{\bar{l}} \mathbb{E}[Y \mid \bar{A}=\bar{a}, \bar{L}=\bar{l}] \prod_t P(L_t \mid \bar{A}_{t-1}, \bar{L}_{t-1})" />
+          <p>
+            This is the foundation for understanding RL through a causal lens: the value function <InlineMath math="V^\pi(s)" /> is the expected outcome under policy <InlineMath math="\pi" />, which is exactly a g-formula computation. The Q-value <InlineMath math="Q^\pi(s,a)" /> asks what happens if we intervene with action <InlineMath math="a" /> now, then follow <InlineMath math="\pi" /> thereafter.
           </p>
 
           <div className="terminology-table">
@@ -73,15 +61,15 @@ export function ActionsView() {
               <thead>
                 <tr>
                   <th>Concept</th>
-                  <th>RL / CS</th>
-                  <th>Economics / Econometrics</th>
+                  <th>Computer Science</th>
+                  <th>Economics</th>
                 </tr>
               </thead>
               <tbody>
                 <tr>
                   <td>Expected outcome from a state</td>
                   <td>Value function <InlineMath math="V(s)" /></td>
-                  <td>Conditional expectation <InlineMath math="\mathbb{E}[Y \mid X]" /></td>
+                  <td>Conditional mean <InlineMath math="\mathbb{E}[Y \mid X=x]" /></td>
                 </tr>
                 <tr>
                   <td>Expected outcome from taking action</td>
@@ -100,40 +88,46 @@ export function ActionsView() {
                 </tr>
                 <tr>
                   <td>Learning from logged data</td>
-                  <td>Off-policy evaluation</td>
-                  <td>Observational causal inference</td>
+                  <td>Off-policy evaluation<sup><a href="#ref-3" className="cite">3</a></sup></td>
+                  <td>Observational causal inference<sup><a href="#ref-4" className="cite">4</a></sup></td>
                 </tr>
                 <tr>
                   <td>Action selection bias</td>
-                  <td>Behavior policy mismatch</td>
-                  <td>Selection on observables/unobservables</td>
+                  <td>Behavior policy mismatch<sup><a href="#ref-3" className="cite">3</a></sup></td>
+                  <td>Selection on observables/unobservables<sup><a href="#ref-5" className="cite">5</a></sup></td>
                 </tr>
                 <tr>
                   <td>Correcting for selection</td>
-                  <td>Importance sampling, doubly robust</td>
-                  <td>IPW, AIPW, IV, RDD, DiD</td>
+                  <td>Importance sampling<sup><a href="#ref-6" className="cite">6</a></sup>, doubly robust<sup><a href="#ref-7" className="cite">7</a></sup></td>
+                  <td>IPW<sup><a href="#ref-8" className="cite">8</a></sup>, AIPW<sup><a href="#ref-9" className="cite">9</a></sup></td>
+                </tr>
+                <tr>
+                  <td>Identification strategies</td>
+                  <td>Causal graph identifiability<sup><a href="#ref-10" className="cite">10</a></sup></td>
+                  <td>IV<sup><a href="#ref-11" className="cite">11</a></sup>, RDD<sup><a href="#ref-12" className="cite">12</a></sup>, DiD<sup><a href="#ref-13" className="cite">13</a></sup></td>
                 </tr>
               </tbody>
             </table>
           </div>
-
-          <p style={{ marginTop: "var(--space-4)" }}>
-            The translation isn't perfect—RL emphasizes sequential decisions and delayed rewards, while econometrics often focuses on single-shot interventions. But the core problem is the same: you want to know what would happen if you <em>did</em> something, but all you have is data from what you <em>actually</em> did.
-          </p>
-
-          <ActionValueCalculator />
 
           <hr className="references-divider" />
 
           <div className="references">
             <p className="meta">References</p>
             <ol>
-              <li id="ref-1"><sup>1</sup> Rubin, D. B. (2005). Causal inference using potential outcomes: Design, modeling, decisions. <em>Journal of the American Statistical Association</em>, 100(469), 322–331.</li>
-              <li id="ref-2"><sup>2</sup> Pearl, J. (2009). <em>Causality: Models, reasoning, and inference</em> (2nd ed.). Cambridge University Press.</li>
-              <li id="ref-3"><sup>3</sup> Athey, S., & Imbens, G. W. (2016). Recursive partitioning for heterogeneous causal effects. <em>Proceedings of the National Academy of Sciences</em>, 113(27), 7353–7360.</li>
-              <li id="ref-4"><sup>4</sup> Radcliffe, N. J., & Surry, P. D. (2011). Real-world uplift modelling with significance-based uplift trees. <em>White Paper TR-2011-1</em>, Stochastic Solutions.</li>
-              <li id="ref-5"><sup>5</sup> Angrist, J. D., & Pischke, J. S. (2009). <em>Mostly harmless econometrics: An empiricist's companion</em>. Princeton University Press.</li>
-              <li id="ref-6"><sup>6</sup> Cunningham, S. (2021). <em>Causal inference: The mixtape</em>. Yale University Press.</li>
+              <li id="ref-1"><sup>1</sup> Pearl, J. (2009). <em>Causality: Models, reasoning, and inference</em> (2nd ed.). Cambridge University Press.</li>
+              <li id="ref-2"><sup>2</sup> Robins, J. M. (1986). A new approach to causal inference in mortality studies with a sustained exposure period. <em>Mathematical Modelling</em>, 7(9–12), 1393–1512.</li>
+              <li id="ref-3"><sup>3</sup> Precup, D., Sutton, R. S., & Singh, S. (2000). Eligibility traces for off-policy policy evaluation. <em>Proceedings of the 17th International Conference on Machine Learning</em>, 759–766.</li>
+              <li id="ref-4"><sup>4</sup> Rosenbaum, P. R., & Rubin, D. B. (1983). The central role of the propensity score in observational studies for causal effects. <em>Biometrika</em>, 70(1), 41–55.</li>
+              <li id="ref-5"><sup>5</sup> Heckman, J. J. (1979). Sample selection bias as a specification error. <em>Econometrica</em>, 47(1), 153–161.</li>
+              <li id="ref-6"><sup>6</sup> Kahn, H., & Marshall, A. W. (1953). Methods of reducing sample size in Monte Carlo computations. <em>Journal of the Operations Research Society of America</em>, 1(5), 263–278.</li>
+              <li id="ref-7"><sup>7</sup> Dudík, M., Langford, J., & Li, L. (2011). Doubly robust policy evaluation and learning. <em>Proceedings of the 28th International Conference on Machine Learning</em>, 1097–1104.</li>
+              <li id="ref-8"><sup>8</sup> Horvitz, D. G., & Thompson, D. J. (1952). A generalization of sampling without replacement from a finite universe. <em>Journal of the American Statistical Association</em>, 47(260), 663–685.</li>
+              <li id="ref-9"><sup>9</sup> Robins, J. M., Rotnitzky, A., & Zhao, L. P. (1994). Estimation of regression coefficients when some regressors are not always observed. <em>Journal of the American Statistical Association</em>, 89(427), 846–866.</li>
+              <li id="ref-10"><sup>10</sup> Shpitser, I., & Pearl, J. (2006). Identification of joint interventional distributions in recursive semi-Markovian causal models. <em>Proceedings of the 21st National Conference on Artificial Intelligence</em>, 1219–1226.</li>
+              <li id="ref-11"><sup>11</sup> Angrist, J. D., Imbens, G. W., & Rubin, D. B. (1996). Identification of causal effects using instrumental variables. <em>Journal of the American Statistical Association</em>, 91(434), 444–455.</li>
+              <li id="ref-12"><sup>12</sup> Imbens, G. W., & Lemieux, T. (2008). Regression discontinuity designs: A guide to practice. <em>Journal of Econometrics</em>, 142(2), 615–635.</li>
+              <li id="ref-13"><sup>13</sup> Bertrand, M., Duflo, E., & Mullainathan, S. (2004). How much should we trust differences-in-differences estimates? <em>Quarterly Journal of Economics</em>, 119(1), 249–275.</li>
             </ol>
           </div>
         </div>
