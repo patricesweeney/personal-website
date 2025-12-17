@@ -125,7 +125,7 @@ export function RevenueDecomposition() {
   };
 
   // Generate distribution paths
-  const distHeight = 80;
+  const distHeight = 96;
   const distWidth = 100;
 
   // Retention: Reflected Gamma distribution on [0.75, 1.0] (mirrored from expansion)
@@ -681,7 +681,7 @@ export function RevenueDecomposition() {
           font-family: var(--font-geist-mono), monospace;
           font-size: 28px;
           font-weight: 700;
-          margin-left: var(--space-2);
+          margin-left: 6px;
         }
 
         .nrr-status {
@@ -744,7 +744,7 @@ export function RevenueDecomposition() {
 
         .nrr-card-chart svg {
           width: 100%;
-          height: 80px;
+          height: 96px;
           display: block;
         }
 
