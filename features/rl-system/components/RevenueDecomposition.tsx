@@ -128,21 +128,21 @@ export function RevenueDecomposition() {
   const distHeight = 40;
   const distWidth = 100;
 
-  // Retention: Beta distribution on [0.80, 0.98]
+  // Retention: Reflected Gamma distribution on [0.75, 1.0] (mirrored from expansion)
   const retentionDistPath = useMemo(() => {
     const minX = 0.75, maxX = 1.0;
     const mean = baseRetention;
-    const variance = 0.001; // small variance for concentrated distribution
-    const alpha = mean * (mean * (1 - mean) / variance - 1);
-    const beta = (1 - mean) * (mean * (1 - mean) / variance - 1);
+    const k = 4; // shape parameter (same as expansion)
+    const theta = (1 - mean) / k; // scale parameter (reflected: distance from 1.0)
     
     const points: { x: number; y: number }[] = [];
     let maxY = 0;
     for (let i = 0; i <= 50; i++) {
       const t = i / 50;
       const x = minX + t * (maxX - minX);
-      const normalized = (x - minX) / (maxX - minX);
-      const y = betaPDF(normalized, Math.max(alpha, 1), Math.max(beta, 1));
+      // Reflected gamma: evaluate at (1 - x) shifted
+      const reflected = maxX - x;
+      const y = gammaPDF(1 + reflected, k, Math.max(theta, 0.01), 1);
       maxY = Math.max(maxY, y);
       points.push({ x: t * distWidth, y });
     }
@@ -151,10 +151,10 @@ export function RevenueDecomposition() {
     
     return {
       path: points.map((p, i) => 
-        `${i === 0 ? "M" : "L"} ${p.x} ${distHeight - (p.y / maxY) * (distHeight - 4)}`
+        `${i === 0 ? "M" : "L"} ${p.x} ${distHeight - (p.y / (maxY || 1)) * (distHeight - 4)}`
       ).join(" "),
       area: `M 0 ${distHeight} ` + points.map(p => 
-        `L ${p.x} ${distHeight - (p.y / maxY) * (distHeight - 4)}`
+        `L ${p.x} ${distHeight - (p.y / (maxY || 1)) * (distHeight - 4)}`
       ).join(" ") + ` L ${distWidth} ${distHeight} Z`,
       meanX
     };
@@ -190,20 +190,21 @@ export function RevenueDecomposition() {
     };
   }, [expansionRate]);
 
-  // Contraction: Beta distribution on [0.85, 1.0]
+  // Contraction: Reflected Gamma distribution on [0.80, 1.0] (mirrored from expansion)
   const contractionDistPath = useMemo(() => {
     const minX = 0.80, maxX = 1.0;
     const mean = contractionRate;
-    const variance = 0.001;
-    const normalized_mean = (mean - minX) / (maxX - minX);
-    const alpha = normalized_mean * (normalized_mean * (1 - normalized_mean) / (variance / Math.pow(maxX - minX, 2)) - 1);
-    const beta = (1 - normalized_mean) * (normalized_mean * (1 - normalized_mean) / (variance / Math.pow(maxX - minX, 2)) - 1);
+    const k = 4; // shape parameter (same as expansion)
+    const theta = (1 - mean) / k; // scale parameter (reflected: distance from 1.0)
     
     const points: { x: number; y: number }[] = [];
     let maxY = 0;
     for (let i = 0; i <= 50; i++) {
       const t = i / 50;
-      const y = betaPDF(t, Math.max(alpha, 1), Math.max(beta, 1));
+      const x = minX + t * (maxX - minX);
+      // Reflected gamma: evaluate at (1 - x) shifted
+      const reflected = maxX - x;
+      const y = gammaPDF(1 + reflected, k, Math.max(theta, 0.01), 1);
       maxY = Math.max(maxY, y);
       points.push({ x: t * distWidth, y });
     }
@@ -212,10 +213,10 @@ export function RevenueDecomposition() {
     
     return {
       path: points.map((p, i) => 
-        `${i === 0 ? "M" : "L"} ${p.x} ${distHeight - (p.y / maxY) * (distHeight - 4)}`
+        `${i === 0 ? "M" : "L"} ${p.x} ${distHeight - (p.y / (maxY || 1)) * (distHeight - 4)}`
       ).join(" "),
       area: `M 0 ${distHeight} ` + points.map(p => 
-        `L ${p.x} ${distHeight - (p.y / maxY) * (distHeight - 4)}`
+        `L ${p.x} ${distHeight - (p.y / (maxY || 1)) * (distHeight - 4)}`
       ).join(" ") + ` L ${distWidth} ${distHeight} Z`,
       meanX
     };
