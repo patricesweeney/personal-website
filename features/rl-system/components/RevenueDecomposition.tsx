@@ -313,13 +313,11 @@ export function RevenueDecomposition() {
             </div>
 
             <div className="summary">
-              <div className="summary-item">
-                <div className="summary-label">Optimal price</div>
-                <div className="summary-value">${Math.round(optimalPoint.price)}</div>
-              </div>
-              <div className="summary-item">
-                <div className="summary-label">Volume at p*</div>
-                <div className="summary-value">{(optimalPoint.volume * 100).toFixed(0)}%</div>
+              <div className="summary-label">Land revenue</div>
+              <div className="summary-value">${Math.round(optimalPoint.price * optimalPoint.volume)}</div>
+              <div className="summary-stats">
+                <span>p* = ${Math.round(optimalPoint.price)}</span>
+                <span>v = {(optimalPoint.volume * 100).toFixed(0)}%</span>
               </div>
             </div>
           </div>
@@ -601,28 +599,34 @@ export function RevenueDecomposition() {
         .summary {
           display: flex;
           flex-direction: column;
-          gap: 12px;
-          width: 120px;
+          align-items: flex-start;
+          width: 150px;
           flex-shrink: 0;
-          padding: 12px;
-          border: 1px solid var(--border);
+          padding: var(--space-4);
+          background: color-mix(in srgb, var(--fg) 3%, transparent);
           border-radius: 6px;
         }
 
-        .summary-item {
-          display: flex;
-          flex-direction: column;
-        }
-
         .summary-label {
-          font-size: 10px;
+          font-size: 11px;
           color: var(--muted);
+          text-transform: uppercase;
+          letter-spacing: 0.05em;
         }
 
         .summary-value {
-          font-size: 18px;
+          font-family: var(--font-geist-mono), monospace;
+          font-size: 24px;
           font-weight: 600;
-          margin-top: 2px;
+          margin-top: var(--space-1);
+        }
+
+        .summary-stats {
+          display: flex;
+          gap: var(--space-3);
+          font-size: 11px;
+          color: var(--muted);
+          margin-top: var(--space-2);
         }
 
         /* NRR View Styles */
@@ -892,7 +896,17 @@ export function RevenueDecomposition() {
           .summary {
             width: 100%;
             flex-direction: row;
-            justify-content: space-around;
+            align-items: center;
+            justify-content: space-between;
+          }
+
+          .summary-value {
+            margin-top: 0;
+          }
+
+          .summary-stats {
+            margin-top: 0;
+            margin-left: var(--space-3);
           }
         }
       `}</style>
