@@ -17,7 +17,7 @@ export function RevenueDecomposition() {
   const [expansionRate, setExpansionRate] = useState(1.08);
   const [contractionRate, setContractionRate] = useState(0.97);
 
-  const chartHeight = 140;
+  const chartHeight = 180;
   const topPadding = 12;
   const plotHeight = chartHeight - topPadding;
 
@@ -125,7 +125,7 @@ export function RevenueDecomposition() {
   };
 
   // Generate distribution paths
-  const distHeight = 40;
+  const distHeight = 64;
   const distWidth = 100;
 
   // Retention: Reflected Gamma distribution on [0.75, 1.0] (mirrored from expansion)
@@ -356,6 +356,7 @@ export function RevenueDecomposition() {
               </div>
               <div className="nrr-result">
                 <span className="nrr-value">{(baseRetention * expansionRate * contractionRate * 100).toFixed(0)}%</span>
+                <span className="nrr-label">NRR</span>
                 <span className="nrr-status" data-status={baseRetention * expansionRate * contractionRate >= 1 ? "good" : "warning"}>
                   {baseRetention * expansionRate * contractionRate >= 1 ? "Net positive" : "Net negative"}
                 </span>
@@ -676,6 +677,14 @@ export function RevenueDecomposition() {
           font-weight: 700;
         }
 
+        .nrr-label {
+          font-size: 11px;
+          text-transform: uppercase;
+          letter-spacing: 0.05em;
+          color: var(--muted);
+          margin-left: var(--space-2);
+        }
+
         .nrr-status {
           font-size: 10px;
           font-weight: 500;
@@ -736,7 +745,7 @@ export function RevenueDecomposition() {
 
         .nrr-card-chart svg {
           width: 100%;
-          height: 48px;
+          height: 64px;
           display: block;
         }
 
