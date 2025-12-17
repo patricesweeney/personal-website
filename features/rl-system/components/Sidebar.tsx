@@ -34,7 +34,7 @@ const navItems: NavItem[] = [
     subItems: [
       { id: "crossing-the-boundary", label: "Crossing the boundary" },
       { id: "canonical-actions", label: "Canonical actions" },
-      { id: "identification", label: "Identification" },
+      { id: "causal-inference", label: "Causal inference" },
     ]
   },
   { 
