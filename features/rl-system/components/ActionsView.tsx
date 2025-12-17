@@ -79,36 +79,22 @@ export function ActionsView() {
           <BlockMath math="p_t = \arg\min_p \left\{ \underbrace{\mathbb{E}_p\left[\sum_{s=1}^t \ell(\theta; a_s, r_s)\right]}_{\text{accuracy}} + \underbrace{\frac{1}{\eta} D_{\mathrm{KL}}[p(\theta) \| p_0(\theta)]}_{\text{complexity}} \right\}" />
 
           <p>
-            For decision-making, actions combine <strong>exploitation</strong> (expected reward) and <strong>exploration</strong> (information gain). The expected reward for arm <InlineMath math="a" /> is the posterior mean:
+            <strong>Thompson Sampling</strong> turns posterior uncertainty directly into exploration. At each step, sample a parameter vector from the current posterior and act as if it were true:
           </p>
-          <BlockMath math="\mu_t(a) = \mathbb{E}_{p_t(\theta)}[\theta_a]" />
+          <BlockMath math="\tilde{\theta}_t \sim p_t(\theta), \qquad a_t = \arg\max_a \, \tilde{\theta}_{t,a}" />
 
           <p>
-            The epistemic value (information gain) measures how much pulling arm <InlineMath math="a" /> would teach us about <InlineMath math="\theta" />:
+            This is <em>probability matching</em>: each action is chosen with probability equal to its posterior probability of being optimal. No tuning parameters, no explicit exploration bonus—uncertainty in the posterior automatically drives exploration where it's needed.
           </p>
-          <BlockMath math="\mathrm{IG}_t(a) = \mathbb{E}_{r \sim p_t(r|a)} \left[ D_{\mathrm{KL}}[p_t(\theta|r,a) \| p_t(\theta)] \right]" />
-          <p>
-            where <InlineMath math="p_t(\theta|r,a)" /> is the hypothetical posterior if we observed reward <InlineMath math="r" /> from arm <InlineMath math="a" />:
-          </p>
-          <BlockMath math="p_t(\theta|r,a) \propto p_t(\theta) \, \exp\bigl(-\eta \, \ell(\theta; a, r)\bigr)" />
 
           <p>
-            To compute this, we need the posterior predictive distribution <InlineMath math="p_t(r|a)" /> over possible rewards. Two common choices:
+            Thompson Sampling achieves <strong>optimal regret</strong> up to constants. For <InlineMath math="k" /> arms with sub-Gaussian rewards, the Bayesian regret is:
           </p>
-          <ul>
-            <li><strong>Model-based:</strong> integrate over current beliefs about parameters</li>
-            <li><strong>Loss-induced:</strong> use the loss function as a pseudo-likelihood</li>
-          </ul>
+          <BlockMath math="\mathbb{E}[\mathrm{Regret}(T)] = O\left(\sqrt{kT \log T}\right)" />
 
           <p>
-            The decision rule trades off reward and information with exchange rate <InlineMath math="\kappa" /> (how much one nat of information is worth in reward units):
+            More precisely, it matches the Lai-Robbins lower bound asymptotically: regret scales with <InlineMath math="\sum_{a: \Delta_a > 0} \frac{\log T}{\mathrm{KL}(\theta_a \| \theta^*)}" /> where <InlineMath math="\Delta_a = \theta^* - \theta_a" /> is the gap. Arms that are clearly suboptimal get eliminated quickly; arms close to optimal require more samples to distinguish.
           </p>
-          <BlockMath math="a_t = \arg\max_a \quad \mu_t(a) + \kappa \, \mathrm{IG}_t(a)" />
-
-          <p>
-            For stochastic policies, add softmax with temperature <InlineMath math="\beta" />:
-          </p>
-          <BlockMath math="P(a_t = a) \propto \exp\bigl(\beta [\mu_t(a) + \kappa \, \mathrm{IG}_t(a)]\bigr)" />
         </div>
       </div>
 
