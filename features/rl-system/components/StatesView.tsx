@@ -2,7 +2,7 @@
 
 import dynamic from "next/dynamic";
 import "katex/dist/katex.min.css";
-import { InlineMath } from "react-katex";
+import { InlineMath, BlockMath } from "react-katex";
 
 const ObservationsMindMap = dynamic(
   () => import("./ObservationsMindMap").then((mod) => mod.ObservationsMindMap),
@@ -113,7 +113,11 @@ export function StatesView() {
             To estimate a value function, you need a target. The natural choice is <strong>net revenue retention</strong> (NRR): next-period revenue divided by current-period revenue. NRR has better variance properties than total revenue because it's bounded and normalized. A customer paying $1M/year and one paying $1K/year both have NRR around 1 if they're healthy. Total revenue would be dominated by the large account; NRR treats them symmetrically.
           </p>
           <p>
-            <strong>Explainable boosting machines</strong> (EBMs) are ideal for estimating <InlineMath math="V(s)" /> from state. They're generalized additive models with automatic interaction detection: <InlineMath math="V(s) = \sum_j f_j(s_j) + \sum_{jk} f_{jk}(s_j, s_k)" />. Each state factor gets its own shape function <InlineMath math="f_j" />, learned via gradient boosting. The model detects which pairwise interactions <InlineMath math="f_{jk}" /> are worth including.
+            <strong>Explainable boosting machines</strong> (EBMs) are ideal for estimating <InlineMath math="V(s)" /> from state. They're generalized additive models with automatic interaction detection:
+          </p>
+          <BlockMath math="V(s) = \underbrace{\sum_j f_j(s_j)}_{\text{main effects}} + \underbrace{\sum_{j < k} f_{jk}(s_j, s_k)}_{\text{interactions}}" />
+          <p>
+            Each state factor gets its own shape function <InlineMath math="f_j" />, learned via gradient boosting. The model detects which pairwise interactions <InlineMath math="f_{jk}" /> are worth including.
           </p>
           <p>
             The payoff is decomposition. You can inspect every component: "this is what engagement score does to expected NRR, holding everything else fixed." You can attribute value to factors: 40% from usage depth, 30% from tenure, 20% from support health, 10% from interactions. You can hand a plot to a CS leader and they'll understand it. No post-hoc explanation needed—the model <em>is</em> the explanation.
