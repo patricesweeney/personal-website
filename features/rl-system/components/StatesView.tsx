@@ -38,7 +38,7 @@ export function StatesView() {
             For each customer <InlineMath math="i" /> at each time <InlineMath math="t" />, you observe a vector <InlineMath math="o \in \mathbb{R}^N" />—thousands of features from telemetry, CRM, billing, support. You need to compress it to a state <InlineMath math="s \in \mathbb{R}^M" /> where <InlineMath math="M \ll N" />. The function <InlineMath math="o \mapsto s" /> is the representation.
           </p>
           <p>
-            Ideally, the <InlineMath math="M" /> dimensions correspond to factors humans recognize: engagement, sophistication, purchase intent, satisfaction. If the representation is opaque, you can't inspect it, override it, or explain decisions based on it.
+            Choosing <InlineMath math="M" /> is a tradeoff. More dimensions means more accuracy—the state captures finer distinctions that matter for predicting value. Fewer dimensions means less complexity—the state is parsimonious, interpretable, auditable. You want factors humans recognize (engagement, intent, satisfaction) because you need to inspect them, override them, and explain decisions based on them. A black-box embedding that predicts value perfectly but means nothing to a human is useless for building trust or catching errors.
           </p>
           <p>
             Time complicates this. Customer state isn't a snapshot—it's a trajectory. A customer who logged in yesterday after three months of silence is different from one who logs in daily. The representation must encode history, not just the current observation.
