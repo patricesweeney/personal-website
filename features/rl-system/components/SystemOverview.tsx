@@ -74,6 +74,15 @@ export function SystemOverview() {
       <div className="grid grid-12">
         <div className="span-12">
           <p>
+            The conventional view of a SaaS business is mechanical: find playbooks that work, execute them, scale. Marketing runs campaigns, sales runs demos, CS runs QBRs. Each function optimizes its own metrics. The market is a fixed thing to be conquered with the right tactics.
+          </p>
+          <p>
+            This breaks down because the market isn't fixed—it's a complex system that reacts to you. Competitors copy your positioning. Customers develop expectations. Channels saturate. What worked last quarter stops working. The playbook ossifies into superstition.
+          </p>
+          <p>
+            The alternative is to view the business as a <strong>cybernetic learning system</strong>: an agent that acts on an environment it doesn't fully understand, observes what happens, updates its model, and adapts. The goal isn't to find the right playbook—it's to build the capacity to learn faster than the market changes. Every action is an experiment. Every outcome is evidence. The org's job is to integrate that evidence into better predictions and better decisions.
+          </p>
+          <p>
             A SaaS business is a <strong>loop</strong>:
           </p>
           <ol className="loop-steps">
