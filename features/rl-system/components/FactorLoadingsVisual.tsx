@@ -241,7 +241,7 @@ export function FactorLoadingsVisual() {
             fontFamily="var(--font-geist-sans), system-ui"
             transform={`rotate(-90, 20, ${cvPadding.top + cvPlotHeight / 2})`}
           >
-            Held-out log-likelihood
+            Reconstruction loss
           </text>
           
           {/* X axis label */}

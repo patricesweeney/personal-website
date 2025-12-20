@@ -58,7 +58,7 @@ export function StatesView() {
             For adoption data—did the customer use feature <InlineMath math="j" /> or not—binarize the counts and use Bernoulli-Poisson factorisation:<sup><a href="#ref-2" className="cite">2</a></sup> <InlineMath math="O_{ij} \in \{0,1\}" /> with <InlineMath math="P(O_{ij} = 1) = 1 - e^{-s_i^\top w_j}" />. Same latent structure, but the likelihood matches the binary observation. Useful when frequency doesn't matter, only adoption.
           </p>
           <p>
-            In practice, complexity is the number of factors <InlineMath math="M \in \{1,2,3,4,5\}" />. Choose <InlineMath math="M" /> by held-out log-likelihood on cross-validation—more factors fit better until they start overfitting. To enforce sparsity, use Laplace (L1) priors on the weights: most <InlineMath math="w_{jk}" /> shrink to zero, leaving only the features that matter for each factor.
+            In practice, complexity is the number of factors <InlineMath math="M \in \{1,2,3,4,5\}" />. Choose <InlineMath math="M" /> by reconstruction loss on cross-validation—more factors fit better until they start overfitting. To enforce sparsity, use Laplace (L1) priors on the weights: most <InlineMath math="w_{jk}" /> shrink to zero, leaving only the features that matter for each factor.
           </p>
 
           <FactorLoadingsVisual />
