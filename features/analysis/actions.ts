@@ -53,7 +53,15 @@ export async function uploadAndCreateJob(
 
   // Parse column config if provided
   const columnConfigStr = formData.get('columnConfig') as string | null
-  const columnConfig = columnConfigStr ? JSON.parse(columnConfigStr) : null
+  let columnConfig = null
+  try {
+    columnConfig = columnConfigStr ? JSON.parse(columnConfigStr) : null
+  } catch (e) {
+    console.error('Failed to parse column config:', e)
+    throw new Error('Invalid column configuration')
+  }
+
+  console.log('Creating job with column config:', columnConfig)
 
   // Create job record
   const { data: job, error: jobError } = await supabase
@@ -68,8 +76,11 @@ export async function uploadAndCreateJob(
     .single()
 
   if (jobError) {
+    console.error('Job creation error:', jobError)
     throw new Error(`Job creation failed: ${jobError.message}`)
   }
+  
+  console.log('Job created:', job.id)
 
   // Trigger Edge Function to process the job (fire and forget)
   triggerProcessing(job.id).catch((err) => {

@@ -192,13 +192,22 @@ export function AnalysisPage({ config }: AnalysisPageProps) {
       formData.append("password", password);
       formData.append("columnConfig", JSON.stringify(columnConfig));
 
-      const { jobId: newJobId } = await uploadAndCreateJob(formData, config.type);
-      setJobId(newJobId);
+      console.log("Submitting with config:", columnConfig);
+      const result = await uploadAndCreateJob(formData, config.type);
+      console.log("Upload result:", result);
+      
+      if (!result?.jobId) {
+        throw new Error("No job ID returned from server");
+      }
+      
+      setJobId(result.jobId);
       setStatus("processing");
-      await pollJobStatus(newJobId);
+      await pollJobStatus(result.jobId);
     } catch (err) {
+      console.error("Submit error:", err);
       setStatus("error");
-      setError(err instanceof Error ? err.message : "Upload failed");
+      const message = err instanceof Error ? err.message : String(err);
+      setError(message || "Upload failed - check console for details");
     }
   };
 
