@@ -1,32 +1,37 @@
 """
 Modal App for Analysis Jobs
 
-Deploy with: modal deploy modal_app/app.py
-Dev with:    modal serve modal_app/app.py
+Deploy: modal deploy modal_app/app.py
+Dev:    modal serve modal_app/app.py
 """
 
-import io
-import os
 import modal
-import pandas as pd
 
 app = modal.App("analysis-jobs")
 
-# Shared image with dependencies
+# Image with pinned versions
 image = (
     modal.Image.debian_slim(python_version="3.11")
     .pip_install(
-        "supabase==2.4.0",
+        # Data processing
         "pandas==2.2.0",
         "numpy==1.26.3",
         "scikit-learn==1.4.0",
+        # Web endpoint
         "fastapi",
     )
+    # Install supabase separately to avoid version conflicts
+    .pip_install("supabase==2.4.0")
 )
 
 
+# =============================================================================
+# Database Layer
+# =============================================================================
+
 def get_supabase_client():
     """Create Supabase client with service role credentials."""
+    import os
     from supabase import create_client
     
     url = os.environ.get("SUPABASE_URL")
@@ -43,6 +48,19 @@ def update_progress(supabase, job_id: str, progress: int):
     supabase.table("jobs").update({"progress": progress}).eq("id", job_id).execute()
 
 
+def fail_job(supabase, job_id: str, error_message: str):
+    """Mark job as failed with error message."""
+    supabase.table("jobs").update({
+        "status": "error",
+        "error_message": error_message,
+        "progress": 0,
+    }).eq("id", job_id).execute()
+
+
+# =============================================================================
+# Job Processor
+# =============================================================================
+
 @app.function(
     image=image,
     secrets=[modal.Secret.from_name("supabase-secrets")],
@@ -52,32 +70,38 @@ def process_job(job_id: str) -> dict:
     """
     Process an analysis job with progress updates.
     
-    1. Fetch job from Supabase
-    2. Download CSV
-    3. Run analysis
-    4. Write results back
-    5. Cleanup
+    All errors are caught and written to the job record so the client can display them.
     """
+    import io
+    import pandas as pd
+    import traceback
+    
     supabase = get_supabase_client()
     
-    # 1. Fetch job
-    update_progress(supabase, job_id, 5)
-    response = supabase.table("jobs").select("id, job_type, input_file_path, status").eq("id", job_id).single().execute()
-    job = response.data
-    
-    if not job:
-        raise ValueError(f"Job {job_id} not found")
-    
-    if job["status"] not in ("pending", "running"):
-        return {"status": job["status"], "message": "Job already processed"}
-    
-    # 2. Update status to running
-    supabase.table("jobs").update({"status": "running", "progress": 10}).eq("id", job_id).execute()
-    
     try:
+        # 1. Fetch job
+        update_progress(supabase, job_id, 5)
+        response = supabase.table("jobs").select("id, job_type, input_file_path, status").eq("id", job_id).single().execute()
+        job = response.data
+        
+        if not job:
+            fail_job(supabase, job_id, f"Job {job_id} not found")
+            return {"status": "error", "message": f"Job {job_id} not found"}
+        
+        if job["status"] not in ("pending", "running"):
+            return {"status": job["status"], "message": "Job already processed"}
+        
+        # 2. Update status to running
+        supabase.table("jobs").update({"status": "running", "progress": 10}).eq("id", job_id).execute()
+        
         # 3. Download CSV
         update_progress(supabase, job_id, 20)
         file_path = job["input_file_path"]
+        
+        if not file_path:
+            fail_job(supabase, job_id, "No input file path")
+            return {"status": "error", "message": "No input file path"}
+        
         file_bytes = supabase.storage.from_("analysis-uploads").download(file_path)
         
         update_progress(supabase, job_id, 30)
@@ -85,7 +109,11 @@ def process_job(job_id: str) -> dict:
         
         # 4. Run analysis
         update_progress(supabase, job_id, 40)
-        result = run_analysis(job["job_type"], df, lambda p: update_progress(supabase, job_id, 40 + int(p * 0.5)))
+        result = run_analysis(
+            job["job_type"], 
+            df, 
+            on_progress=lambda p: update_progress(supabase, job_id, 40 + int(p * 50))
+        )
         
         # 5. Write results
         update_progress(supabase, job_id, 95)
@@ -102,36 +130,46 @@ def process_job(job_id: str) -> dict:
         return {"status": "done", "job_id": job_id}
         
     except Exception as e:
-        supabase.table("jobs").update({
-            "status": "error",
-            "error_message": str(e),
-            "progress": 0,
-        }).eq("id", job_id).execute()
-        raise
+        # Capture full traceback for debugging
+        error_msg = f"{type(e).__name__}: {str(e)}"
+        print(f"Job {job_id} failed: {error_msg}")
+        print(traceback.format_exc())
+        
+        # Write error to job so client can display it
+        fail_job(supabase, job_id, error_msg)
+        
+        return {"status": "error", "job_id": job_id, "error": error_msg}
 
 
-def run_analysis(job_type: str, df: pd.DataFrame, on_progress=None) -> dict:
+# =============================================================================
+# Analysis Runners
+# =============================================================================
+
+def run_analysis(job_type: str, df, on_progress=None) -> dict:
     """Dispatch to analysis handler based on job_type."""
+    import pandas as pd
+    
     base = {
         "processed_at": pd.Timestamp.now().isoformat(),
         "input_rows": len(df),
         "input_columns": list(df.columns),
     }
     
-    # Report progress during analysis (0.0 to 1.0 maps to 40% to 90% of total)
     if on_progress:
         on_progress(0.1)
     
-    if job_type == "poisson_factorization":
-        result = poisson_factorization(df)
-    elif job_type == "survival_analysis":
-        result = survival_analysis(df)
-    elif job_type == "nrr_decomposition":
-        result = nrr_decomposition(df)
-    elif job_type == "propensity_model":
-        result = propensity_model(df)
+    handlers = {
+        "poisson_factorization": _run_poisson,
+        "survival_analysis": _run_survival,
+        "nrr_decomposition": _run_nrr,
+        "propensity_model": _run_propensity,
+    }
+    
+    handler = handlers.get(job_type)
+    if handler:
+        result = handler(df)
     else:
-        result = {"type": "unknown", "message": "Unknown job type"}
+        result = {"type": "unknown", "error": f"Unknown job type: {job_type}"}
     
     if on_progress:
         on_progress(1.0)
@@ -139,7 +177,7 @@ def run_analysis(job_type: str, df: pd.DataFrame, on_progress=None) -> dict:
     return {**base, **result}
 
 
-def poisson_factorization(df: pd.DataFrame) -> dict:
+def _run_poisson(df) -> dict:
     """Poisson factorization using NMF."""
     from sklearn.decomposition import NMF
     
@@ -160,7 +198,7 @@ def poisson_factorization(df: pd.DataFrame) -> dict:
     }
 
 
-def survival_analysis(df: pd.DataFrame) -> dict:
+def _run_survival(df) -> dict:
     """Survival analysis placeholder."""
     return {
         "type": "survival_analysis",
@@ -169,7 +207,7 @@ def survival_analysis(df: pd.DataFrame) -> dict:
     }
 
 
-def nrr_decomposition(df: pd.DataFrame) -> dict:
+def _run_nrr(df) -> dict:
     """NRR decomposition placeholder."""
     return {
         "type": "nrr_decomposition",
@@ -178,7 +216,7 @@ def nrr_decomposition(df: pd.DataFrame) -> dict:
     }
 
 
-def propensity_model(df: pd.DataFrame) -> dict:
+def _run_propensity(df) -> dict:
     """Propensity model placeholder."""
     return {
         "type": "propensity_model",
@@ -187,17 +225,24 @@ def propensity_model(df: pd.DataFrame) -> dict:
     }
 
 
-# --- Webhook Trigger ---
+# =============================================================================
+# Web Endpoint
+# =============================================================================
 
 @app.function(image=image)
 @modal.fastapi_endpoint(method="POST")
 def trigger(payload: dict) -> dict:
-    """Webhook to trigger job processing. Called from Next.js."""
+    """
+    Webhook to trigger job processing.
+    
+    Called from Next.js server action. Spawns job asynchronously and returns immediately.
+    """
     job_id = payload.get("jobId")
     
     if not job_id:
-        return {"error": "jobId required"}
+        return {"error": "jobId required", "status": "error"}
     
+    # Fire and forget
     process_job.spawn(job_id)
     
     return {"status": "triggered", "jobId": job_id}
