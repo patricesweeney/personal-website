@@ -42,6 +42,17 @@ export function StatesView() {
           </p>
           <StateSpaceVisual />
 
+          <h3 id="poisson-factorisation">Poisson factorisation</h3>
+          <p>
+            Customer event data is counts: logins per week, features used per session, tickets opened per month. <strong>Poisson factorisation</strong> decomposes a count matrix into latent factors, assuming each count is Poisson-distributed with a rate determined by the product of user and item factors.
+          </p>
+          <p>
+            For a matrix <InlineMath math="X" /> of customers × events, you learn <InlineMath math="X_{ij} \sim \text{Poisson}(\theta_i^\top \beta_j)" /> where <InlineMath math="\theta_i" /> is customer <InlineMath math="i" />'s latent profile and <InlineMath math="\beta_j" /> characterizes event type <InlineMath math="j" />. The <InlineMath math="\theta_i" /> vectors are your state representations.
+          </p>
+          <p>
+            The advantage over PCA or autoencoders: Poisson is the right likelihood for count data. Zeros are meaningful (the customer didn't do something), and the model handles sparse, skewed distributions naturally. The factors are also non-negative, which makes them easier to interpret—a customer has "more" or "less" of each latent trait.
+          </p>
+
           <h3 id="sequence-encoders">Sequence encoders</h3>
           <p>
             Customer behavior unfolds over time: logins, clicks, tickets, payments. A sequence encoder compresses this history into a fixed-length vector—a state you can condition decisions on.
