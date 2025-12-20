@@ -24,6 +24,11 @@ const SurvivalVisual = dynamic(
   { ssr: false }
 );
 
+const FrailtyVisual = dynamic(
+  () => import("./FrailtyVisual").then((mod) => mod.FrailtyVisual),
+  { ssr: false }
+);
+
 export function StatesView() {
   return (
     <section className="section" style={{ paddingTop: "var(--space-6)" }}>
@@ -100,6 +105,8 @@ export function StatesView() {
           <p>
             Note: this models <em>incidence</em>—whether and when an event happens—not <em>amount</em>. If a customer expands, how much? That's a separate model (e.g., a regression on expansion size, conditional on expansion occurring). For CLV you need both: the probability of expansion and the expected magnitude.
           </p>
+
+          <FrailtyVisual />
 
           <h3 id="explainable-boosting-machines">Explainable boosting machines</h3>
           <p>
