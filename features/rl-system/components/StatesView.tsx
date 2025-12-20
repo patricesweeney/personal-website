@@ -87,6 +87,14 @@ export function StatesView() {
 
           <SurvivalVisual />
 
+          <h3 id="frailty-models">Frailty models</h3>
+          <p>
+            Not all variation in churn risk is explained by observed features. <strong>Frailty models</strong> add a random effect <InlineMath math="z_i" /> per customer: <InlineMath math="h(t|s_i, z_i) = z_i \cdot h_0(t)\exp(s_i^\top w)" />. The frailty <InlineMath math="z_i" /> captures unobserved heterogeneity—some customers are inherently more likely to churn, for reasons you can't measure.
+          </p>
+          <p>
+            Typically <InlineMath math="z_i \sim \text{Gamma}(\theta, \theta)" /> with mean 1 and variance <InlineMath math="1/\theta" />. High <InlineMath math="\theta" /> means frailties are concentrated (observed features explain most variation). Low <InlineMath math="\theta" /> means wide dispersion (lots of unexplained heterogeneity). Ignoring frailty biases your hazard estimates and understates uncertainty.
+          </p>
+
           <h3 id="sequence-encoders">Sequence encoders</h3>
           <p>
             Customer behavior unfolds over time: logins, clicks, tickets, payments. A sequence encoder compresses this history into a fixed-length vector—a state you can condition decisions on.
