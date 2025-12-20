@@ -106,26 +106,19 @@ export function FrailtyVisual() {
 
   return (
     <div className="frailty-container">
-      <div className="controls-row">
+      <div className="chart-wrapper">
         <div className="correlation-control">
-          <span className="control-label">Correlation</span>
-          <div className="slider-row">
-            <span className="slider-end">−1</span>
-            <input
-              type="range"
-              min="-0.9"
-              max="0.9"
-              step="0.05"
-              value={correlation}
-              onChange={(e) => setCorrelation(parseFloat(e.target.value))}
-            />
-            <span className="slider-end">+1</span>
-          </div>
+          <span className="control-label">Correlation:</span>
+          <input
+            type="range"
+            min="-0.9"
+            max="0.9"
+            step="0.05"
+            value={correlation}
+            onChange={(e) => setCorrelation(parseFloat(e.target.value))}
+          />
           <span className="correlation-value">{correlation.toFixed(2)}</span>
         </div>
-      </div>
-      
-      <div className="chart-wrapper">
         <svg viewBox={`0 0 ${width} ${height}`} className="frailty-svg">
           {/* Background */}
           <rect
@@ -327,57 +320,37 @@ export function FrailtyVisual() {
           margin: var(--space-6) 0;
         }
         
-        .controls-row {
-          display: flex;
-          justify-content: center;
-          margin-bottom: var(--space-4);
-        }
-        
         .correlation-control {
           display: flex;
-          flex-direction: column;
           align-items: center;
+          justify-content: flex-end;
           gap: var(--space-2);
-          padding: var(--space-3) var(--space-5);
-          background: var(--card-bg, #fafafa);
-          border-radius: 8px;
-          border: 1px solid var(--border);
+          margin-bottom: var(--space-2);
+          padding-right: 60px;
         }
         
         .control-label {
-          font-size: 12px;
-          font-weight: 500;
-          color: var(--muted);
-          text-transform: uppercase;
-          letter-spacing: 0.5px;
-        }
-        
-        .slider-row {
-          display: flex;
-          align-items: center;
-          gap: var(--space-2);
-        }
-        
-        .slider-end {
           font-size: 11px;
           color: var(--muted);
-          font-family: var(--font-geist-mono), monospace;
-          width: 20px;
-          text-align: center;
         }
         
         .correlation-control input[type="range"] {
-          width: 180px;
-          height: 6px;
-          accent-color: var(--fg);
+          width: 100px;
+          height: 4px;
+          accent-color: var(--muted);
           cursor: pointer;
+          opacity: 0.7;
+        }
+        
+        .correlation-control input[type="range"]:hover {
+          opacity: 1;
         }
         
         .correlation-value {
-          font-size: 18px;
+          font-size: 11px;
           font-family: var(--font-geist-mono), monospace;
-          font-weight: 600;
-          color: var(--fg);
+          color: var(--muted);
+          min-width: 36px;
         }
         
         .chart-wrapper {
