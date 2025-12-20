@@ -113,7 +113,7 @@ export function StatesView() {
 
           <FrailtyVisual />
 
-          <h3 id="explainable-boosting-machines">Explainable boosting machines</h3>
+          <h3 id="nrr-decompositions">NRR decompositions</h3>
           <p>
             To estimate a value function, you need a target. The natural choice is <strong>net revenue retention</strong> (NRR): next-period revenue divided by current-period revenue. NRR has better variance properties than total revenue because it's bounded and normalized. A customer paying $1M/year and one paying $1K/year both have NRR around 1 if they're healthy. Total revenue would be dominated by the large account; NRR treats them symmetrically.
           </p>

@@ -38,7 +38,7 @@ const navItems: NavItem[] = [
       { id: "poisson-factorisation", label: "Poisson factorisation" },
       { id: "survival-models", label: "Survival models" },
       { id: "frailty-models", label: "Frailty models" },
-      { id: "explainable-boosting-machines", label: "Explainable boosting machines" },
+      { id: "nrr-decompositions", label: "NRR decompositions" },
     ]
   },
   {
