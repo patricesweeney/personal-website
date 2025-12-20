@@ -26,7 +26,21 @@ export function StatesView() {
           </p>
           <ObservationsMindMap />
 
-          <h3 id="sequence-encoders" style={{ marginTop: "var(--space-8)" }}>Sequence encoders</h3>
+          <h3 id="representation-learning" style={{ marginTop: "var(--space-8)" }}>Representation learning</h3>
+          <p>
+            For each customer <em>i</em> at each time <em>t</em>, you observe a vector in <strong>ℝ<sup>N</sup></strong>—thousands of features from telemetry, CRM, billing, support. You need to compress it to <strong>ℝ<sup>M</sup></strong> where <em>M</em> ≪ <em>N</em>. That compression is the representation.
+          </p>
+          <p>
+            Ideally, the <em>M</em> dimensions correspond to factors humans recognize: engagement, sophistication, purchase intent, satisfaction. If the representation is opaque, you can't inspect it, override it, or explain decisions based on it.
+          </p>
+          <p>
+            Time complicates this. Customer state isn't a snapshot—it's a trajectory. A customer who logged in yesterday after three months of silence is different from one who logs in daily. The representation must encode history, not just the current observation.
+          </p>
+          <p>
+            Scale complicates it further. You have thousands of customers, each with their own trajectory. The representation must generalize: learn shared structure across customers while capturing individual differences. Pool too aggressively and you miss heterogeneity. Pool too little and you overfit to noise.
+          </p>
+
+          <h3 id="sequence-encoders">Sequence encoders</h3>
           <p>
             Customer behavior unfolds over time: logins, clicks, tickets, payments. A sequence encoder compresses this history into a fixed-length vector—a state you can condition decisions on.
           </p>
