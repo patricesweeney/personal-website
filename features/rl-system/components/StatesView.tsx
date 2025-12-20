@@ -52,6 +52,12 @@ export function StatesView() {
           <p>
             The advantage over PCA or autoencoders: Poisson is the right likelihood for count data. Zeros are meaningful (the customer didn't do something), and the model handles sparse, skewed distributions naturally. The factors are also non-negative, which makes them easier to interpret—a customer has "more" or "less" of each latent trait.
           </p>
+          <p>
+            The limitation: no memory. Poisson factorisation sees counts aggregated over a window—it doesn't know what order events happened in. A customer who churned then re-engaged looks identical to one who engaged then churned. For static segmentation, this is fine. For trajectory-dependent decisions, you need sequence models.
+          </p>
+          <p>
+            What you get: a low-dimensional vector <InlineMath math="\theta_i" /> per customer, updated as new counts arrive. Accuracy is held-out log-likelihood—how well does the model predict counts it hasn't seen? Complexity is the rank <InlineMath math="M" />. Cross-validate to find the elbow where more factors stop improving prediction.
+          </p>
 
           <h3 id="sequence-encoders">Sequence encoders</h3>
           <p>
