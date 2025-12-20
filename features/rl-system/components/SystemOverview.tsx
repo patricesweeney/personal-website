@@ -74,10 +74,10 @@ export function SystemOverview() {
       <div className="grid grid-12">
         <div className="span-12">
           <p>
-            The default way to run a SaaS company is to find things that work, codify them into playbooks, and scale execution. But the market isn't static. Competitors copy you. Customers change. Channels saturate. Last year's playbook becomes this year's cargo cult.
+            Most SaaS companies codify what works into playbooks, then scale execution. But competitors copy. Customers change. Channels fill up. Playbooks decay.
           </p>
           <p>
-            A better frame: treat the business as a <strong>learning system</strong>. You're an agent acting on an environment you don't fully understand. You try things, observe outcomes, update your model, try again. The goal isn't to discover the right playbook—it's to build an organization that learns faster than its environment changes.
+            A SaaS business is a <strong>learning system</strong>. You act on a market you don't fully understand, watch what happens, update your beliefs, and act again. To win, learn faster than the market changes.
           </p>
           <p>
             A SaaS business is a <strong>loop</strong>:
