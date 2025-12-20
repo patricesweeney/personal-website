@@ -9,6 +9,11 @@ const ObservationsMindMap = dynamic(
   { ssr: false }
 );
 
+const StateSpaceVisual = dynamic(
+  () => import("./StateSpaceVisual").then((mod) => mod.StateSpaceVisual),
+  { ssr: false }
+);
+
 export function StatesView() {
   return (
     <section className="section" style={{ paddingTop: "var(--space-6)" }}>
@@ -41,6 +46,8 @@ export function StatesView() {
           <p>
             Scale complicates it further. You have thousands of customers, each with their own trajectory. The representation must generalize: learn shared structure across customers while capturing individual differences. Pool too aggressively and you miss heterogeneity. Pool too little and you overfit to noise.
           </p>
+
+          <StateSpaceVisual />
 
           <h3 id="sequence-encoders">Sequence encoders</h3>
           <p>
