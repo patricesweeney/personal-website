@@ -2,7 +2,7 @@
 
 import { useRef, useMemo } from "react";
 import { Canvas, useFrame } from "@react-three/fiber";
-import { OrbitControls, Text } from "@react-three/drei";
+import { OrbitControls, Text, Line } from "@react-three/drei";
 import * as THREE from "three";
 
 // Customer trajectory (same as 2D)
@@ -83,7 +83,6 @@ function ValueSurface() {
 }
 
 function CustomerPath() {
-  const lineRef = useRef<THREE.Line>(null);
   const sphereRef = useRef<THREE.Mesh>(null);
   const timeRef = useRef(0);
   
@@ -101,9 +100,8 @@ function CustomerPath() {
     return new THREE.CatmullRomCurve3(points);
   }, [points]);
   
-  const lineGeometry = useMemo(() => {
-    const curvePoints = curve.getPoints(50);
-    return new THREE.BufferGeometry().setFromPoints(curvePoints);
+  const linePoints = useMemo(() => {
+    return curve.getPoints(50).map(p => [p.x, p.y, p.z] as [number, number, number]);
   }, [curve]);
   
   useFrame((state, delta) => {
@@ -118,9 +116,7 @@ function CustomerPath() {
 
   return (
     <>
-      <line ref={lineRef} geometry={lineGeometry}>
-        <lineBasicMaterial color="#1a1a1a" linewidth={2} />
-      </line>
+      <Line points={linePoints} color="#1a1a1a" lineWidth={2} />
       {/* Trajectory points */}
       {points.map((point, idx) => (
         <mesh key={idx} position={point}>
