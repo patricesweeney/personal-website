@@ -6,7 +6,7 @@ import { useState, useMemo } from "react";
 function generateCustomers(n: number, correlation: number): Array<{
   id: number;
   expandFrailty: number;
-  churnFrailty: number;
+  retentionFrailty: number;
   value: number;
 }> {
   const customers = [];
@@ -26,15 +26,15 @@ function generateCustomers(n: number, correlation: number): Array<{
     
     // Apply Cholesky to get correlated values
     const expandFrailty = z1;
-    const churnFrailty = correlation * z1 + Math.sqrt(1 - correlation * correlation) * z2;
+    const retentionFrailty = correlation * z1 + Math.sqrt(1 - correlation * correlation) * z2;
     
-    // Value is higher when expand frailty is high and churn frailty is low
-    const value = expandFrailty - churnFrailty;
+    // Value is higher when both expand and retention are high
+    const value = expandFrailty + retentionFrailty;
     
     customers.push({
       id: i,
       expandFrailty,
-      churnFrailty,
+      retentionFrailty,
       value,
     });
   }
@@ -43,7 +43,7 @@ function generateCustomers(n: number, correlation: number): Array<{
 }
 
 export function FrailtyVisual() {
-  const [correlation, setCorrelation] = useState(-0.6);
+  const [correlation, setCorrelation] = useState(0.6);
   const [hoveredCustomer, setHoveredCustomer] = useState<number | null>(null);
   
   const customers = useMemo(() => generateCustomers(80, correlation), [correlation]);
@@ -175,7 +175,7 @@ export function FrailtyVisual() {
                 {isHovered && (
                   <circle
                     cx={scaleX(c.expandFrailty)}
-                    cy={scaleY(c.churnFrailty)}
+                    cy={scaleY(c.retentionFrailty)}
                     r={16}
                     fill={valueToColor(c.value, 0.15)}
                     className="hover-ring"
@@ -183,7 +183,7 @@ export function FrailtyVisual() {
                 )}
                 <circle
                   cx={scaleX(c.expandFrailty)}
-                  cy={scaleY(c.churnFrailty)}
+                  cy={scaleY(c.retentionFrailty)}
                   r={isHovered ? 7 : 5}
                   fill={valueToColor(c.value)}
                   stroke={isHovered ? "var(--fg)" : "rgba(255,255,255,0.8)"}
@@ -218,7 +218,7 @@ export function FrailtyVisual() {
             fontWeight="500"
             transform={`rotate(-90, 25, ${padding.top + plotHeight / 2})`}
           >
-            Churn propensity
+            Retention propensity
           </text>
           
           {/* Axis endpoints */}
@@ -233,7 +233,7 @@ export function FrailtyVisual() {
               ★ Best customers
             </text>
             <text x={width - padding.right - 8} y={padding.top + 30} textAnchor="end" fontSize="9" fill="var(--muted)">
-              expand often, rarely churn
+              expand often, stick around
             </text>
           </g>
           <g className="corner-label" opacity="0.7">
@@ -241,7 +241,7 @@ export function FrailtyVisual() {
               ✗ At risk
             </text>
             <text x={padding.left + 8} y={height - padding.bottom - 6} textAnchor="start" fontSize="9" fill="var(--muted)">
-              don't expand, likely to churn
+              don't expand, likely to leave
             </text>
           </g>
           
@@ -276,7 +276,7 @@ export function FrailtyVisual() {
             className="tooltip"
             style={{
               left: scaleX(hoveredData.expandFrailty) + 15,
-              top: scaleY(hoveredData.churnFrailty) - 10,
+              top: scaleY(hoveredData.retentionFrailty) - 10,
             }}
           >
             <div className="tooltip-row">
@@ -286,9 +286,9 @@ export function FrailtyVisual() {
               </span>
             </div>
             <div className="tooltip-row">
-              <span className="tooltip-label">Churn</span>
-              <span className="tooltip-value" style={{ color: hoveredData.churnFrailty > 0 ? "#f87171" : "#4ade80" }}>
-                {hoveredData.churnFrailty > 0 ? "+" : ""}{hoveredData.churnFrailty.toFixed(2)}
+              <span className="tooltip-label">Retention</span>
+              <span className="tooltip-value" style={{ color: hoveredData.retentionFrailty > 0 ? "#4ade80" : "#f87171" }}>
+                {hoveredData.retentionFrailty > 0 ? "+" : ""}{hoveredData.retentionFrailty.toFixed(2)}
               </span>
             </div>
             <div className="tooltip-divider" />
@@ -307,11 +307,11 @@ export function FrailtyVisual() {
           Each dot is a customer. {getCorrelationLabel()} frailties shape the distribution.
         </span>
         <span className="caption-detail">
-          {correlation < -0.3 
-            ? "When expansion and churn are negatively correlated, the best customers cluster in the bottom-right."
-            : correlation > 0.3
-            ? "When frailties are positively correlated, volatile customers are volatile in both directions."
-            : "With weak correlation, expansion and churn propensities are nearly independent."}
+          {correlation > 0.3 
+            ? "When expansion and retention are positively correlated, the best customers cluster in the top-right."
+            : correlation < -0.3
+            ? "When frailties are negatively correlated, customers who expand tend to churn."
+            : "With weak correlation, expansion and retention propensities are nearly independent."}
         </span>
       </div>
 
