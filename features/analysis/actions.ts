@@ -6,6 +6,7 @@ import type { JobType, AnalysisResult, UploadResult } from './types'
 const STORAGE_BUCKET = 'analysis-uploads'
 const MAX_DAILY_JOBS = 50
 const MAX_FILE_SIZE_MB = 10
+const DEMO_PASSWORD = process.env.DEMO_PASSWORD || 'leo'
 
 /**
  * Upload a CSV file to Supabase Storage and create a job record
@@ -15,6 +16,12 @@ export async function uploadAndCreateJob(
   jobType: JobType
 ): Promise<UploadResult> {
   const supabase = await createServerSupabaseClient()
+
+  // Password gate
+  const password = formData.get('password') as string
+  if (password !== DEMO_PASSWORD) {
+    throw new Error('Invalid access code')
+  }
   
   const file = formData.get('file') as File
   if (!file) {

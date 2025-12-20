@@ -36,6 +36,7 @@ export function UploadDemo() {
   const [jobId, setJobId] = useState<string | null>(null);
   const [result, setResult] = useState<unknown>(null);
   const [error, setError] = useState<string | null>(null);
+  const [password, setPassword] = useState("");
 
   const handleDragOver = useCallback((e: React.DragEvent) => {
     e.preventDefault();
@@ -107,6 +108,10 @@ export function UploadDemo() {
 
   const handleSubmit = async () => {
     if (!file) return;
+    if (!password.trim()) {
+      setError("Access code required");
+      return;
+    }
 
     setStatus("uploading");
     setError(null);
@@ -114,6 +119,7 @@ export function UploadDemo() {
     try {
       const formData = new FormData();
       formData.append("file", file);
+      formData.append("password", password);
 
       const { jobId: newJobId } = await uploadAndCreateJob(formData, selectedType);
       setJobId(newJobId);
@@ -133,6 +139,7 @@ export function UploadDemo() {
     setJobId(null);
     setResult(null);
     setError(null);
+    setPassword("");
   };
 
   return (
@@ -198,6 +205,15 @@ export function UploadDemo() {
             <p className="text-xs text-[var(--muted)] mb-4">
               {(file.size / 1024).toFixed(1)} KB
             </p>
+            <div className="mb-4">
+              <input
+                type="password"
+                placeholder="Access code"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                className="w-full max-w-[200px] px-3 py-2 border border-[var(--border)] rounded-md text-[13px] text-center bg-[var(--bg)] text-[var(--fg)] placeholder:text-[var(--muted)] focus:outline-none focus:border-[var(--fg)]"
+              />
+            </div>
             <div className="flex gap-2 justify-center">
               <button 
                 className="px-4 py-2 bg-[var(--fg)] text-[var(--bg)] border-none rounded-md text-[13px] font-medium cursor-pointer transition-opacity duration-150 hover:opacity-90"
