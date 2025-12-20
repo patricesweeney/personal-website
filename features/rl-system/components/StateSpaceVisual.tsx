@@ -1,49 +1,62 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
-import "katex/dist/katex.min.css";
-import { InlineMath } from "react-katex";
 
 // Customer trajectory through state space
 const trajectory = [
-  { x: 0.15, y: 0.8 },   // Start: low engagement, low value
-  { x: 0.25, y: 0.7 },
-  { x: 0.35, y: 0.55 },
-  { x: 0.45, y: 0.45 },
-  { x: 0.55, y: 0.4 },
-  { x: 0.65, y: 0.35 },
-  { x: 0.75, y: 0.25 },
-  { x: 0.85, y: 0.2 },   // End: high engagement, high value
+  { x: 0.12, y: 0.85 },
+  { x: 0.2, y: 0.72 },
+  { x: 0.32, y: 0.58 },
+  { x: 0.44, y: 0.48 },
+  { x: 0.54, y: 0.38 },
+  { x: 0.66, y: 0.3 },
+  { x: 0.78, y: 0.22 },
+  { x: 0.88, y: 0.15 },
 ];
 
-// Value function: higher in bottom-right (high s1, low s2 inverted for display)
+// Value function: higher toward bottom-right
 function valueAt(x: number, y: number): number {
-  // V increases with s1 and s2 (y is inverted in SVG)
   const s1 = x;
   const s2 = 1 - y;
   return 0.3 * s1 + 0.5 * s2 + 0.2 * s1 * s2;
 }
 
+// Green → White → Red color scale
+function valueToColor(v: number): string {
+  const t = Math.min(1, Math.max(0, v));
+  
+  if (t >= 0.5) {
+    // White to green (0.5 → 1.0)
+    const p = (t - 0.5) * 2;
+    const r = Math.round(255 - p * 200);
+    const g = Math.round(255 - p * 60);
+    const b = Math.round(255 - p * 180);
+    return `rgb(${r}, ${g}, ${b})`;
+  } else {
+    // Red to white (0.0 → 0.5)
+    const p = t * 2;
+    const r = Math.round(220 + p * 35);
+    const g = Math.round(80 + p * 175);
+    const b = Math.round(80 + p * 175);
+    return `rgb(${r}, ${g}, ${b})`;
+  }
+}
+
 export function StateSpaceVisual() {
-  const [activePoint, setActivePoint] = useState<number | null>(null);
   const [isAnimating, setIsAnimating] = useState(true);
   const [currentPointIndex, setCurrentPointIndex] = useState(0);
 
-  // Animate through trajectory
   useEffect(() => {
     if (!isAnimating) return;
     const interval = setInterval(() => {
       setCurrentPointIndex((prev) => (prev + 1) % trajectory.length);
-    }, 1200);
+    }, 1000);
     return () => clearInterval(interval);
   }, [isAnimating]);
 
-  // Generate contour lines
-  const contourLevels = [0.2, 0.35, 0.5, 0.65, 0.8];
-  
-  // Generate grid for value field visualization
-  const gridSize = 20;
+  // Generate grid
+  const gridSize = 32;
   const cells: { x: number; y: number; value: number }[] = [];
   for (let i = 0; i < gridSize; i++) {
     for (let j = 0; j < gridSize; j++) {
@@ -53,128 +66,80 @@ export function StateSpaceVisual() {
     }
   }
 
-  const width = 400;
+  const width = 480;
   const height = 400;
-  const padding = 50;
-  const plotWidth = width - padding * 2;
-  const plotHeight = height - padding * 2;
+  const paddingLeft = 70;
+  const paddingRight = 70;
+  const paddingTop = 40;
+  const paddingBottom = 60;
+  const plotWidth = width - paddingLeft - paddingRight;
+  const plotHeight = height - paddingTop - paddingBottom;
 
-  const toSvgX = (x: number) => padding + x * plotWidth;
-  const toSvgY = (y: number) => padding + y * plotHeight;
+  const toSvgX = (x: number) => paddingLeft + x * plotWidth;
+  const toSvgY = (y: number) => paddingTop + y * plotHeight;
 
-  // Create path string for trajectory
   const pathD = trajectory
     .map((p, i) => `${i === 0 ? "M" : "L"} ${toSvgX(p.x)} ${toSvgY(p.y)}`)
     .join(" ");
 
-  // Color scale for value (green = high value)
-  const valueToColor = (v: number) => {
-    const t = Math.min(1, Math.max(0, v));
-    const r = Math.round(30 + (1 - t) * 60);
-    const g = Math.round(80 + t * 100);
-    const b = Math.round(60 + (1 - t) * 40);
-    return `rgb(${r}, ${g}, ${b})`;
-  };
-
   const currentPoint = trajectory[currentPointIndex];
   const currentValue = valueAt(currentPoint.x, currentPoint.y);
+  const s1Display = currentPoint.x.toFixed(2);
+  const s2Display = (1 - currentPoint.y).toFixed(2);
 
   return (
     <div className="state-space-container">
       <svg
         viewBox={`0 0 ${width} ${height}`}
         className="state-space-svg"
-        style={{ maxWidth: width, width: "100%", height: "auto" }}
       >
-        <defs>
-          <marker
-            id="arrow-state"
-            markerWidth="8"
-            markerHeight="6"
-            refX="7"
-            refY="3"
-            orient="auto"
-          >
-            <polygon points="0 0, 8 3, 0 6" fill="var(--muted)" />
-          </marker>
-        </defs>
+        {/* Background */}
+        <rect
+          x={paddingLeft}
+          y={paddingTop}
+          width={plotWidth}
+          height={plotHeight}
+          fill="var(--bg)"
+          rx="4"
+        />
 
-        {/* Value field (heatmap cells) */}
+        {/* Value field */}
         {cells.map((cell, i) => (
           <rect
             key={i}
             x={toSvgX(cell.x) - plotWidth / gridSize / 2}
             y={toSvgY(cell.y) - plotHeight / gridSize / 2}
-            width={plotWidth / gridSize}
-            height={plotHeight / gridSize}
+            width={plotWidth / gridSize + 0.5}
+            height={plotHeight / gridSize + 0.5}
             fill={valueToColor(cell.value)}
-            opacity={0.6}
+            opacity={0.85}
           />
         ))}
 
-        {/* Contour lines */}
-        {contourLevels.map((level, idx) => {
-          // Approximate contour as diagonal lines
-          const offset = (1 - level) * 0.8;
-          return (
-            <line
-              key={idx}
-              x1={toSvgX(offset)}
-              y1={toSvgY(1)}
-              x2={toSvgX(1)}
-              y2={toSvgY(offset)}
-              stroke="var(--bg)"
-              strokeWidth="1"
-              strokeOpacity={0.5}
-              strokeDasharray="4,4"
-            />
-          );
-        })}
-
-        {/* Axes */}
-        <line
-          x1={padding}
-          y1={height - padding}
-          x2={width - padding + 10}
-          y2={height - padding}
-          stroke="var(--muted)"
-          strokeWidth="1.5"
-          markerEnd="url(#arrow-state)"
-        />
-        <line
-          x1={padding}
-          y1={height - padding}
-          x2={padding}
-          y2={padding - 10}
-          stroke="var(--muted)"
-          strokeWidth="1.5"
-          markerEnd="url(#arrow-state)"
+        {/* Border */}
+        <rect
+          x={paddingLeft}
+          y={paddingTop}
+          width={plotWidth}
+          height={plotHeight}
+          fill="none"
+          stroke="var(--border)"
+          strokeWidth="1"
+          rx="4"
         />
 
-        {/* Axis labels */}
-        <text
-          x={width - padding + 20}
-          y={height - padding + 5}
-          fontSize="14"
-          fill="var(--fg)"
-          fontFamily="var(--font-geist-sans), system-ui"
-          fontStyle="italic"
-        >
-          s₁
-        </text>
-        <text
-          x={padding - 5}
-          y={padding - 20}
-          fontSize="14"
-          fill="var(--fg)"
-          fontFamily="var(--font-geist-sans), system-ui"
-          fontStyle="italic"
-          textAnchor="middle"
-        >
-          s₂
-        </text>
-
-        {/* Customer trajectory path */}
+        {/* Trajectory path */}
+        <motion.path
+          d={pathD}
+          fill="none"
+          stroke="rgba(0,0,0,0.6)"
+          strokeWidth="3"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          initial={{ pathLength: 0 }}
+          animate={{ pathLength: 1 }}
+          transition={{ duration: 2.5, ease: "easeOut" }}
+        />
         <motion.path
           d={pathD}
           fill="none"
@@ -184,97 +149,130 @@ export function StateSpaceVisual() {
           strokeLinejoin="round"
           initial={{ pathLength: 0 }}
           animate={{ pathLength: 1 }}
-          transition={{ duration: 2, ease: "easeOut" }}
+          transition={{ duration: 2.5, ease: "easeOut" }}
         />
 
         {/* Trajectory points */}
         {trajectory.map((point, idx) => (
-          <circle
-            key={idx}
-            cx={toSvgX(point.x)}
-            cy={toSvgY(point.y)}
-            r={idx === currentPointIndex ? 8 : 4}
-            fill={idx <= currentPointIndex ? "var(--fg)" : "var(--border)"}
-            stroke="var(--bg)"
-            strokeWidth="2"
-            style={{ cursor: "pointer", transition: "r 0.2s, fill 0.2s" }}
-            onMouseEnter={() => {
-              setActivePoint(idx);
-              setIsAnimating(false);
-            }}
-            onMouseLeave={() => {
-              setActivePoint(null);
-              setIsAnimating(true);
-            }}
-          />
+          <g key={idx}>
+            <circle
+              cx={toSvgX(point.x)}
+              cy={toSvgY(point.y)}
+              r={idx === currentPointIndex ? 10 : 5}
+              fill="rgba(0,0,0,0.3)"
+              transform="translate(1, 1)"
+            />
+            <circle
+              cx={toSvgX(point.x)}
+              cy={toSvgY(point.y)}
+              r={idx === currentPointIndex ? 10 : 5}
+              fill={idx <= currentPointIndex ? "var(--fg)" : "rgba(255,255,255,0.8)"}
+              stroke="var(--fg)"
+              strokeWidth={idx === currentPointIndex ? 3 : 1.5}
+              style={{ cursor: "pointer", transition: "all 0.3s ease" }}
+              onMouseEnter={() => setIsAnimating(false)}
+              onMouseLeave={() => setIsAnimating(true)}
+            />
+          </g>
         ))}
 
-        {/* Current position indicator */}
+        {/* Pulse on current point */}
         <motion.circle
           cx={toSvgX(currentPoint.x)}
           cy={toSvgY(currentPoint.y)}
-          r={12}
+          r={16}
           fill="none"
           stroke="var(--fg)"
           strokeWidth="2"
-          opacity={0.5}
-          initial={{ scale: 0.8, opacity: 0 }}
-          animate={{ scale: 1.2, opacity: 0 }}
-          transition={{ duration: 1, repeat: Infinity }}
+          initial={{ scale: 0.6, opacity: 0.8 }}
+          animate={{ scale: 1.4, opacity: 0 }}
+          transition={{ duration: 1.2, repeat: Infinity, ease: "easeOut" }}
         />
 
-        {/* Value colorbar */}
+        {/* X-axis label */}
+        <text
+          x={paddingLeft + plotWidth / 2}
+          y={height - 15}
+          fontSize="13"
+          fill="var(--fg)"
+          fontFamily="var(--font-geist-sans), system-ui"
+          textAnchor="middle"
+          fontWeight="500"
+        >
+          State 1
+        </text>
+
+        {/* Y-axis label */}
+        <text
+          x={20}
+          y={paddingTop + plotHeight / 2}
+          fontSize="13"
+          fill="var(--fg)"
+          fontFamily="var(--font-geist-sans), system-ui"
+          textAnchor="middle"
+          fontWeight="500"
+          transform={`rotate(-90, 20, ${paddingTop + plotHeight / 2})`}
+        >
+          State 2
+        </text>
+
+        {/* Colorbar */}
         <defs>
-          <linearGradient id="valueGradient" x1="0%" y1="100%" x2="0%" y2="0%">
-            <stop offset="0%" stopColor={valueToColor(0.2)} />
-            <stop offset="100%" stopColor={valueToColor(0.9)} />
+          <linearGradient id="valueGradientNew" x1="0%" y1="100%" x2="0%" y2="0%">
+            <stop offset="0%" stopColor={valueToColor(0.15)} />
+            <stop offset="50%" stopColor={valueToColor(0.5)} />
+            <stop offset="100%" stopColor={valueToColor(0.95)} />
           </linearGradient>
         </defs>
         <rect
-          x={width - padding + 35}
-          y={padding}
-          width={12}
+          x={width - paddingRight + 20}
+          y={paddingTop}
+          width={14}
           height={plotHeight}
-          fill="url(#valueGradient)"
-          rx="2"
+          fill="url(#valueGradientNew)"
+          rx="3"
+          stroke="var(--border)"
+          strokeWidth="1"
         />
         <text
-          x={width - padding + 41}
-          y={padding - 8}
-          fontSize="11"
-          fill="var(--muted)"
+          x={width - paddingRight + 27}
+          y={paddingTop - 10}
+          fontSize="12"
+          fill="var(--fg)"
           fontFamily="var(--font-geist-sans), system-ui"
           textAnchor="middle"
+          fontWeight="500"
         >
-          V
+          Value
         </text>
         <text
-          x={width - padding + 55}
-          y={padding + 10}
+          x={width - paddingRight + 45}
+          y={paddingTop + 12}
           fontSize="10"
           fill="var(--muted)"
-          fontFamily="var(--font-geist-mono), monospace"
+          fontFamily="var(--font-geist-sans), system-ui"
         >
           high
         </text>
         <text
-          x={width - padding + 55}
-          y={height - padding}
+          x={width - paddingRight + 45}
+          y={paddingTop + plotHeight}
           fontSize="10"
           fill="var(--muted)"
-          fontFamily="var(--font-geist-mono), monospace"
+          fontFamily="var(--font-geist-sans), system-ui"
         >
           low
         </text>
       </svg>
 
-      <div className="state-space-info">
-        <p className="meta">
-          Customer at <InlineMath math={`s = (${(currentPoint.x).toFixed(2)}, ${(1 - currentPoint.y).toFixed(2)})`} /> · Value <InlineMath math={`V(s) = ${currentValue.toFixed(2)}`} />
-        </p>
-        <p className="muted" style={{ fontSize: "12px" }}>
-          Hover over points to pause. The trajectory shows a customer moving through latent state space over time.
-        </p>
+      <div className="state-space-caption">
+        <span className="state-label">
+          Position: ({s1Display}, {s2Display})
+        </span>
+        <span className="state-divider">·</span>
+        <span className="value-label">
+          Value: {currentValue.toFixed(2)}
+        </span>
       </div>
 
       <style jsx>{`
@@ -282,18 +280,33 @@ export function StateSpaceVisual() {
           display: flex;
           flex-direction: column;
           align-items: center;
-          gap: var(--space-4);
+          gap: var(--space-3);
           margin: var(--space-6) 0;
         }
         .state-space-svg {
           display: block;
+          max-width: 480px;
+          width: 100%;
+          height: auto;
         }
-        .state-space-info {
-          text-align: center;
-          max-width: 400px;
+        .state-space-caption {
+          display: flex;
+          align-items: center;
+          gap: var(--space-3);
+          font-size: 13px;
+          font-family: var(--font-geist-mono), monospace;
+          color: var(--muted);
+        }
+        .state-label, .value-label {
+          background: var(--surface);
+          padding: 4px 10px;
+          border-radius: 4px;
+          border: 1px solid var(--border);
+        }
+        .state-divider {
+          color: var(--border);
         }
       `}</style>
     </div>
   );
 }
-
