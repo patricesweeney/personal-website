@@ -95,28 +95,6 @@ export function StatesView() {
             Typically <InlineMath math="z_i \sim \text{Gamma}(\theta, \theta)" /> with mean 1 and variance <InlineMath math="1/\theta" />. High <InlineMath math="\theta" /> means frailties are concentrated (observed features explain most variation). Low <InlineMath math="\theta" /> means wide dispersion (lots of unexplained heterogeneity). Ignoring frailty biases your hazard estimates and understates uncertainty.
           </p>
 
-          <h3 id="sequence-encoders">Sequence encoders</h3>
-          <p>
-            Customer behavior unfolds over time: logins, clicks, tickets, payments. A sequence encoder compresses this history into a fixed-length vector—a state you can condition decisions on.
-          </p>
-          <p>
-            <strong>Transformers</strong> are the current default. They attend to the full history at once, learning which past events matter for the current decision. No Markov assumption—the model decides what to remember. For SaaS, this means encoding months of product usage into a single embedding that predicts churn, expansion, or next action.
-          </p>
-          <p>
-            The alternative is <strong>recurrent models</strong> (LSTM, GRU): process events step by step, updating a hidden state. Cheaper at inference, but harder to train on long sequences. State-space models (Mamba, S4) split the difference—linear-time training with recurrent-style inference.
-          </p>
-
-          <h3 id="concept-bottlenecks">Concept bottlenecks</h3>
-          <p>
-            Black-box embeddings are powerful but opaque. A <strong>concept bottleneck</strong> forces the model to route predictions through human-interpretable intermediate variables—concepts you define.
-          </p>
-          <p>
-            Instead of embedding → prediction, you get embedding → concepts → prediction. The concepts might be "power user," "at-risk," "expanding," "cost-sensitive." You label some examples, the model learns to predict concepts from raw data, and downstream decisions depend only on the concepts.
-          </p>
-          <p>
-            The win: you can inspect and override. If the model says "at-risk" but you know better, you intervene at the concept level. The cost: you're bottlenecked by the concepts you thought to define. If the true signal isn't captured by your concept set, you lose it.
-          </p>
-
           <h3 id="explainable-boosting-machines">Explainable boosting machines</h3>
           <p>
             Sometimes you don't need a learned representation at all. <strong>Explainable boosting machines</strong> (EBMs) are generalized additive models with automatic interaction detection:
@@ -128,7 +106,7 @@ export function StatesView() {
             EBMs match gradient-boosted trees on tabular benchmarks but remain fully interpretable. For SaaS, this matters: you can hand a plot to a CS leader and they'll understand it. No post-hoc explanation needed—the model <em>is</em> the explanation.
           </p>
           <p>
-            The limitation: EBMs assume features are given, not learned. They're excellent for structured data (CRM fields, usage metrics, billing history) but won't help you encode raw event sequences. Combine them with sequence encoders: transformer produces an embedding, EBM explains how embedding components drive decisions.
+            The limitation: EBMs assume features are given, not learned. They're excellent for structured data (CRM fields, usage metrics, billing history) but won't help you encode raw event sequences.
           </p>
 
           <hr className="references-divider" />
