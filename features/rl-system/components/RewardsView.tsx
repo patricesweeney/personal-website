@@ -108,10 +108,7 @@ export function RewardsView() {
           <BlockMath math="V^\pi(s) = \mathbb{E}\left[ \mathrm{CE}(\pi) \;\middle|\; s_0 = s \right]" />
 
           <p>
-            In SaaS, this is often as good as it gets. Most companies don't log which actions were taken—only outcomes. And even when actions are logged, rewards are sparse: a customer churns once, expands rarely, and the signal is delayed by months. Without <InlineMath math="(s, a, r)" /> tuples, you can't estimate <InlineMath math="Q" /> or <InlineMath math="A" />. You're left with <InlineMath math="V" />: predicting value from state alone.
-          </p>
-          <p>
-            This is why most "prescriptive analytics" is theatre. Prescribing actions requires knowing <InlineMath math="Q(s,a)" />—what happens if you <em>do</em> something different. But if you've never varied the action, you can't estimate the counterfactual. Prediction (<InlineMath math="V" />) masquerades as prescription (<InlineMath math="Q" />). The vendor shows you which customers will churn; they can't tell you what to do about it, because they've never measured the effect of doing anything.
+            In SaaS, this is often as good as it gets. Most companies don't log actions—only outcomes. Without <InlineMath math="(s, a, r)" /> tuples, you can't estimate <InlineMath math="Q" />. You're left predicting value from state alone.
           </p>
 
           <h3 id="action-value">Action value</h3>
@@ -119,6 +116,9 @@ export function RewardsView() {
             The <strong>state-action value function</strong> <InlineMath math="Q^\pi(s,a)" /> answers: "what if I take action <InlineMath math="a" /> first, then follow <InlineMath math="\pi" />?"
           </p>
           <BlockMath math="Q^\pi(s,a) = \mathbb{E}\left[ \mathrm{CE}(\pi) \;\middle|\; s_0 = s, \, a_0 = a \right]" />
+          <p>
+            Without <InlineMath math="Q" />, you can't do prescriptive analytics. Prescription means choosing actions, and choosing requires comparing <InlineMath math="Q(s,a)" /> across actions. If you've never varied the action, you can't estimate the counterfactual. Most "prescriptive" vendors sell <InlineMath math="V" />—predicting who will churn—and call it <InlineMath math="Q" />.
+          </p>
 
           <p>
             The <strong>advantage function</strong> <InlineMath math="A^\pi(s,a)" /> answers: "how much better is action <InlineMath math="a" /> than whatever I'd normally do?"
