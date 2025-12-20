@@ -412,7 +412,8 @@ export function ValueDecompositionVisual() {
         .main-content {
           display: flex;
           gap: var(--space-4);
-          align-items: flex-start;
+          align-items: stretch;
+          min-height: 340px;
         }
         
         .sliders-panel {
@@ -421,6 +422,8 @@ export function ValueDecompositionVisual() {
           border: 1px solid var(--border);
           border-radius: 8px;
           padding: var(--space-3);
+          display: flex;
+          flex-direction: column;
         }
         
         .panel-header {
@@ -480,6 +483,13 @@ export function ValueDecompositionVisual() {
         .chart-panel {
           flex: 1;
           min-width: 0;
+          background: var(--card-bg, #fafafa);
+          border: 1px solid var(--border);
+          border-radius: 8px;
+          padding: var(--space-3);
+          display: flex;
+          flex-direction: column;
+          justify-content: center;
         }
         
         .waterfall-svg {
@@ -499,7 +509,8 @@ export function ValueDecompositionVisual() {
           gap: var(--space-2);
           margin-top: var(--space-3);
           padding: var(--space-2) var(--space-3);
-          background: var(--card-bg, #fafafa);
+          background: var(--bg);
+          border: 1px solid var(--border);
           border-radius: 6px;
           max-width: 400px;
         }
