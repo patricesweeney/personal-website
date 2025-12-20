@@ -74,13 +74,13 @@ export function SystemOverview() {
       <div className="grid grid-12">
         <div className="span-12">
           <p>
-            The conventional view of a SaaS business is mechanical: find playbooks that work, execute them, scale. Marketing runs campaigns, sales runs demos, CS runs QBRs. Each function optimizes its own metrics. The market is a fixed thing to be conquered with the right tactics.
+            Most people run SaaS like a factory. Find tactics that work, write them into playbooks, hire people to execute. Marketing does marketing things, sales does sales things, success does success things. Everyone optimizes their corner.
           </p>
           <p>
-            This breaks down because the market isn't fixed—it's a complex system that reacts to you. Competitors copy your positioning. Customers develop expectations. Channels saturate. What worked last quarter stops working. The playbook ossifies into superstition.
+            This works until it doesn't. The market moves. Competitors steal your positioning. Customers wise up. The channel that printed money last year prints nothing this year. You're left holding a binder full of best practices that no longer practice best.
           </p>
           <p>
-            The alternative is to view the business as a <strong>cybernetic learning system</strong>: an agent that acts on an environment it doesn't fully understand, observes what happens, updates its model, and adapts. The goal isn't to find the right playbook—it's to build the capacity to learn faster than the market changes. Every action is an experiment. Every outcome is evidence. The org's job is to integrate that evidence into better predictions and better decisions.
+            There's another way to think about it. A SaaS business is a <strong>learning system</strong>—something that acts on a world it doesn't fully understand, watches what happens, and updates its beliefs. The point isn't to find the right playbook. It's to get better at learning, faster than the world changes around you.
           </p>
           <p>
             A SaaS business is a <strong>loop</strong>:
