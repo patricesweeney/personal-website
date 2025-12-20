@@ -29,6 +29,11 @@ const FrailtyVisual = dynamic(
   { ssr: false }
 );
 
+const ValueDecompositionVisual = dynamic(
+  () => import("./ValueDecompositionVisual").then((mod) => mod.ValueDecompositionVisual),
+  { ssr: false }
+);
+
 export function StatesView() {
   return (
     <section className="section" style={{ paddingTop: "var(--space-6)" }}>
@@ -125,6 +130,8 @@ export function StatesView() {
           <p>
             For SaaS: fit NRR on state vectors from Poisson factorisation. You get a value function that's interpretable (you can see what drives value), decomposable (you can attribute value to factors), and auditable (you can check whether the shape functions make business sense). The limitation: EBMs assume features are given, not learned—they're excellent for structured state representations but won't encode raw event sequences.
           </p>
+
+          <ValueDecompositionVisual />
 
           <hr className="references-divider" />
 
