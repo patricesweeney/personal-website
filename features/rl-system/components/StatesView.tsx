@@ -14,6 +14,11 @@ const StateSpaceVisual = dynamic(
   { ssr: false }
 );
 
+const FactorLoadingsVisual = dynamic(
+  () => import("./FactorLoadingsVisual").then((mod) => mod.FactorLoadingsVisual),
+  { ssr: false }
+);
+
 export function StatesView() {
   return (
     <section className="section" style={{ paddingTop: "var(--space-6)" }}>
@@ -52,6 +57,8 @@ export function StatesView() {
           <p>
             For adoption data—did the customer use feature <InlineMath math="j" /> or not—binarize the counts and use Bernoulli-Poisson factorisation: <InlineMath math="O_{ij} \in \{0,1\}" /> with <InlineMath math="P(O_{ij} = 1) = 1 - e^{-s_i^\top \beta_j}" />. Same latent structure, but the likelihood matches the binary observation. Useful when frequency doesn't matter, only adoption.
           </p>
+
+          <FactorLoadingsVisual />
 
           <h3 id="sequence-encoders">Sequence encoders</h3>
           <p>
