@@ -97,6 +97,9 @@ export function StatesView() {
           <p>
             What you learn: which customers have correlated risks (high churn frailty implies high contraction frailty), and how much of the variation in each event type is explained by observed features vs. unobserved heterogeneity. This matters for CLV: a customer with high expansion frailty and low churn frailty is worth more than one with the same observed features but reversed frailties.
           </p>
+          <p>
+            Note: this models <em>incidence</em>—whether and when an event happens—not <em>amount</em>. If a customer expands, how much? That's a separate model (e.g., a regression on expansion size, conditional on expansion occurring). For CLV you need both: the probability of expansion and the expected magnitude.
+          </p>
 
           <h3 id="explainable-boosting-machines">Explainable boosting machines</h3>
           <p>
