@@ -10,6 +10,7 @@ import modal
 app = modal.App("analysis-jobs")
 
 # Image with pinned versions
+# Using postgrest-py + storage3 directly to avoid supabase-py version conflicts
 image = (
     modal.Image.debian_slim(python_version="3.11")
     .pip_install(
@@ -19,20 +20,47 @@ image = (
         "scikit-learn==1.4.0",
         # Web endpoint
         "fastapi",
+        # Supabase components (avoiding the full supabase-py due to version conflicts)
+        "httpx==0.27.0",
+        "postgrest==0.16.11",
+        "storage3==0.7.7",
     )
-    # Install supabase separately to avoid version conflicts
-    .pip_install("supabase==2.4.0")
 )
 
 
 # =============================================================================
-# Database Layer
+# Database Layer (using postgrest + storage3 directly)
 # =============================================================================
 
-def get_supabase_client():
+class SupabaseClient:
+    """Lightweight Supabase client using postgrest + storage3 directly."""
+    
+    def __init__(self, url: str, key: str):
+        from postgrest import SyncPostgrestClient
+        from storage3 import SyncStorageClient
+        
+        self.url = url
+        self.key = key
+        self._postgrest = SyncPostgrestClient(
+            f"{url}/rest/v1",
+            headers={"apikey": key, "Authorization": f"Bearer {key}"}
+        )
+        self._storage = SyncStorageClient(
+            f"{url}/storage/v1",
+            headers={"apikey": key, "Authorization": f"Bearer {key}"}
+        )
+    
+    def table(self, name: str):
+        return self._postgrest.from_(name)
+    
+    @property
+    def storage(self):
+        return self._storage
+
+
+def get_supabase_client() -> SupabaseClient:
     """Create Supabase client with service role credentials."""
     import os
-    from supabase import create_client
     
     url = os.environ.get("SUPABASE_URL")
     key = os.environ.get("SUPABASE_SERVICE_ROLE_KEY")
@@ -40,15 +68,15 @@ def get_supabase_client():
     if not url or not key:
         raise RuntimeError("Missing SUPABASE_URL or SUPABASE_SERVICE_ROLE_KEY")
     
-    return create_client(url, key)
+    return SupabaseClient(url, key)
 
 
-def update_progress(supabase, job_id: str, progress: int):
+def update_progress(supabase: SupabaseClient, job_id: str, progress: int):
     """Update job progress (0-100)."""
     supabase.table("jobs").update({"progress": progress}).eq("id", job_id).execute()
 
 
-def fail_job(supabase, job_id: str, error_message: str):
+def fail_job(supabase: SupabaseClient, job_id: str, error_message: str):
     """Mark job as failed with error message."""
     supabase.table("jobs").update({
         "status": "error",
