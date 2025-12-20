@@ -113,7 +113,7 @@ export function StatesView() {
             To estimate a value function, you need a target. The natural choice is <strong>net revenue retention</strong> (NRR): next-period revenue divided by current-period revenue. NRR has better variance properties than total revenue because it's bounded and normalized. A customer paying $1M/year and one paying $1K/year both have NRR around 1 if they're healthy. Total revenue would be dominated by the large account; NRR treats them symmetrically.
           </p>
           <p>
-            <strong>Explainable boosting machines</strong> (EBMs) are ideal for estimating <InlineMath math="V(s)" /> from state. They're generalized additive models with automatic interaction detection:
+            <strong>Explainable boosting machines</strong> (EBMs)<sup><a href="#ref-4" className="cite">4</a></sup> are ideal for estimating <InlineMath math="V(s)" /> from state. They're generalized additive models with automatic interaction detection:
           </p>
           <BlockMath math="V(s) = \underbrace{\sum_j f_j(s_j)}_{\text{main effects}} + \underbrace{\sum_{j < k} f_{jk}(s_j, s_k)}_{\text{interactions}}" />
           <p>
@@ -148,6 +148,7 @@ export function StatesView() {
               <li id="ref-1"><sup>1</sup> Gopalan, P., Hofman, J. M., & Blei, D. M. (2015). Scalable recommendation with hierarchical Poisson factorization. <em>Proceedings of the Conference on Uncertainty in Artificial Intelligence (UAI)</em>.</li>
               <li id="ref-2"><sup>2</sup> Acharya, A., Ghosh, J., & Zhou, M. (2015). Nonparametric Bayesian factor analysis for dynamic count matrices. <em>Proceedings of the International Conference on Artificial Intelligence and Statistics (AISTATS)</em>.</li>
               <li id="ref-3"><sup>3</sup> Kvamme, H., Borgan, Ø., & Scheel, I. (2019). Time-to-event prediction with neural networks and Cox regression. <em>Journal of Machine Learning Research</em>, 20, 1–30.</li>
+              <li id="ref-4"><sup>4</sup> Lou, Y., Caruana, R., Gehrke, J., & Hooker, G. (2013). Accurate intelligible models with pairwise interactions. <em>Proceedings of the 19th ACM SIGKDD International Conference on Knowledge Discovery and Data Mining (KDD)</em>, 623–631.</li>
             </ol>
           </div>
         </div>
