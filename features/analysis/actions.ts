@@ -108,20 +108,42 @@ async function triggerProcessing(jobId: string): Promise<void> {
   }
 }
 
+// Jobs stuck in pending/running for more than this are considered stale
+const STALE_JOB_TIMEOUT_MS = 5 * 60 * 1000 // 5 minutes
+
 /**
  * Poll job status with progress
+ * 
+ * Detects stale jobs that have been pending/running too long (likely due to
+ * Modal failing to reach Supabase to update status)
  */
 export async function getJobStatus(jobId: string): Promise<AnalysisResult> {
   const supabase = await createServerSupabaseClient()
 
   const { data: job, error } = await supabase
     .from('jobs')
-    .select('id, status, progress, result, error_message')
+    .select('id, status, progress, result, error_message, created_at, updated_at')
     .eq('id', jobId)
     .single()
 
   if (error) {
     throw new Error(`Failed to fetch job: ${error.message}`)
+  }
+
+  // Detect stale jobs: pending/running for too long with no progress
+  const isStale =
+    (job.status === 'pending' || job.status === 'running') &&
+    job.progress === 0 &&
+    Date.now() - new Date(job.updated_at ?? job.created_at).getTime() > STALE_JOB_TIMEOUT_MS
+
+  if (isStale) {
+    return {
+      jobId: job.id,
+      status: 'error',
+      progress: 0,
+      result: undefined,
+      error: 'Job timed out. The processing server may be unreachable. Please try again.',
+    }
   }
 
   return {

@@ -68,21 +68,47 @@ def get_supabase_client() -> SupabaseClient:
     if not url or not key:
         raise RuntimeError("Missing SUPABASE_URL or SUPABASE_SERVICE_ROLE_KEY")
     
+    # Validate URL format
+    if not url.startswith("https://"):
+        raise RuntimeError(f"SUPABASE_URL must start with https://, got: {url[:50]}...")
+    
     return SupabaseClient(url, key)
 
 
+def _retry_supabase_call(fn, max_retries: int = 3, base_delay: float = 1.0):
+    """Retry a Supabase call with exponential backoff."""
+    import time
+    
+    last_error = None
+    for attempt in range(max_retries):
+        try:
+            return fn()
+        except Exception as e:
+            last_error = e
+            if attempt < max_retries - 1:
+                delay = base_delay * (2 ** attempt)
+                print(f"Supabase call failed (attempt {attempt + 1}/{max_retries}): {e}")
+                print(f"Retrying in {delay}s...")
+                time.sleep(delay)
+    raise last_error
+
+
 def update_progress(supabase: SupabaseClient, job_id: str, progress: int):
-    """Update job progress (0-100)."""
-    supabase.table("jobs").update({"progress": progress}).eq("id", job_id).execute()
+    """Update job progress (0-100) with retry."""
+    _retry_supabase_call(
+        lambda: supabase.table("jobs").update({"progress": progress}).eq("id", job_id).execute()
+    )
 
 
 def fail_job(supabase: SupabaseClient, job_id: str, error_message: str):
-    """Mark job as failed with error message."""
-    supabase.table("jobs").update({
-        "status": "error",
-        "error_message": error_message,
-        "progress": 0,
-    }).eq("id", job_id).execute()
+    """Mark job as failed with error message, with retry."""
+    _retry_supabase_call(
+        lambda: supabase.table("jobs").update({
+            "status": "error",
+            "error_message": error_message,
+            "progress": 0,
+        }).eq("id", job_id).execute()
+    )
 
 
 # =============================================================================
@@ -163,8 +189,18 @@ def process_job(job_id: str) -> dict:
         print(f"Job {job_id} failed: {error_msg}")
         print(traceback.format_exc())
         
-        # Write error to job so client can display it
-        fail_job(supabase, job_id, error_msg)
+        # Try to write error to job so client can display it
+        # This may also fail if Supabase is unreachable
+        try:
+            fail_job(supabase, job_id, error_msg)
+        except Exception as db_error:
+            # Double failure: can't reach Supabase at all
+            # Log it clearly so we can debug from Modal logs
+            print(f"CRITICAL: Failed to write error to database for job {job_id}")
+            print(f"Database error: {type(db_error).__name__}: {db_error}")
+            print("The job will appear stuck in the UI. Check Modal secrets configuration.")
+            # Re-raise original error so Modal logs show it
+            raise e
         
         return {"status": "error", "job_id": job_id, "error": error_msg}
 
