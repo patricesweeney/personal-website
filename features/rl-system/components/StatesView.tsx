@@ -60,6 +60,9 @@ export function StatesView() {
           <p>
             In practice, complexity is the number of factors <InlineMath math="M \in \{1,2,3,4,5\}" />. Choose <InlineMath math="M" /> by reconstruction loss <InlineMath math="\sum_{ij}(o_{ij} - \hat{o}_{ij})^2" /> on cross-validation, where <InlineMath math="\hat{o}_{ij} = s_i^\top w_j" />. More factors fit better until they start overfitting. To enforce sparsity, use Laplace (L1) priors on the weights: most <InlineMath math="w_{jk}" /> shrink to zero, leaving only the features that matter for each factor.
           </p>
+          <p>
+            Train with <InlineMath math="t" /> as a timestep (e.g., month) and you get <InlineMath math="N \times T" /> observations—one state vector <InlineMath math="s_{it}" /> per customer per period. This is a memoryless sequence encoder: each timestep is independent, no recurrence, but you get a trajectory of states over time.
+          </p>
 
           <FactorLoadingsVisual />
 
