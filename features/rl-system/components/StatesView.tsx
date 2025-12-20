@@ -49,13 +49,13 @@ export function StatesView() {
 
           <h3 id="poisson-factorisation">Poisson factorisation</h3>
           <p>
-            Customer event data is counts: logins per week, features used per session, tickets opened per month. <strong>Poisson factorisation</strong> decomposes a count matrix into latent factors, assuming each count is Poisson-distributed with a rate determined by the product of user and item factors.
+            Customer event data is counts: logins per week, features used per session, tickets opened per month. <strong>Poisson factorisation</strong><sup><a href="#ref-1" className="cite">1</a></sup> decomposes a count matrix into latent factors, assuming each count is Poisson-distributed with a rate determined by the product of user and item factors.
           </p>
           <p>
             For a matrix <InlineMath math="O" /> of customers × events, you learn <InlineMath math="O_{ij} \sim \text{Poisson}(s_i^\top w_j)" /> where <InlineMath math="s_i" /> is customer <InlineMath math="i" />'s latent state and <InlineMath math="w_j" /> is the weight vector for event type <InlineMath math="j" />. The <InlineMath math="s_i" /> vectors are your state representations.
           </p>
           <p>
-            For adoption data—did the customer use feature <InlineMath math="j" /> or not—binarize the counts and use Bernoulli-Poisson factorisation: <InlineMath math="O_{ij} \in \{0,1\}" /> with <InlineMath math="P(O_{ij} = 1) = 1 - e^{-s_i^\top w_j}" />. Same latent structure, but the likelihood matches the binary observation. Useful when frequency doesn't matter, only adoption.
+            For adoption data—did the customer use feature <InlineMath math="j" /> or not—binarize the counts and use Bernoulli-Poisson factorisation:<sup><a href="#ref-2" className="cite">2</a></sup> <InlineMath math="O_{ij} \in \{0,1\}" /> with <InlineMath math="P(O_{ij} = 1) = 1 - e^{-s_i^\top w_j}" />. Same latent structure, but the likelihood matches the binary observation. Useful when frequency doesn't matter, only adoption.
           </p>
 
           <FactorLoadingsVisual />
@@ -95,9 +95,47 @@ export function StatesView() {
           <p>
             The limitation: EBMs assume features are given, not learned. They're excellent for structured data (CRM fields, usage metrics, billing history) but won't help you encode raw event sequences. Combine them with sequence encoders: transformer produces an embedding, EBM explains how embedding components drive decisions.
           </p>
+
+          <hr className="references-divider" />
+
+          <div className="references">
+            <p className="meta">References</p>
+            <ol>
+              <li id="ref-1"><sup>1</sup> Gopalan, P., Hofman, J. M., & Blei, D. M. (2015). Scalable recommendation with hierarchical Poisson factorization. <em>Proceedings of the Conference on Uncertainty in Artificial Intelligence (UAI)</em>.</li>
+              <li id="ref-2"><sup>2</sup> Acharya, A., Ghosh, J., & Zhou, M. (2015). Nonparametric Bayesian factor analysis for dynamic count matrices. <em>Proceedings of the International Conference on Artificial Intelligence and Statistics (AISTATS)</em>.</li>
+            </ol>
+          </div>
         </div>
       </div>
 
+      <style jsx>{`
+        .cite {
+          color: var(--muted);
+          text-decoration: none;
+          font-size: 0.75em;
+        }
+        .cite:hover {
+          color: var(--fg);
+          text-decoration: underline;
+        }
+        .references-divider {
+          border: none;
+          border-top: 1px solid var(--border);
+          margin: var(--space-10) 0 var(--space-6) 0;
+        }
+        .references {
+          font-size: var(--font-small);
+        }
+        .references ol {
+          margin: var(--space-3) 0 0 0;
+          padding-left: 0;
+          list-style: none;
+          color: var(--muted);
+        }
+        .references li {
+          margin-bottom: var(--space-2);
+        }
+      `}</style>
     </section>
   );
 }
