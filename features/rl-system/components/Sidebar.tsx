@@ -36,6 +36,7 @@ const navItems: NavItem[] = [
       { id: "observations", label: "Observations" },
       { id: "representation-learning", label: "Representation learning" },
       { id: "poisson-factorisation", label: "Poisson factorisation" },
+      { id: "survival-models", label: "Survival models" },
       { id: "sequence-encoders", label: "Sequence encoders" },
       { id: "concept-bottlenecks", label: "Concept bottlenecks" },
       { id: "explainable-boosting-machines", label: "Explainable boosting machines" },

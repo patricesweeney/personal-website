@@ -66,6 +66,17 @@ export function StatesView() {
 
           <FactorLoadingsVisual />
 
+          <h3 id="survival-models">Survival models</h3>
+          <p>
+            Churn is a time-to-event problem. <strong>Survival models</strong> predict when a customer will churn, not just whether. The hazard function <InlineMath math="h(t|s)" /> gives the instantaneous risk of churning at time <InlineMath math="t" />, conditional on state <InlineMath math="s" />.
+          </p>
+          <p>
+            Cox proportional hazards assumes <InlineMath math="h(t|s) = h_0(t) \exp(s^\top w)" />: a baseline hazard scaled by customer features. The state vector <InlineMath math="s" /> can come from Poisson factorisation. You get interpretable coefficients (<InlineMath math="w" />) and predicted survival curves per customer.
+          </p>
+          <p>
+            For SaaS: fit on historical cohorts, predict time-to-churn for current customers, prioritize interventions by expected weeks remaining. Censored observations (customers still active) are handled naturally.
+          </p>
+
           <h3 id="sequence-encoders">Sequence encoders</h3>
           <p>
             Customer behavior unfolds over time: logins, clicks, tickets, payments. A sequence encoder compresses this history into a fixed-length vector—a state you can condition decisions on.
