@@ -52,13 +52,13 @@ export function StatesView() {
             Customer event data is counts: logins per week, features used per session, tickets opened per month. <strong>Poisson factorisation</strong><sup><a href="#ref-1" className="cite">1</a></sup> decomposes a count matrix into latent factors, assuming each count is Poisson-distributed with a rate determined by the product of user and item factors.
           </p>
           <p>
-            For a matrix <InlineMath math="O" /> of customers × events, you learn <InlineMath math="O_{ij} \sim \text{Poisson}(s_i^\top w_j)" /> where <InlineMath math="s_i" /> is customer <InlineMath math="i" />'s latent state and <InlineMath math="w_j" /> is the weight vector for event type <InlineMath math="j" />. The <InlineMath math="s_i" /> vectors are your state representations.
+            For a matrix <InlineMath math="o" /> of customers × events, you learn <InlineMath math="o_{ij} \sim \text{Poisson}(s_i^\top w_j)" /> where <InlineMath math="s_i" /> is customer <InlineMath math="i" />'s latent state and <InlineMath math="w_j" /> is the weight vector for event type <InlineMath math="j" />. The <InlineMath math="s_i" /> vectors are your state representations.
           </p>
           <p>
-            For adoption data—did the customer use feature <InlineMath math="j" /> or not—binarize the counts and use Bernoulli-Poisson factorisation:<sup><a href="#ref-2" className="cite">2</a></sup> <InlineMath math="O_{ij} \in \{0,1\}" /> with <InlineMath math="P(O_{ij} = 1) = 1 - e^{-s_i^\top w_j}" />. Same latent structure, but the likelihood matches the binary observation. Useful when frequency doesn't matter, only adoption.
+            For adoption data—did the customer use feature <InlineMath math="j" /> or not—binarize the counts and use Bernoulli-Poisson factorisation:<sup><a href="#ref-2" className="cite">2</a></sup> <InlineMath math="o_{ij} \in \{0,1\}" /> with <InlineMath math="P(o_{ij} = 1) = 1 - e^{-s_i^\top w_j}" />. Same latent structure, but the likelihood matches the binary observation. Useful when frequency doesn't matter, only adoption.
           </p>
           <p>
-            In practice, complexity is the number of factors <InlineMath math="M \in \{1,2,3,4,5\}" />. Choose <InlineMath math="M" /> by reconstruction loss on cross-validation—more factors fit better until they start overfitting. To enforce sparsity, use Laplace (L1) priors on the weights: most <InlineMath math="w_{jk}" /> shrink to zero, leaving only the features that matter for each factor.
+            In practice, complexity is the number of factors <InlineMath math="M \in \{1,2,3,4,5\}" />. Choose <InlineMath math="M" /> by reconstruction loss <InlineMath math="\sum_{ij}(o_{ij} - \hat{o}_{ij})^2" /> on cross-validation, where <InlineMath math="\hat{o}_{ij} = s_i^\top w_j" />. More factors fit better until they start overfitting. To enforce sparsity, use Laplace (L1) priors on the weights: most <InlineMath math="w_{jk}" /> shrink to zero, leaving only the features that matter for each factor.
           </p>
 
           <FactorLoadingsVisual />

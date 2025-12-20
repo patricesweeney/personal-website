@@ -42,26 +42,26 @@ const bernoulliData = {
   ],
 };
 
-// Cross-validation data
+// Cross-validation data (reconstruction loss - lower is better)
 const cvData = {
   poisson: [
-    { m: 1, loss: -2850 },
-    { m: 2, loss: -2420 },
-    { m: 3, loss: -2180 },
-    { m: 4, loss: -2095 },
-    { m: 5, loss: -2070 },
+    { m: 1, loss: 2850 },
+    { m: 2, loss: 2420 },
+    { m: 3, loss: 2180 },
+    { m: 4, loss: 2095 },
+    { m: 5, loss: 2070 },
   ],
   bernoulli: [
-    { m: 1, loss: -1920 },
-    { m: 2, loss: -1580 },
-    { m: 3, loss: -1380 },
-    { m: 4, loss: -1290 },
-    { m: 5, loss: -1265 },
+    { m: 1, loss: 1920 },
+    { m: 2, loss: 1580 },
+    { m: 3, loss: 1380 },
+    { m: 4, loss: 1290 },
+    { m: 5, loss: 1265 },
   ],
 };
 
 function valueToColor(v: number): string {
-  if (v === 0) return "var(--surface)";
+  if (v === 0) return "white";
   const t = (v + 1) / 2;
   
   if (t >= 0.5) {
@@ -88,10 +88,10 @@ export function FactorLoadingsVisual() {
   const heatmapWidth = labelWidth + data.observations.length * cellSize;
   const heatmapHeight = labelHeight + data.factors.length * cellSize;
 
-  // CV chart dimensions
-  const cvWidth = 400;
-  const cvHeight = 250;
-  const cvPadding = { top: 30, right: 30, bottom: 50, left: 70 };
+  // CV chart dimensions - same width as heatmap
+  const cvWidth = heatmapWidth;
+  const cvHeight = heatmapHeight;
+  const cvPadding = { top: 40, right: 40, bottom: 60, left: 80 };
   const cvPlotWidth = cvWidth - cvPadding.left - cvPadding.right;
   const cvPlotHeight = cvHeight - cvPadding.top - cvPadding.bottom;
   
@@ -393,7 +393,7 @@ export function FactorLoadingsVisual() {
           height: auto;
         }
         .cv-svg {
-          max-width: 400px;
+          max-width: 600px;
           width: 100%;
           height: auto;
         }
