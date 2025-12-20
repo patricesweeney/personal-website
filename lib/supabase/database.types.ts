@@ -22,6 +22,8 @@ export interface Database {
           input_file_path: string | null
           result: Json | null
           error_message: string | null
+          progress: number | null
+          column_config: Json | null
         }
         Insert: {
           id?: string
@@ -32,6 +34,8 @@ export interface Database {
           input_file_path?: string | null
           result?: Json | null
           error_message?: string | null
+          progress?: number | null
+          column_config?: Json | null
         }
         Update: {
           id?: string
@@ -42,6 +46,8 @@ export interface Database {
           input_file_path?: string | null
           result?: Json | null
           error_message?: string | null
+          progress?: number | null
+          column_config?: Json | null
         }
       }
     }
@@ -50,4 +56,3 @@ export interface Database {
     Enums: {}
   }
 }
-
