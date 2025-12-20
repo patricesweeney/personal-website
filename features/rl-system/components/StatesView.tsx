@@ -26,69 +26,44 @@ export function StatesView() {
           </p>
           <ObservationsMindMap />
 
-          <h3 id="representation-learning" style={{ marginTop: "var(--space-8)" }}>Representation learning</h3>
+          <h3 id="sequence-encoders" style={{ marginTop: "var(--space-8)" }}>Sequence encoders</h3>
           <p>
-            The job is to compress observations into states—lower-dimensional summaries that keep what matters and throw away what doesn't. This works because most data has structure: a customer isn't really 10,000 independent event features. Those features are correlated, driven by a few underlying factors like engagement, sophistication, and intent.
+            Customer behavior unfolds over time: logins, clicks, tickets, payments. A sequence encoder compresses this history into a fixed-length vector—a state you can condition decisions on.
+          </p>
+          <p>
+            <strong>Transformers</strong> are the current default. They attend to the full history at once, learning which past events matter for the current decision. No Markov assumption—the model decides what to remember. For SaaS, this means encoding months of product usage into a single embedding that predicts churn, expansion, or next action.
+          </p>
+          <p>
+            The alternative is <strong>recurrent models</strong> (LSTM, GRU): process events step by step, updating a hidden state. Cheaper at inference, but harder to train on long sequences. State-space models (Mamba, S4) split the difference—linear-time training with recurrent-style inference.
           </p>
 
-          <h4>Static representations</h4>
+          <h3 id="concept-bottlenecks">Concept bottlenecks</h3>
           <p>
-            Static methods take a snapshot and compress it. They assume the mapping from observations to states doesn't change over time.
+            Black-box embeddings are powerful but opaque. A <strong>concept bottleneck</strong> forces the model to route predictions through human-interpretable intermediate variables—concepts you define.
           </p>
-          <ul>
-            <li>
-              <strong>Linear methods</strong> (PCA, factor analysis): Find the directions of most variance. Fast and interpretable, but assume linear structure.
-            </li>
-            <li>
-              <strong>Kernel methods</strong> (kernel PCA, spectral embedding): Handle curves by implicitly working in a richer space. Still a fixed mapping.
-            </li>
-            <li>
-              <strong>Neighborhood methods</strong> (t-SNE, UMAP): Preserve local structure—nearby points stay nearby. Great for visualization, but you can't embed new points without re-running.
-            </li>
-            <li>
-              <strong>Autoencoders</strong> (VAE, sparse AE): Learn to compress and reconstruct through a bottleneck. New observations embed directly. Can enforce sparsity or disentanglement.
-            </li>
-            <li>
-              <strong>Contrastive methods</strong> (SimCLR, CLIP): Learn by pulling similar things together and pushing different things apart. No reconstruction needed—only similarity.
-            </li>
-          </ul>
+          <p>
+            Instead of embedding → prediction, you get embedding → concepts → prediction. The concepts might be "power user," "at-risk," "expanding," "cost-sensitive." You label some examples, the model learns to predict concepts from raw data, and downstream decisions depend only on the concepts.
+          </p>
+          <p>
+            The win: you can inspect and override. If the model says "at-risk" but you know better, you intervene at the concept level. The cost: you're bottlenecked by the concepts you thought to define. If the true signal isn't captured by your concept set, you lose it.
+          </p>
 
-          <h4>Dynamic representations</h4>
+          <h3 id="explainable-boosting-machines">Explainable boosting machines</h3>
           <p>
-            Static methods ignore time. But for decisions, history often matters: a customer who logged in yesterday after six months of silence is different from one who logs in daily. Dynamic methods learn representations that evolve.
-          </p>
-          <ul>
-            <li>
-              <strong>Recurrent models</strong> (LSTM, GRU): Process sequences step by step, updating a hidden state. The state summarizes everything seen so far.
-            </li>
-            <li>
-              <strong>State-space models</strong> (Kalman filters, HMMs): Assume a latent state evolves according to known dynamics, and observations are noisy glimpses of it. Good when you have a model of how things change.
-            </li>
-            <li>
-              <strong>Transformers</strong>: Attend to the full history at once, weighting what's relevant. No fixed summary—recompute attention for each decision.
-            </li>
-            <li>
-              <strong>World models</strong>: Learn to predict what happens next, and use the predictor's internal state as the representation. The state is whatever's useful for forecasting.
-            </li>
-          </ul>
-          <p>
-            For SaaS: static methods work for health scores and segmentation; dynamic methods matter when you care about trajectories—churn prediction, lifecycle stage, next-best-action.
+            Sometimes you don't need a learned representation at all. <strong>Explainable boosting machines</strong> (EBMs) are generalized additive models with automatic interaction detection:
           </p>
           <p>
-            The test of a good state isn't whether you can reconstruct the original data. It's whether two observations that map to the same state should get the same action. If they shouldn't, you're missing something.
+            Each feature gets its own shape function, learned via gradient boosting. The model automatically detects pairwise interactions worth including. You can inspect every component: "this is what usage_days does to churn probability, holding everything else fixed."
+          </p>
+          <p>
+            EBMs match gradient-boosted trees on tabular benchmarks but remain fully interpretable. For SaaS, this matters: you can hand a plot to a CS leader and they'll understand it. No post-hoc explanation needed—the model <em>is</em> the explanation.
+          </p>
+          <p>
+            The limitation: EBMs assume features are given, not learned. They're excellent for structured data (CRM fields, usage metrics, billing history) but won't help you encode raw event sequences. Combine them with sequence encoders: transformer produces an embedding, EBM explains how embedding components drive decisions.
           </p>
         </div>
       </div>
 
-      <style jsx>{`
-        h4 {
-          font-size: 15px;
-          font-weight: 600;
-          margin-top: var(--space-6);
-          margin-bottom: var(--space-3);
-          color: var(--fg);
-        }
-      `}</style>
     </section>
   );
 }
