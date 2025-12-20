@@ -199,7 +199,7 @@ export function StateSpaceVisual() {
           textAnchor="middle"
           fontWeight="500"
         >
-          State 1
+          State factor 1
         </text>
 
         {/* Y-axis label */}
@@ -213,7 +213,7 @@ export function StateSpaceVisual() {
           fontWeight="500"
           transform={`rotate(-90, 20, ${paddingTop + plotHeight / 2})`}
         >
-          State 2
+          State factor 2
         </text>
 
         {/* Colorbar */}
