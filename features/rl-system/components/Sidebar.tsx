@@ -39,6 +39,7 @@ const navItems: NavItem[] = [
       { id: "survival-models", label: "Survival models" },
       { id: "frailty-models", label: "Frailty models" },
       { id: "nrr-decompositions", label: "NRR decompositions" },
+      { id: "propensity-models", label: "Propensity models" },
     ]
   },
   {

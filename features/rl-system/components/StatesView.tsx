@@ -133,6 +133,18 @@ export function StatesView() {
 
           <ValueDecompositionVisual />
 
+          <h3 id="propensity-models">Propensity models</h3>
+          <p>
+            For acquisition, the value function has a canonical decomposition. The expected value of a prospect <InlineMath math="i" /> at time <InlineMath math="t" /> factors into three terms:
+          </p>
+          <BlockMath math="\text{EV}_{i,t} \approx \Pr(\text{win}) \times \mathbb{E}[\text{ACV} \mid \text{win}] \times \mathbb{E}[\text{discount from time-to-close}]" />
+          <p>
+            Each term gets its own model. <strong>Win probability</strong> is a classification problem: given the current state of the deal (stage, engagement, stakeholders, competition), what's the chance it closes? <strong>Expected ACV</strong> is a regression: conditional on winning, what's the likely contract size? <strong>Time-to-close</strong> is a survival model: how long until the deal closes, and how much does delay cost in discounting?
+          </p>
+          <p>
+            The decomposition matters because each factor responds to different interventions. Discounting increases win rate but lowers ACV. Adding sales engineering shortens time-to-close but costs resources. You optimize the product, not the individual factors—but you need the factors to understand where value is leaking.
+          </p>
+
           <hr className="references-divider" />
 
           <div className="references">
