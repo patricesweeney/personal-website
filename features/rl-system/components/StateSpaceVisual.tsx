@@ -267,7 +267,7 @@ export function StateSpaceVisual() {
 
       <div className="state-space-caption">
         <span className="state-label">
-          Position: ({s1Display}, {s2Display})
+          Customer position: ({s1Display}, {s2Display})
         </span>
         <span className="state-divider">·</span>
         <span className="value-label">
