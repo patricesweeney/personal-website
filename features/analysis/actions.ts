@@ -51,6 +51,10 @@ export async function uploadAndCreateJob(
     throw new Error(`Upload failed: ${uploadError.message}`)
   }
 
+  // Parse column config if provided
+  const columnConfigStr = formData.get('columnConfig') as string | null
+  const columnConfig = columnConfigStr ? JSON.parse(columnConfigStr) : null
+
   // Create job record
   const { data: job, error: jobError } = await supabase
     .from('jobs')
@@ -58,6 +62,7 @@ export async function uploadAndCreateJob(
       job_type: jobType,
       input_file_path: path,
       status: 'pending',
+      column_config: columnConfig,
     })
     .select('id')
     .single()

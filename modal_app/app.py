@@ -135,7 +135,7 @@ def process_job(job_id: str) -> dict:
     try:
         # 1. Fetch job
         update_progress(supabase, job_id, 5)
-        response = supabase.table("jobs").select("id, job_type, input_file_path, status").eq("id", job_id).single().execute()
+        response = supabase.table("jobs").select("id, job_type, input_file_path, column_config, status").eq("id", job_id).single().execute()
         job = response.data
         
         if not job:
@@ -161,7 +161,12 @@ def process_job(job_id: str) -> dict:
         update_progress(supabase, job_id, 30)
         df = pd.read_csv(io.BytesIO(file_bytes))
         
-        # 4. Run analysis
+        # 4. Transform data based on column config
+        column_config = job.get("column_config")
+        if column_config:
+            df = transform_data(df, column_config)
+        
+        # 5. Run analysis
         update_progress(supabase, job_id, 40)
         result = run_analysis(
             job["job_type"], 
@@ -203,6 +208,69 @@ def process_job(job_id: str) -> dict:
             raise e
         
         return {"status": "error", "job_id": job_id, "error": error_msg}
+
+
+# =============================================================================
+# Data Transformation
+# =============================================================================
+
+def transform_data(df, column_config: dict):
+    """
+    Transform raw CSV data based on user's column configuration.
+    
+    Supports two formats:
+    - Wide: Each column is a feature (customer × features matrix)
+    - Long: Stacked rows with feature_name and feature_value columns
+    """
+    import pandas as pd
+    
+    format_type = column_config.get("format", "wide")
+    customer_id_col = column_config.get("customerIdColumn")
+    
+    if not customer_id_col or customer_id_col not in df.columns:
+        raise ValueError(f"Customer ID column '{customer_id_col}' not found in data")
+    
+    if format_type == "wide":
+        # Wide format: select customer ID + feature columns
+        feature_cols = column_config.get("featureColumns", [])
+        if not feature_cols:
+            # Use all numeric columns except customer ID
+            feature_cols = [c for c in df.select_dtypes(include=["number"]).columns 
+                          if c != customer_id_col]
+        
+        # Validate feature columns exist
+        missing = [c for c in feature_cols if c not in df.columns]
+        if missing:
+            raise ValueError(f"Feature columns not found: {missing}")
+        
+        # Select and return the subset
+        result = df[[customer_id_col] + feature_cols].copy()
+        result = result.set_index(customer_id_col)
+        return result
+        
+    elif format_type == "long":
+        # Long format: pivot to wide
+        feature_name_col = column_config.get("featureNameColumn")
+        feature_value_col = column_config.get("featureValueColumn")
+        
+        if not feature_name_col or feature_name_col not in df.columns:
+            raise ValueError(f"Feature name column '{feature_name_col}' not found")
+        if not feature_value_col or feature_value_col not in df.columns:
+            raise ValueError(f"Feature value column '{feature_value_col}' not found")
+        
+        # Pivot from long to wide format
+        result = df.pivot_table(
+            index=customer_id_col,
+            columns=feature_name_col,
+            values=feature_value_col,
+            aggfunc="sum",  # Sum if duplicates
+            fill_value=0
+        )
+        
+        return result
+    
+    else:
+        raise ValueError(f"Unknown format type: {format_type}")
 
 
 # =============================================================================

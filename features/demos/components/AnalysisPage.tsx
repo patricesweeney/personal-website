@@ -7,43 +7,87 @@ import {
   Loader2, 
   CheckCircle2, 
   AlertCircle,
-  Download,
-  Table2,
   Info,
   RotateCcw
 } from "lucide-react";
 import { uploadAndCreateJob, getJobStatus } from "@/features/analysis";
 import type { JobType } from "@/features/analysis";
 import { PoissonResults } from "./PoissonResults";
-
-interface ColumnSpec {
-  name: string;
-  type: "required" | "optional";
-  description: string;
-  example?: string;
-}
+import { ColumnPicker, type ColumnConfig } from "./ColumnPicker";
 
 interface AnalysisConfig {
   type: JobType;
   title: string;
   description: string;
-  columns: ColumnSpec[];
-  sampleDataUrl?: string;
 }
 
 interface AnalysisPageProps {
   config: AnalysisConfig;
 }
 
+// Parse CSV to get headers and sample rows
+async function parseCSVPreview(file: File): Promise<{ columns: string[]; sampleData: Record<string, unknown>[] }> {
+  const text = await file.text();
+  const lines = text.split('\n').filter(line => line.trim());
+  
+  if (lines.length === 0) {
+    throw new Error("CSV file is empty");
+  }
+
+  // Parse header
+  const columns = parseCSVLine(lines[0]);
+  
+  // Parse first 5 data rows
+  const sampleData: Record<string, unknown>[] = [];
+  for (let i = 1; i < Math.min(6, lines.length); i++) {
+    const values = parseCSVLine(lines[i]);
+    const row: Record<string, unknown> = {};
+    columns.forEach((col, idx) => {
+      row[col] = values[idx] ?? "";
+    });
+    sampleData.push(row);
+  }
+
+  return { columns, sampleData };
+}
+
+// Simple CSV line parser (handles quoted values)
+function parseCSVLine(line: string): string[] {
+  const result: string[] = [];
+  let current = "";
+  let inQuotes = false;
+  
+  for (let i = 0; i < line.length; i++) {
+    const char = line[i];
+    if (char === '"') {
+      inQuotes = !inQuotes;
+    } else if (char === ',' && !inQuotes) {
+      result.push(current.trim());
+      current = "";
+    } else {
+      current += char;
+    }
+  }
+  result.push(current.trim());
+  
+  return result;
+}
+
+type Status = "idle" | "parsing" | "configuring" | "uploading" | "processing" | "done" | "error";
+
 export function AnalysisPage({ config }: AnalysisPageProps) {
   const [file, setFile] = useState<File | null>(null);
   const [isDragging, setIsDragging] = useState(false);
-  const [status, setStatus] = useState<"idle" | "uploading" | "processing" | "done" | "error">("idle");
+  const [status, setStatus] = useState<Status>("idle");
   const [jobId, setJobId] = useState<string | null>(null);
   const [progress, setProgress] = useState(0);
   const [result, setResult] = useState<unknown>(null);
   const [error, setError] = useState<string | null>(null);
   const [password, setPassword] = useState("");
+  
+  // CSV preview data
+  const [columns, setColumns] = useState<string[]>([]);
+  const [sampleData, setSampleData] = useState<Record<string, unknown>[]>([]);
 
   const handleDragOver = useCallback((e: React.DragEvent) => {
     e.preventDefault();
@@ -61,7 +105,6 @@ export function AnalysisPage({ config }: AnalysisPageProps) {
     const droppedFile = e.dataTransfer.files[0];
     if (droppedFile?.name.endsWith(".csv")) {
       setFile(droppedFile);
-      setStatus("idle");
       setError(null);
     } else {
       setError("Please upload a CSV file");
@@ -72,10 +115,31 @@ export function AnalysisPage({ config }: AnalysisPageProps) {
     const selectedFile = e.target.files?.[0];
     if (selectedFile) {
       setFile(selectedFile);
-      setStatus("idle");
       setError(null);
     }
   }, []);
+
+  // After file + password, parse CSV and show column picker
+  const handleProceed = async () => {
+    if (!file) return;
+    if (!password.trim()) {
+      setError("Access code required");
+      return;
+    }
+
+    setStatus("parsing");
+    setError(null);
+
+    try {
+      const { columns: cols, sampleData: sample } = await parseCSVPreview(file);
+      setColumns(cols);
+      setSampleData(sample);
+      setStatus("configuring");
+    } catch (err) {
+      setStatus("idle");
+      setError(err instanceof Error ? err.message : "Failed to parse CSV");
+    }
+  };
 
   const pollJobStatus = useCallback(async (id: string) => {
     const maxAttempts = 120;
@@ -115,12 +179,9 @@ export function AnalysisPage({ config }: AnalysisPageProps) {
     await poll();
   }, []);
 
-  const handleSubmit = async () => {
+  // Submit with column configuration
+  const handleSubmitWithConfig = async (columnConfig: ColumnConfig) => {
     if (!file) return;
-    if (!password.trim()) {
-      setError("Access code required");
-      return;
-    }
 
     setStatus("uploading");
     setError(null);
@@ -129,6 +190,7 @@ export function AnalysisPage({ config }: AnalysisPageProps) {
       const formData = new FormData();
       formData.append("file", file);
       formData.append("password", password);
+      formData.append("columnConfig", JSON.stringify(columnConfig));
 
       const { jobId: newJobId } = await uploadAndCreateJob(formData, config.type);
       setJobId(newJobId);
@@ -148,188 +210,19 @@ export function AnalysisPage({ config }: AnalysisPageProps) {
     setResult(null);
     setError(null);
     setPassword("");
+    setColumns([]);
+    setSampleData([]);
   };
 
-  const requiredColumns = config.columns.filter(c => c.type === "required");
-  const optionalColumns = config.columns.filter(c => c.type === "optional");
+  // Show results if done
+  if (status === "done" && result !== null) {
+    return (
+      <div className="analysis-page">
+        <header className="analysis-header">
+          <h1>{config.title}</h1>
+          <p className="description">{config.description}</p>
+        </header>
 
-  return (
-    <div className="analysis-page">
-      {/* Header */}
-      <header className="analysis-header">
-        <h1>{config.title}</h1>
-        <p className="description">{config.description}</p>
-      </header>
-
-      <div className="analysis-grid">
-        {/* Data Requirements */}
-        <section className="requirements-section">
-          <div className="section-header">
-            <Table2 size={18} />
-            <h2>Data Requirements</h2>
-          </div>
-          
-          <div className="columns-table">
-            <div className="table-header">
-              <span className="col-name">Column</span>
-              <span className="col-desc">Description</span>
-            </div>
-            
-            {requiredColumns.length > 0 && (
-              <div className="column-group">
-                <span className="group-label required">Required</span>
-                {requiredColumns.map((col) => (
-                  <div key={col.name} className="column-row">
-                    <code className="col-name">{col.name}</code>
-                    <span className="col-desc">
-                      {col.description}
-                      {col.example && (
-                        <span className="example">e.g. {col.example}</span>
-                      )}
-                    </span>
-                  </div>
-                ))}
-              </div>
-            )}
-            
-            {optionalColumns.length > 0 && (
-              <div className="column-group">
-                <span className="group-label optional">Optional / Features</span>
-                {optionalColumns.map((col) => (
-                  <div key={col.name} className="column-row">
-                    <code className="col-name">{col.name}</code>
-                    <span className="col-desc">
-                      {col.description}
-                      {col.example && (
-                        <span className="example">e.g. {col.example}</span>
-                      )}
-                    </span>
-                  </div>
-                ))}
-              </div>
-            )}
-          </div>
-
-          {config.sampleDataUrl && (
-            <a href={config.sampleDataUrl} className="sample-link" download>
-              <Download size={14} />
-              Download sample CSV
-            </a>
-          )}
-        </section>
-
-        {/* Upload Section */}
-        <section className="upload-section">
-          <div className="section-header">
-            <Upload size={18} />
-            <h2>Upload & Run</h2>
-          </div>
-
-          <div
-            className={`drop-zone ${isDragging ? "dragging" : ""} ${file ? "has-file" : ""}`}
-            onDragOver={handleDragOver}
-            onDragLeave={handleDragLeave}
-            onDrop={handleDrop}
-          >
-            {status === "idle" && !file && (
-              <div className="drop-content">
-                <div className="drop-icon">
-                  <Upload size={32} />
-                </div>
-                <p className="drop-text">Drag & drop your CSV</p>
-                <span className="drop-or">or</span>
-                <label className="browse-btn">
-                  <input
-                    type="file"
-                    accept=".csv"
-                    onChange={handleFileSelect}
-                    hidden
-                  />
-                  Browse files
-                </label>
-              </div>
-            )}
-
-            {status === "idle" && file && (
-              <div className="file-ready">
-                <FileSpreadsheet size={40} className="file-icon" />
-                <p className="file-name">{file.name}</p>
-                <p className="file-size">{(file.size / 1024).toFixed(1)} KB</p>
-                
-                <input
-                  type="password"
-                  placeholder="Access code"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  className="password-input"
-                />
-                
-                <div className="file-actions">
-                  <button className="run-btn" onClick={handleSubmit}>
-                    Run Analysis
-                  </button>
-                  <button className="remove-btn" onClick={reset}>
-                    Remove
-                  </button>
-                </div>
-              </div>
-            )}
-
-            {(status === "uploading" || status === "processing") && (
-              <div className="processing">
-                <Loader2 size={32} className="spinner" />
-                <p className="processing-text">
-                  {status === "uploading" ? "Uploading..." : "Processing..."}
-                </p>
-                
-                {status === "processing" && (
-                  <div className="progress-container">
-                    <div className="progress-bar">
-                      <div 
-                        className="progress-fill"
-                        style={{ width: `${progress}%` }}
-                      />
-                    </div>
-                    <span className="progress-text">{progress}%</span>
-                  </div>
-                )}
-                
-                {jobId && (
-                  <p className="job-id">Job: {jobId.slice(0, 8)}...</p>
-                )}
-              </div>
-            )}
-
-            {status === "done" && (
-              <div className="done">
-                <CheckCircle2 size={40} className="done-icon" />
-                <p className="done-text">Analysis Complete</p>
-                <button className="run-another-btn" onClick={reset}>
-                  Run Another
-                </button>
-              </div>
-            )}
-
-            {status === "error" && (
-              <div className="error-state">
-                <AlertCircle size={40} className="error-icon" />
-                <p className="error-text">{error}</p>
-                <button className="try-again-btn" onClick={reset}>
-                  Try Again
-                </button>
-              </div>
-            )}
-          </div>
-
-          <div className="upload-note">
-            <Info size={14} />
-            <span>Data is processed on-demand and not stored permanently.</span>
-          </div>
-        </section>
-      </div>
-
-      {/* Results */}
-      {result !== null && (
         <section className="results-section">
           <div className="results-header">
             <h3>Results</h3>
@@ -347,16 +240,274 @@ export function AnalysisPage({ config }: AnalysisPageProps) {
             </pre>
           )}
         </section>
-      )}
+
+        <style jsx>{`
+          .analysis-page {
+            padding: var(--space-6) 0;
+            max-width: 900px;
+          }
+          .analysis-header {
+            margin-bottom: var(--space-8);
+          }
+          .analysis-header h1 {
+            font-size: var(--h2);
+            font-weight: 700;
+            margin-bottom: var(--space-2);
+            text-align: left;
+          }
+          .description {
+            color: var(--muted);
+            font-size: 15px;
+            max-width: 600px;
+          }
+          .results-section {
+            padding: var(--space-5);
+            background: var(--bg);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+          }
+          .results-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: var(--space-5);
+          }
+          .results-section h3 {
+            font-size: 1rem;
+            font-weight: 600;
+            margin: 0;
+          }
+          .reset-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: var(--space-1);
+            padding: var(--space-2) var(--space-3);
+            background: var(--bg);
+            color: var(--fg);
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.15s;
+          }
+          .reset-btn:hover {
+            border-color: var(--fg);
+          }
+          .results-json {
+            font-size: 12px;
+            font-family: var(--font-geist-mono), monospace;
+            background: rgba(0, 0, 0, 0.02);
+            padding: var(--space-4);
+            border-radius: 8px;
+            overflow-x: auto;
+            max-height: 400px;
+            overflow-y: auto;
+            margin: 0;
+          }
+        `}</style>
+      </div>
+    );
+  }
+
+  // Show column picker if configuring
+  if (status === "configuring") {
+    return (
+      <div className="analysis-page">
+        <header className="analysis-header">
+          <h1>{config.title}</h1>
+          <p className="description">{config.description}</p>
+        </header>
+
+        <section className="config-section">
+          <div className="file-badge">
+            <FileSpreadsheet size={16} />
+            <span>{file?.name}</span>
+            <span className="file-size">{((file?.size ?? 0) / 1024).toFixed(1)} KB</span>
+          </div>
+          
+          <ColumnPicker
+            columns={columns}
+            sampleData={sampleData}
+            onConfirm={handleSubmitWithConfig}
+            onCancel={reset}
+          />
+        </section>
+
+        <style jsx>{`
+          .analysis-page {
+            padding: var(--space-6) 0;
+            max-width: 900px;
+          }
+          .analysis-header {
+            margin-bottom: var(--space-6);
+          }
+          .analysis-header h1 {
+            font-size: var(--h2);
+            font-weight: 700;
+            margin-bottom: var(--space-2);
+            text-align: left;
+          }
+          .description {
+            color: var(--muted);
+            font-size: 15px;
+            max-width: 600px;
+          }
+          .config-section {
+            padding: var(--space-5);
+            background: var(--bg);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+          }
+          .file-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: var(--space-2);
+            padding: var(--space-2) var(--space-3);
+            background: #e0e7ff;
+            color: #3730a3;
+            border-radius: 6px;
+            font-size: 13px;
+            font-weight: 500;
+            margin-bottom: var(--space-5);
+          }
+          .file-size {
+            opacity: 0.7;
+            font-weight: 400;
+          }
+        `}</style>
+      </div>
+    );
+  }
+
+  // Default: Upload view
+  return (
+    <div className="analysis-page">
+      <header className="analysis-header">
+        <h1>{config.title}</h1>
+        <p className="description">{config.description}</p>
+      </header>
+
+      <section className="upload-section">
+        <div
+          className={`drop-zone ${isDragging ? "dragging" : ""} ${file ? "has-file" : ""}`}
+          onDragOver={handleDragOver}
+          onDragLeave={handleDragLeave}
+          onDrop={handleDrop}
+        >
+          {!file && status === "idle" && (
+            <div className="drop-content">
+              <div className="drop-icon">
+                <Upload size={32} />
+              </div>
+              <p className="drop-text">Drag & drop your CSV</p>
+              <span className="drop-or">or</span>
+              <label className="browse-btn">
+                <input
+                  type="file"
+                  accept=".csv"
+                  onChange={handleFileSelect}
+                  hidden
+                />
+                Browse files
+              </label>
+              <p className="drop-hint">
+                Any CSV format works — you'll configure columns next
+              </p>
+            </div>
+          )}
+
+          {file && (status === "idle" || status === "parsing") && (
+            <div className="file-ready">
+              <FileSpreadsheet size={40} className="file-icon" />
+              <p className="file-name">{file.name}</p>
+              <p className="file-size">{(file.size / 1024).toFixed(1)} KB</p>
+              
+              <input
+                type="password"
+                placeholder="Access code"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                className="password-input"
+                disabled={status === "parsing"}
+              />
+              
+              <div className="file-actions">
+                <button 
+                  className="proceed-btn" 
+                  onClick={handleProceed}
+                  disabled={status === "parsing"}
+                >
+                  {status === "parsing" ? (
+                    <>
+                      <Loader2 size={16} className="spinner" />
+                      Parsing...
+                    </>
+                  ) : (
+                    "Continue"
+                  )}
+                </button>
+                <button 
+                  className="remove-btn" 
+                  onClick={reset}
+                  disabled={status === "parsing"}
+                >
+                  Remove
+                </button>
+              </div>
+            </div>
+          )}
+
+          {(status === "uploading" || status === "processing") && (
+            <div className="processing">
+              <Loader2 size={32} className="spinner" />
+              <p className="processing-text">
+                {status === "uploading" ? "Uploading..." : "Processing..."}
+              </p>
+              
+              {status === "processing" && (
+                <div className="progress-container">
+                  <div className="progress-bar">
+                    <div 
+                      className="progress-fill"
+                      style={{ width: `${progress}%` }}
+                    />
+                  </div>
+                  <span className="progress-text">{progress}%</span>
+                </div>
+              )}
+              
+              {jobId && (
+                <p className="job-id">Job: {jobId.slice(0, 8)}...</p>
+              )}
+            </div>
+          )}
+
+          {status === "error" && (
+            <div className="error-state">
+              <AlertCircle size={40} className="error-icon" />
+              <p className="error-text">{error}</p>
+              <button className="try-again-btn" onClick={reset}>
+                Try Again
+              </button>
+            </div>
+          )}
+        </div>
+
+        <div className="upload-note">
+          <Info size={14} />
+          <span>Data is processed on-demand and not stored permanently.</span>
+        </div>
+      </section>
 
       <style jsx>{`
         .analysis-page {
           padding: var(--space-6) 0;
-          max-width: 900px;
+          max-width: 700px;
         }
 
         .analysis-header {
-          margin-bottom: var(--space-8);
+          margin-bottom: var(--space-6);
         }
 
         .analysis-header h1 {
@@ -372,137 +523,6 @@ export function AnalysisPage({ config }: AnalysisPageProps) {
           max-width: 600px;
         }
 
-        .analysis-grid {
-          display: grid;
-          grid-template-columns: 1fr 1fr;
-          gap: var(--space-6);
-        }
-
-        @media (max-width: 900px) {
-          .analysis-grid {
-            grid-template-columns: 1fr;
-          }
-        }
-
-        .section-header {
-          display: flex;
-          align-items: center;
-          gap: var(--space-2);
-          margin-bottom: var(--space-4);
-          color: var(--fg);
-        }
-
-        .section-header h2 {
-          font-size: 1rem;
-          font-weight: 600;
-          margin: 0;
-        }
-
-        /* Requirements Section */
-        .requirements-section {
-          background: var(--bg);
-          border: 1px solid var(--border);
-          border-radius: 12px;
-          padding: var(--space-5);
-        }
-
-        .columns-table {
-          font-size: 13px;
-        }
-
-        .table-header {
-          display: grid;
-          grid-template-columns: 140px 1fr;
-          gap: var(--space-3);
-          padding-bottom: var(--space-2);
-          border-bottom: 1px solid var(--border);
-          margin-bottom: var(--space-3);
-          font-weight: 600;
-          color: var(--muted);
-          font-size: 11px;
-          text-transform: uppercase;
-          letter-spacing: 0.05em;
-        }
-
-        .column-group {
-          margin-bottom: var(--space-4);
-        }
-
-        .group-label {
-          display: inline-block;
-          font-size: 10px;
-          font-weight: 600;
-          text-transform: uppercase;
-          letter-spacing: 0.05em;
-          padding: 2px 8px;
-          border-radius: 4px;
-          margin-bottom: var(--space-2);
-        }
-
-        .group-label.required {
-          background: #fef3c7;
-          color: #92400e;
-        }
-
-        .group-label.optional {
-          background: #e0e7ff;
-          color: #3730a3;
-        }
-
-        .column-row {
-          display: grid;
-          grid-template-columns: 140px 1fr;
-          gap: var(--space-3);
-          padding: var(--space-2) 0;
-          border-bottom: 1px solid var(--border);
-        }
-
-        .column-row:last-child {
-          border-bottom: none;
-        }
-
-        .col-name code {
-          font-size: 12px;
-          background: var(--border);
-          padding: 2px 6px;
-          border-radius: 4px;
-        }
-
-        .col-desc {
-          color: var(--muted);
-          line-height: 1.4;
-        }
-
-        .example {
-          display: block;
-          font-size: 11px;
-          color: var(--muted);
-          opacity: 0.7;
-          margin-top: 2px;
-          font-style: italic;
-        }
-
-        .sample-link {
-          display: inline-flex;
-          align-items: center;
-          gap: var(--space-1);
-          margin-top: var(--space-4);
-          padding: var(--space-2) var(--space-3);
-          background: var(--fg);
-          color: var(--bg);
-          border-radius: 6px;
-          font-size: 12px;
-          font-weight: 500;
-          text-decoration: none;
-          transition: opacity 0.15s;
-        }
-
-        .sample-link:hover {
-          opacity: 0.9;
-          text-decoration: none;
-        }
-
-        /* Upload Section */
         .upload-section {
           background: var(--bg);
           border: 1px solid var(--border);
@@ -569,6 +589,12 @@ export function AnalysisPage({ config }: AnalysisPageProps) {
           border-color: var(--fg);
         }
 
+        .drop-hint {
+          margin-top: var(--space-4);
+          font-size: 12px;
+          color: var(--muted);
+        }
+
         .file-ready {
           display: flex;
           flex-direction: column;
@@ -609,12 +635,19 @@ export function AnalysisPage({ config }: AnalysisPageProps) {
           border-color: var(--fg);
         }
 
+        .password-input:disabled {
+          opacity: 0.5;
+        }
+
         .file-actions {
           display: flex;
           gap: var(--space-2);
         }
 
-        .run-btn {
+        .proceed-btn {
+          display: inline-flex;
+          align-items: center;
+          gap: var(--space-2);
           padding: var(--space-2) var(--space-4);
           background: var(--fg);
           color: var(--bg);
@@ -626,8 +659,13 @@ export function AnalysisPage({ config }: AnalysisPageProps) {
           transition: opacity 0.15s;
         }
 
-        .run-btn:hover {
+        .proceed-btn:hover:not(:disabled) {
           opacity: 0.9;
+        }
+
+        .proceed-btn:disabled {
+          opacity: 0.6;
+          cursor: not-allowed;
         }
 
         .remove-btn {
@@ -641,8 +679,13 @@ export function AnalysisPage({ config }: AnalysisPageProps) {
           transition: border-color 0.15s;
         }
 
-        .remove-btn:hover {
+        .remove-btn:hover:not(:disabled) {
           border-color: var(--fg);
+        }
+
+        .remove-btn:disabled {
+          opacity: 0.5;
+          cursor: not-allowed;
         }
 
         .processing {
@@ -697,40 +740,6 @@ export function AnalysisPage({ config }: AnalysisPageProps) {
           font-family: var(--font-geist-mono), monospace;
         }
 
-        .done {
-          display: flex;
-          flex-direction: column;
-          align-items: center;
-        }
-
-        .done :global(.done-icon) {
-          color: #10b981;
-          margin-bottom: var(--space-3);
-        }
-
-        .done-text {
-          font-size: 14px;
-          font-weight: 500;
-          margin-bottom: var(--space-4);
-        }
-
-        .run-another-btn,
-        .try-again-btn {
-          padding: var(--space-2) var(--space-4);
-          background: var(--bg);
-          color: var(--fg);
-          border: 1px solid var(--border);
-          border-radius: 6px;
-          font-size: 13px;
-          cursor: pointer;
-          transition: border-color 0.15s;
-        }
-
-        .run-another-btn:hover,
-        .try-again-btn:hover {
-          border-color: var(--fg);
-        }
-
         .error-state {
           display: flex;
           flex-direction: column;
@@ -750,6 +759,21 @@ export function AnalysisPage({ config }: AnalysisPageProps) {
           max-width: 280px;
         }
 
+        .try-again-btn {
+          padding: var(--space-2) var(--space-4);
+          background: var(--bg);
+          color: var(--fg);
+          border: 1px solid var(--border);
+          border-radius: 6px;
+          font-size: 13px;
+          cursor: pointer;
+          transition: border-color 0.15s;
+        }
+
+        .try-again-btn:hover {
+          border-color: var(--fg);
+        }
+
         .upload-note {
           display: flex;
           align-items: center;
@@ -761,61 +785,7 @@ export function AnalysisPage({ config }: AnalysisPageProps) {
           font-size: 12px;
           color: var(--muted);
         }
-
-        /* Results Section */
-        .results-section {
-          margin-top: var(--space-8);
-          padding: var(--space-5);
-          background: var(--bg);
-          border: 1px solid var(--border);
-          border-radius: 12px;
-        }
-
-        .results-header {
-          display: flex;
-          align-items: center;
-          justify-content: space-between;
-          margin-bottom: var(--space-5);
-        }
-
-        .results-section h3 {
-          font-size: 1rem;
-          font-weight: 600;
-          margin: 0;
-        }
-
-        .reset-btn {
-          display: inline-flex;
-          align-items: center;
-          gap: var(--space-1);
-          padding: var(--space-2) var(--space-3);
-          background: var(--bg);
-          color: var(--fg);
-          border: 1px solid var(--border);
-          border-radius: 6px;
-          font-size: 12px;
-          font-weight: 500;
-          cursor: pointer;
-          transition: all 0.15s;
-        }
-
-        .reset-btn:hover {
-          border-color: var(--fg);
-        }
-
-        .results-json {
-          font-size: 12px;
-          font-family: var(--font-geist-mono), monospace;
-          background: rgba(0, 0, 0, 0.02);
-          padding: var(--space-4);
-          border-radius: 8px;
-          overflow-x: auto;
-          max-height: 400px;
-          overflow-y: auto;
-          margin: 0;
-        }
       `}</style>
     </div>
   );
 }
-
