@@ -23,7 +23,7 @@ const BayesianTestingDemo = dynamic(
 export function ActionsView() {
   return (
     <section className="section" style={{ paddingTop: "var(--space-6)" }}>
-      <h2 className="section-title" style={{ marginTop: 0 }}>Actions</h2>
+      <h2 className="section-title" style={{ marginTop: 0 }}>Decisions</h2>
       <div className="grid grid-12">
         <div className="span-12">
           <h3 id="crossing-the-boundary">Crossing the boundary</h3>

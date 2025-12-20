@@ -32,7 +32,7 @@ const ValueFunctionVisual = dynamic(
 export function RewardsView() {
   return (
     <section className="section" style={{ paddingTop: "var(--space-6)" }}>
-      <h2 className="section-title" style={{ marginTop: 0 }}>Rewards</h2>
+      <h2 className="section-title" style={{ marginTop: 0 }}>Value</h2>
       <div className="grid grid-12">
         <div className="span-12">
           <p>
@@ -50,6 +50,10 @@ export function RewardsView() {
           </p>
 
           <CustomerEquityVisual />
+
+          <p>
+            Customer equity is an <strong>upper bound</strong> on enterprise value. It's revenue, not profit—you still have to pay for acquisition (CAC), cost of service (infrastructure, support), R&D, and overhead. Enterprise value is CE minus the present value of all those costs. But CE is the right objective for growth-stage decisions: if an action doesn't increase revenue, it can't increase value.
+          </p>
 
           <h3 id="customer-lifetime-value">Customer lifetime value</h3>
           <p>
@@ -93,7 +97,7 @@ export function RewardsView() {
             Near-decomposability means these cross-elasticities are small. Price and volume are tightly coupled (large <InlineMath math="|\partial \log v / \partial \log p|" />). But retention, expansion, and contraction depend mostly on post-sale experience—the cross-terms with price are weak. You can optimize subsystems semi-independently: pricing doesn't require a full retention model, retention interventions don't re-solve pricing. The coupling exists, but local optimization gets you most of the way.
           </p>
 
-          <h3 id="value-functions">Value functions</h3>
+          <h3 id="state-value">State value</h3>
           <p>
             Customer equity is the goal, but you act one period at a time. To decide what to do, you need to know what future CE looks like from where you stand.
           </p>
@@ -103,6 +107,7 @@ export function RewardsView() {
           </p>
           <BlockMath math="V^\pi(s) = \mathbb{E}\left[ \mathrm{CE}(\pi) \;\middle|\; s_0 = s \right]" />
 
+          <h3 id="action-value">Action value</h3>
           <p>
             The <strong>state-action value function</strong> <InlineMath math="Q^\pi(s,a)" /> answers: "what if I take action <InlineMath math="a" /> first, then follow <InlineMath math="\pi" />?"
           </p>

@@ -17,7 +17,7 @@ interface NavItem {
 }
 
 const navItems: NavItem[] = [
-  { href: "/saas", label: "Problem" },
+  { href: "/saas", label: "Philosophy" },
   { 
     href: "/saas/rewards", 
     label: "Value",
@@ -25,7 +25,16 @@ const navItems: NavItem[] = [
       { id: "customer-equity", label: "Customer equity" },
       { id: "customer-lifetime-value", label: "Customer lifetime value" },
       { id: "near-decomposability-of-clv", label: "Near-decomposability" },
-      { id: "value-functions", label: "Value functions" },
+      { id: "state-value", label: "State value" },
+      { id: "action-value", label: "Action value" },
+    ]
+  },
+  { 
+    href: "/saas/states", 
+    label: "Customer states",
+    subItems: [
+      { id: "observations", label: "Observations" },
+      { id: "representation-learning", label: "Representation learning" },
     ]
   },
   {
@@ -38,14 +47,6 @@ const navItems: NavItem[] = [
       { id: "randomized-assignment", label: "Randomized assignment" },
       { id: "quasi-random-assignment", label: "" },
       { id: "targeted-assignment", label: "" },
-    ]
-  },
-  { 
-    href: "/saas/states", 
-    label: "Customer states",
-    subItems: [
-      { id: "observations", label: "Observations" },
-      { id: "representation-learning", label: "Representation learning" },
     ]
   },
   { 

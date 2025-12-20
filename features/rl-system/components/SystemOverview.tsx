@@ -70,7 +70,7 @@ export function SystemOverview() {
 
   return (
     <section className="section" style={{ paddingTop: "var(--space-6)" }}>
-      <h2 className="section-title" style={{ marginTop: 0 }}>Problem</h2>
+      <h2 className="section-title" style={{ marginTop: 0 }}>Philosophy</h2>
       <div className="grid grid-12">
         <div className="span-12">
           <p>
