@@ -3,15 +3,22 @@
 import { useState } from "react";
 
 // Generate survival and hazard data for different customer types
-function generateData(baseHazard: number) {
+function generateData(baseHazard: number, billing: "monthly" | "annual") {
   const months = Array.from({ length: 25 }, (_, i) => i);
   const hazard: number[] = [];
   const survival: number[] = [];
   
   let S = 1;
   for (let t = 0; t < 25; t++) {
-    // Slightly increasing hazard over time (Weibull-like)
-    const h = baseHazard * (1 + t * 0.02);
+    let h: number;
+    if (billing === "monthly") {
+      // Monthly: slightly increasing hazard over time
+      h = baseHazard * (1 + t * 0.02);
+    } else {
+      // Annual: low base hazard with spikes at renewal months (12, 24)
+      const isRenewal = t === 12 || t === 24;
+      h = isRenewal ? baseHazard * 8 : baseHazard * 0.15;
+    }
     hazard.push(h);
     S = S * Math.exp(-h);
     survival.push(S);
@@ -28,11 +35,12 @@ const customerTypes = [
 
 export function SurvivalVisual() {
   const [view, setView] = useState<"survival" | "hazard">("survival");
+  const [billing, setBilling] = useState<"monthly" | "annual">("monthly");
   const [hoveredMonth, setHoveredMonth] = useState<number | null>(null);
   
   const data = customerTypes.map(ct => ({
     ...ct,
-    ...generateData(ct.baseHazard),
+    ...generateData(ct.baseHazard, billing),
   }));
 
   const width = 500;
@@ -49,28 +57,49 @@ export function SurvivalVisual() {
   const yScaleSurvival = (s: number) => padding.top + (1 - s / maxSurvival) * plotHeight;
   const yScaleHazard = (h: number) => padding.top + (1 - h / maxHazard) * plotHeight;
 
-  const yScale = view === "survival" ? yScaleSurvival : yScaleHazard;
-  const yMax = view === "survival" ? maxSurvival : maxHazard;
+  // Adjust hazard scale for annual billing (has spikes)
+  const actualMaxHazard = billing === "annual" ? 1.0 : 0.2;
+  const yScaleHazardActual = (h: number) => padding.top + (1 - h / actualMaxHazard) * plotHeight;
+  
+  const yScale = view === "survival" ? yScaleSurvival : yScaleHazardActual;
   const yLabel = view === "survival" ? "Survival probability S(t)" : "Hazard rate h(t)";
   const yTicks = view === "survival" 
     ? [0, 0.25, 0.5, 0.75, 1] 
-    : [0, 0.05, 0.1, 0.15, 0.2];
+    : billing === "annual" 
+      ? [0, 0.25, 0.5, 0.75, 1.0]
+      : [0, 0.05, 0.1, 0.15, 0.2];
 
   return (
     <div className="survival-container">
-      <div className="toggle-row">
-        <button 
-          className={`toggle-btn ${view === "survival" ? "active" : ""}`}
-          onClick={() => setView("survival")}
-        >
-          Survival S(t)
-        </button>
-        <button 
-          className={`toggle-btn ${view === "hazard" ? "active" : ""}`}
-          onClick={() => setView("hazard")}
-        >
-          Hazard h(t)
-        </button>
+      <div className="controls-row">
+        <div className="toggle-row">
+          <button 
+            className={`toggle-btn ${view === "survival" ? "active" : ""}`}
+            onClick={() => setView("survival")}
+          >
+            Survival S(t)
+          </button>
+          <button 
+            className={`toggle-btn ${view === "hazard" ? "active" : ""}`}
+            onClick={() => setView("hazard")}
+          >
+            Hazard h(t)
+          </button>
+        </div>
+        <div className="toggle-row">
+          <button 
+            className={`toggle-btn ${billing === "monthly" ? "active" : ""}`}
+            onClick={() => setBilling("monthly")}
+          >
+            Monthly
+          </button>
+          <button 
+            className={`toggle-btn ${billing === "annual" ? "active" : ""}`}
+            onClick={() => setBilling("annual")}
+          >
+            Annual
+          </button>
+        </div>
       </div>
 
       <svg viewBox={`0 0 ${width} ${height}`} className="survival-svg">
@@ -235,6 +264,12 @@ export function SurvivalVisual() {
           align-items: center;
           gap: var(--space-3);
           margin: var(--space-6) 0;
+        }
+        .controls-row {
+          display: flex;
+          gap: var(--space-4);
+          flex-wrap: wrap;
+          justify-content: center;
         }
         .toggle-row {
           display: flex;
