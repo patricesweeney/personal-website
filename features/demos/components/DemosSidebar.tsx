@@ -2,12 +2,15 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { useState } from "react";
 import { 
   BarChart3, 
   Clock, 
   TrendingUp, 
   Target,
-  FlaskConical
+  FlaskConical,
+  PanelLeftClose,
+  PanelLeft
 } from "lucide-react";
 
 interface NavItem {
@@ -21,42 +24,51 @@ const navItems: NavItem[] = [
   { 
     href: "/demos", 
     label: "Overview",
-    icon: <FlaskConical size={16} />,
+    icon: <FlaskConical size={18} />,
     description: "About these demos"
   },
   { 
     href: "/demos/poisson", 
     label: "Poisson Factorisation",
-    icon: <BarChart3 size={16} />,
+    icon: <BarChart3 size={18} />,
     description: "Customer behavior clustering"
   },
   { 
     href: "/demos/survival", 
     label: "Survival Analysis",
-    icon: <Clock size={16} />,
+    icon: <Clock size={18} />,
     description: "Time-to-churn modeling"
   },
   { 
     href: "/demos/nrr", 
     label: "NRR Decomposition",
-    icon: <TrendingUp size={16} />,
+    icon: <TrendingUp size={18} />,
     description: "Revenue driver analysis"
   },
   { 
     href: "/demos/propensity", 
     label: "Propensity Model",
-    icon: <Target size={16} />,
+    icon: <Target size={18} />,
     description: "Win probability scoring"
   },
 ];
 
 export function DemosSidebar() {
   const pathname = usePathname();
+  const [isCollapsed, setIsCollapsed] = useState(false);
 
   return (
-    <aside className="demos-sidebar">
+    <aside className={`demos-sidebar ${isCollapsed ? "collapsed" : ""}`}>
       <div className="sidebar-header">
-        <span className="meta">Demos</span>
+        {!isCollapsed && <span className="meta">Demos</span>}
+        <button 
+          className="collapse-btn"
+          onClick={() => setIsCollapsed(!isCollapsed)}
+          aria-label={isCollapsed ? "Expand sidebar" : "Collapse sidebar"}
+          title={isCollapsed ? "Expand" : "Collapse"}
+        >
+          {isCollapsed ? <PanelLeft size={18} /> : <PanelLeftClose size={18} />}
+        </button>
       </div>
       <nav className="sidebar-nav">
         {navItems.map((item) => {
@@ -67,9 +79,10 @@ export function DemosSidebar() {
               key={item.href}
               href={item.href}
               className={`demo-nav-link ${isActive ? "active" : ""}`}
+              title={isCollapsed ? item.label : undefined}
             >
               <span className="nav-icon">{item.icon}</span>
-              <span className="nav-label">{item.label}</span>
+              {!isCollapsed && <span className="nav-label">{item.label}</span>}
             </Link>
           );
         })}
@@ -84,10 +97,43 @@ export function DemosSidebar() {
           padding: var(--space-6) var(--space-4);
           border-right: 1px solid var(--border);
           height: fit-content;
+          transition: width 0.2s ease;
+        }
+
+        .demos-sidebar.collapsed {
+          width: 64px;
+          padding: var(--space-6) var(--space-2);
         }
 
         .sidebar-header {
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
           margin-bottom: var(--space-4);
+          min-height: 24px;
+        }
+
+        .demos-sidebar.collapsed .sidebar-header {
+          justify-content: center;
+        }
+
+        .collapse-btn {
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          width: 32px;
+          height: 32px;
+          border: none;
+          background: transparent;
+          color: var(--muted);
+          cursor: pointer;
+          border-radius: 6px;
+          transition: all 0.15s ease;
+        }
+
+        .collapse-btn:hover {
+          background: var(--border);
+          color: var(--fg);
         }
 
         .sidebar-nav {
@@ -104,8 +150,15 @@ export function DemosSidebar() {
           border-radius: 6px;
           font-size: var(--font-small);
           color: var(--muted);
-          transition: background-color 0.15s, color 0.15s;
+          transition: all 0.15s ease;
           text-decoration: none;
+          white-space: nowrap;
+          overflow: hidden;
+        }
+
+        .demos-sidebar.collapsed :global(.demo-nav-link) {
+          justify-content: center;
+          padding: var(--space-2);
         }
 
         :global(.demo-nav-link:hover) {
@@ -122,7 +175,8 @@ export function DemosSidebar() {
         .nav-icon {
           display: flex;
           align-items: center;
-          opacity: 0.7;
+          flex-shrink: 0;
+          opacity: 0.8;
         }
 
         :global(.demo-nav-link.active) .nav-icon {
@@ -131,6 +185,8 @@ export function DemosSidebar() {
 
         .nav-label {
           font-weight: 500;
+          opacity: 1;
+          transition: opacity 0.15s ease;
         }
 
         @media (max-width: 768px) {
@@ -141,6 +197,19 @@ export function DemosSidebar() {
             border-right: none;
             border-bottom: 1px solid var(--border);
             padding: var(--space-4);
+          }
+
+          .demos-sidebar.collapsed {
+            width: 100%;
+            padding: var(--space-4);
+          }
+
+          .sidebar-header {
+            justify-content: space-between;
+          }
+
+          .collapse-btn {
+            display: none;
           }
 
           .sidebar-nav {
@@ -165,4 +234,3 @@ export function DemosSidebar() {
     </aside>
   );
 }
-

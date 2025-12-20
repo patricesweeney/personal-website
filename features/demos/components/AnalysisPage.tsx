@@ -9,10 +9,12 @@ import {
   AlertCircle,
   Download,
   Table2,
-  Info
+  Info,
+  RotateCcw
 } from "lucide-react";
 import { uploadAndCreateJob, getJobStatus } from "@/features/analysis";
 import type { JobType } from "@/features/analysis";
+import { PoissonResults } from "./PoissonResults";
 
 interface ColumnSpec {
   name: string;
@@ -329,10 +331,21 @@ export function AnalysisPage({ config }: AnalysisPageProps) {
       {/* Results */}
       {result !== null && (
         <section className="results-section">
-          <h3>Results</h3>
-          <pre className="results-json">
-            {JSON.stringify(result, null, 2)}
-          </pre>
+          <div className="results-header">
+            <h3>Results</h3>
+            <button className="reset-btn" onClick={reset}>
+              <RotateCcw size={14} />
+              Run Another
+            </button>
+          </div>
+          
+          {config.type === "poisson_factorization" ? (
+            <PoissonResults result={result as Parameters<typeof PoissonResults>[0]["result"]} />
+          ) : (
+            <pre className="results-json">
+              {JSON.stringify(result, null, 2)}
+            </pre>
+          )}
         </section>
       )}
 
@@ -758,10 +771,36 @@ export function AnalysisPage({ config }: AnalysisPageProps) {
           border-radius: 12px;
         }
 
+        .results-header {
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          margin-bottom: var(--space-5);
+        }
+
         .results-section h3 {
           font-size: 1rem;
           font-weight: 600;
-          margin-bottom: var(--space-4);
+          margin: 0;
+        }
+
+        .reset-btn {
+          display: inline-flex;
+          align-items: center;
+          gap: var(--space-1);
+          padding: var(--space-2) var(--space-3);
+          background: var(--bg);
+          color: var(--fg);
+          border: 1px solid var(--border);
+          border-radius: 6px;
+          font-size: 12px;
+          font-weight: 500;
+          cursor: pointer;
+          transition: all 0.15s;
+        }
+
+        .reset-btn:hover {
+          border-color: var(--fg);
         }
 
         .results-json {
