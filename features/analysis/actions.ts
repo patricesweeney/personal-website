@@ -84,29 +84,27 @@ export async function uploadAndCreateJob(
 }
 
 /**
- * Trigger the Edge Function to process a job
+ * Trigger Modal to process the job
  * Fire-and-forget: we don't await the result, the UI polls for status
  */
 async function triggerProcessing(jobId: string): Promise<void> {
-  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
-  const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
+  const modalUrl = process.env.MODAL_WEBHOOK_URL
 
-  if (!supabaseUrl || !supabaseAnonKey) {
-    throw new Error('Missing Supabase environment variables')
+  if (!modalUrl) {
+    throw new Error('Missing MODAL_WEBHOOK_URL environment variable')
   }
 
-  const response = await fetch(`${supabaseUrl}/functions/v1/process-job`, {
+  const response = await fetch(modalUrl, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
-      'Authorization': `Bearer ${supabaseAnonKey}`,
     },
     body: JSON.stringify({ jobId }),
   })
 
   if (!response.ok) {
     const error = await response.text()
-    throw new Error(`Edge function failed: ${error}`)
+    throw new Error(`Modal trigger failed: ${error}`)
   }
 }
 
