@@ -5,7 +5,6 @@ import type { JobType, AnalysisResult, UploadResult } from './types'
 
 const STORAGE_BUCKET = 'analysis-uploads'
 const MAX_DAILY_JOBS = 50
-const MAX_FILE_SIZE_MB = 10
 const DEMO_PASSWORD = process.env.DEMO_PASSWORD || 'leo'
 
 /**
@@ -37,11 +36,6 @@ export async function uploadAndCreateJob(
 
   if ((count ?? 0) >= MAX_DAILY_JOBS) {
     throw new Error('Daily limit reached. Try again tomorrow.')
-  }
-
-  // File size limit
-  if (file.size > MAX_FILE_SIZE_MB * 1024 * 1024) {
-    throw new Error(`File too large. Maximum size is ${MAX_FILE_SIZE_MB}MB.`)
   }
 
   // Generate unique path
