@@ -25,7 +25,6 @@ function generateCustomers(n: number, correlation: number): Array<{
     const z2 = Math.sqrt(-2 * Math.log(u1)) * Math.sin(2 * Math.PI * u2);
     
     // Apply Cholesky to get correlated values
-    // For correlation r: x1 = z1, x2 = r*z1 + sqrt(1-r^2)*z2
     const expandFrailty = z1;
     const churnFrailty = correlation * z1 + Math.sqrt(1 - correlation * correlation) * z2;
     
@@ -43,32 +42,15 @@ function generateCustomers(n: number, correlation: number): Array<{
   return customers;
 }
 
-// Generate ellipse points for the correlation contour
-function generateEllipse(correlation: number, scale: number = 2, points: number = 100): string {
-  const coords = [];
-  for (let i = 0; i <= points; i++) {
-    const t = (i / points) * 2 * Math.PI;
-    // Eigenvalue decomposition for bivariate normal
-    const lambda1 = 1 + correlation;
-    const lambda2 = 1 - correlation;
-    const x = scale * Math.sqrt(lambda1) * Math.cos(t) * Math.cos(Math.PI / 4) 
-            - scale * Math.sqrt(lambda2) * Math.sin(t) * Math.sin(Math.PI / 4);
-    const y = scale * Math.sqrt(lambda1) * Math.cos(t) * Math.sin(Math.PI / 4) 
-            + scale * Math.sqrt(lambda2) * Math.sin(t) * Math.cos(Math.PI / 4);
-    coords.push(`${x},${y}`);
-  }
-  return coords.join(" ");
-}
-
 export function FrailtyVisual() {
   const [correlation, setCorrelation] = useState(-0.6);
   const [hoveredCustomer, setHoveredCustomer] = useState<number | null>(null);
   
   const customers = useMemo(() => generateCustomers(80, correlation), [correlation]);
   
-  const width = 500;
-  const height = 400;
-  const padding = { top: 40, right: 40, bottom: 60, left: 70 };
+  const width = 520;
+  const height = 420;
+  const padding = { top: 50, right: 60, bottom: 70, left: 80 };
   const plotWidth = width - padding.left - padding.right;
   const plotHeight = height - padding.top - padding.bottom;
   
@@ -78,22 +60,20 @@ export function FrailtyVisual() {
   const scaleY = (v: number) => padding.top + ((range - v) / (2 * range)) * plotHeight;
   
   // Value to color: green (high value) to red (low value)
-  const valueToColor = (value: number) => {
-    const normalized = Math.max(0, Math.min(1, (value + 4) / 8)); // value ranges roughly -4 to 4
+  const valueToColor = (value: number, alpha: number = 1) => {
+    const normalized = Math.max(0, Math.min(1, (value + 4) / 8));
     if (normalized > 0.5) {
-      // White to green
       const t = (normalized - 0.5) * 2;
       const r = Math.round(255 - t * 175);
       const g = Math.round(255 - t * 55);
       const b = Math.round(255 - t * 175);
-      return `rgb(${r}, ${g}, ${b})`;
+      return `rgba(${r}, ${g}, ${b}, ${alpha})`;
     } else {
-      // Red to white
       const t = normalized * 2;
       const r = 255;
       const g = Math.round(100 + t * 155);
       const b = Math.round(100 + t * 155);
-      return `rgb(${r}, ${g}, ${b})`;
+      return `rgba(${r}, ${g}, ${b}, ${alpha})`;
     }
   };
   
@@ -103,7 +83,6 @@ export function FrailtyVisual() {
     for (let i = 0; i <= numPoints; i++) {
       const t = (i / numPoints) * 2 * Math.PI;
       const scale = 1.8;
-      // For correlation r, the ellipse axes are rotated 45 degrees
       const lambda1 = Math.sqrt(1 + correlation);
       const lambda2 = Math.sqrt(1 - correlation);
       const cos45 = Math.cos(Math.PI / 4);
@@ -115,183 +94,231 @@ export function FrailtyVisual() {
     return `M ${points.join(" L ")} Z`;
   }, [correlation]);
 
+  const hoveredData = hoveredCustomer !== null 
+    ? customers.find(c => c.id === hoveredCustomer) 
+    : null;
+
+  const getCorrelationLabel = () => {
+    if (correlation < -0.3) return "Negatively correlated";
+    if (correlation > 0.3) return "Positively correlated";
+    return "Weakly correlated";
+  };
+
   return (
     <div className="frailty-container">
-      <div className="correlation-control">
-        <label>
-          <span className="control-label">Correlation (ρ): {correlation.toFixed(2)}</span>
-          <input
-            type="range"
-            min="-0.9"
-            max="0.9"
-            step="0.1"
-            value={correlation}
-            onChange={(e) => setCorrelation(parseFloat(e.target.value))}
-          />
-        </label>
+      <div className="controls-row">
+        <div className="correlation-control">
+          <span className="control-label">Correlation</span>
+          <div className="slider-row">
+            <span className="slider-end">−1</span>
+            <input
+              type="range"
+              min="-0.9"
+              max="0.9"
+              step="0.05"
+              value={correlation}
+              onChange={(e) => setCorrelation(parseFloat(e.target.value))}
+            />
+            <span className="slider-end">+1</span>
+          </div>
+          <span className="correlation-value">{correlation.toFixed(2)}</span>
+        </div>
       </div>
       
-      <svg viewBox={`0 0 ${width} ${height}`} className="frailty-svg">
-        {/* Grid lines */}
-        {[-2, -1, 0, 1, 2].map((v) => (
-          <g key={v}>
-            <line
-              x1={scaleX(v)}
-              y1={padding.top}
-              x2={scaleX(v)}
-              y2={height - padding.bottom}
-              stroke="var(--border)"
-              strokeWidth="1"
-              strokeDasharray={v === 0 ? "none" : "3,3"}
-              opacity={v === 0 ? 0.5 : 0.3}
-            />
-            <line
-              x1={padding.left}
-              y1={scaleY(v)}
-              x2={width - padding.right}
-              y2={scaleY(v)}
-              stroke="var(--border)"
-              strokeWidth="1"
-              strokeDasharray={v === 0 ? "none" : "3,3"}
-              opacity={v === 0 ? 0.5 : 0.3}
-            />
-          </g>
-        ))}
-        
-        {/* Correlation ellipse (1.5 std dev) */}
-        <path
-          d={ellipsePath}
-          fill="none"
-          stroke="var(--muted)"
-          strokeWidth="2"
-          strokeDasharray="6,4"
-          opacity="0.6"
-        />
-        
-        {/* Customer points */}
-        {customers.map((c) => (
-          <circle
-            key={c.id}
-            cx={scaleX(c.expandFrailty)}
-            cy={scaleY(c.churnFrailty)}
-            r={hoveredCustomer === c.id ? 8 : 5}
-            fill={valueToColor(c.value)}
-            stroke={hoveredCustomer === c.id ? "var(--fg)" : "var(--border)"}
-            strokeWidth={hoveredCustomer === c.id ? 2 : 1}
-            opacity={0.85}
-            style={{ cursor: "pointer", transition: "r 0.15s" }}
-            onMouseEnter={() => setHoveredCustomer(c.id)}
-            onMouseLeave={() => setHoveredCustomer(null)}
+      <div className="chart-wrapper">
+        <svg viewBox={`0 0 ${width} ${height}`} className="frailty-svg">
+          {/* Background */}
+          <rect
+            x={padding.left}
+            y={padding.top}
+            width={plotWidth}
+            height={plotHeight}
+            fill="var(--card-bg, #fafafa)"
+            rx="4"
           />
-        ))}
+          
+          {/* Grid lines */}
+          {[-2, -1, 0, 1, 2].map((v) => (
+            <g key={v}>
+              <line
+                x1={scaleX(v)}
+                y1={padding.top}
+                x2={scaleX(v)}
+                y2={height - padding.bottom}
+                stroke="var(--border)"
+                strokeWidth="1"
+                strokeDasharray={v === 0 ? "none" : "2,4"}
+                opacity={v === 0 ? 0.4 : 0.25}
+              />
+              <line
+                x1={padding.left}
+                y1={scaleY(v)}
+                x2={width - padding.right}
+                y2={scaleY(v)}
+                stroke="var(--border)"
+                strokeWidth="1"
+                strokeDasharray={v === 0 ? "none" : "2,4"}
+                opacity={v === 0 ? 0.4 : 0.25}
+              />
+            </g>
+          ))}
+          
+          {/* Correlation ellipse */}
+          <path
+            d={ellipsePath}
+            fill="none"
+            stroke="var(--fg)"
+            strokeWidth="1.5"
+            strokeDasharray="8,6"
+            opacity="0.25"
+            className="ellipse-path"
+          />
+          
+          {/* Customer points */}
+          {customers.map((c) => {
+            const isHovered = hoveredCustomer === c.id;
+            return (
+              <g key={c.id} className="customer-point">
+                {isHovered && (
+                  <circle
+                    cx={scaleX(c.expandFrailty)}
+                    cy={scaleY(c.churnFrailty)}
+                    r={16}
+                    fill={valueToColor(c.value, 0.15)}
+                    className="hover-ring"
+                  />
+                )}
+                <circle
+                  cx={scaleX(c.expandFrailty)}
+                  cy={scaleY(c.churnFrailty)}
+                  r={isHovered ? 7 : 5}
+                  fill={valueToColor(c.value)}
+                  stroke={isHovered ? "var(--fg)" : "rgba(255,255,255,0.8)"}
+                  strokeWidth={isHovered ? 2 : 1}
+                  className="point-circle"
+                  onMouseEnter={() => setHoveredCustomer(c.id)}
+                  onMouseLeave={() => setHoveredCustomer(null)}
+                />
+              </g>
+            );
+          })}
+          
+          {/* Axes labels */}
+          <text
+            x={padding.left + plotWidth / 2}
+            y={height - 20}
+            textAnchor="middle"
+            fontSize="13"
+            fill="var(--fg)"
+            fontFamily="var(--font-geist-sans), system-ui"
+            fontWeight="500"
+          >
+            Expansion propensity
+          </text>
+          <text
+            x={25}
+            y={padding.top + plotHeight / 2}
+            textAnchor="middle"
+            fontSize="13"
+            fill="var(--fg)"
+            fontFamily="var(--font-geist-sans), system-ui"
+            fontWeight="500"
+            transform={`rotate(-90, 25, ${padding.top + plotHeight / 2})`}
+          >
+            Churn propensity
+          </text>
+          
+          {/* Axis endpoints */}
+          <text x={padding.left} y={height - padding.bottom + 18} textAnchor="middle" fontSize="10" fill="var(--muted)">low</text>
+          <text x={width - padding.right} y={height - padding.bottom + 18} textAnchor="middle" fontSize="10" fill="var(--muted)">high</text>
+          <text x={padding.left - 12} y={height - padding.bottom} textAnchor="end" fontSize="10" fill="var(--muted)">low</text>
+          <text x={padding.left - 12} y={padding.top + 4} textAnchor="end" fontSize="10" fill="var(--muted)">high</text>
+          
+          {/* Corner annotations */}
+          <g className="corner-label" opacity="0.7">
+            <text x={width - padding.right - 8} y={padding.top + 18} textAnchor="end" fontSize="10" fill="#4ade80" fontWeight="600">
+              ★ Best customers
+            </text>
+            <text x={width - padding.right - 8} y={padding.top + 30} textAnchor="end" fontSize="9" fill="var(--muted)">
+              expand often, rarely churn
+            </text>
+          </g>
+          <g className="corner-label" opacity="0.7">
+            <text x={padding.left + 8} y={height - padding.bottom - 18} textAnchor="start" fontSize="10" fill="#f87171" fontWeight="600">
+              ✗ At risk
+            </text>
+            <text x={padding.left + 8} y={height - padding.bottom - 6} textAnchor="start" fontSize="9" fill="var(--muted)">
+              don't expand, likely to churn
+            </text>
+          </g>
+          
+          {/* Value colorbar */}
+          <defs>
+            <linearGradient id="frailtyValueGradient" x1="0%" y1="100%" x2="0%" y2="0%">
+              <stop offset="0%" stopColor={valueToColor(-4)} />
+              <stop offset="50%" stopColor={valueToColor(0)} />
+              <stop offset="100%" stopColor={valueToColor(4)} />
+            </linearGradient>
+          </defs>
+          <rect
+            x={width - padding.right + 20}
+            y={padding.top}
+            width={14}
+            height={plotHeight}
+            fill="url(#frailtyValueGradient)"
+            rx="3"
+            stroke="var(--border)"
+            strokeWidth="1"
+          />
+          <text x={width - padding.right + 27} y={padding.top - 10} textAnchor="middle" fontSize="11" fill="var(--fg)" fontWeight="500">
+            Value
+          </text>
+          <text x={width - padding.right + 44} y={padding.top + 10} textAnchor="start" fontSize="9" fill="var(--muted)">high</text>
+          <text x={width - padding.right + 44} y={height - padding.bottom - 2} textAnchor="start" fontSize="9" fill="var(--muted)">low</text>
+        </svg>
         
-        {/* Axes labels */}
-        <text
-          x={padding.left + plotWidth / 2}
-          y={height - 15}
-          textAnchor="middle"
-          fontSize="12"
-          fill="var(--fg)"
-          fontFamily="var(--font-geist-sans), system-ui"
-          fontWeight="500"
-        >
-          Expansion frailty (z_expand)
-        </text>
-        <text
-          x={20}
-          y={padding.top + plotHeight / 2}
-          textAnchor="middle"
-          fontSize="12"
-          fill="var(--fg)"
-          fontFamily="var(--font-geist-sans), system-ui"
-          fontWeight="500"
-          transform={`rotate(-90, 20, ${padding.top + plotHeight / 2})`}
-        >
-          Churn frailty (z_churn)
-        </text>
-        
-        {/* Quadrant labels */}
-        <text
-          x={scaleX(2)}
-          y={scaleY(2) + 15}
-          textAnchor="end"
-          fontSize="10"
-          fill="var(--muted)"
-          fontFamily="var(--font-geist-sans), system-ui"
-        >
-          high expand, high churn
-        </text>
-        <text
-          x={scaleX(-2)}
-          y={scaleY(2) + 15}
-          textAnchor="start"
-          fontSize="10"
-          fill="var(--muted)"
-          fontFamily="var(--font-geist-sans), system-ui"
-        >
-          low expand, high churn
-        </text>
-        <text
-          x={scaleX(2)}
-          y={scaleY(-2) - 5}
-          textAnchor="end"
-          fontSize="10"
-          fill="#4ade80"
-          fontFamily="var(--font-geist-sans), system-ui"
-          fontWeight="600"
-        >
-          ★ high value
-        </text>
-        <text
-          x={scaleX(-2)}
-          y={scaleY(-2) - 5}
-          textAnchor="start"
-          fontSize="10"
-          fill="var(--muted)"
-          fontFamily="var(--font-geist-sans), system-ui"
-        >
-          low expand, low churn
-        </text>
-        
-        {/* Value colorbar */}
-        <defs>
-          <linearGradient id="frailtyValueGradient" x1="0%" y1="100%" x2="0%" y2="0%">
-            <stop offset="0%" stopColor={valueToColor(-4)} />
-            <stop offset="50%" stopColor={valueToColor(0)} />
-            <stop offset="100%" stopColor={valueToColor(4)} />
-          </linearGradient>
-        </defs>
-        <rect
-          x={width - padding.right + 15}
-          y={padding.top}
-          width={12}
-          height={plotHeight}
-          fill="url(#frailtyValueGradient)"
-          rx="2"
-          stroke="var(--border)"
-          strokeWidth="1"
-        />
-        <text
-          x={width - padding.right + 21}
-          y={padding.top - 8}
-          textAnchor="middle"
-          fontSize="10"
-          fill="var(--fg)"
-          fontFamily="var(--font-geist-sans), system-ui"
-          fontWeight="500"
-        >
-          Value
-        </text>
-      </svg>
+        {/* Tooltip */}
+        {hoveredData && (
+          <div 
+            className="tooltip"
+            style={{
+              left: scaleX(hoveredData.expandFrailty) + 15,
+              top: scaleY(hoveredData.churnFrailty) - 10,
+            }}
+          >
+            <div className="tooltip-row">
+              <span className="tooltip-label">Expansion</span>
+              <span className="tooltip-value" style={{ color: hoveredData.expandFrailty > 0 ? "#4ade80" : "#f87171" }}>
+                {hoveredData.expandFrailty > 0 ? "+" : ""}{hoveredData.expandFrailty.toFixed(2)}
+              </span>
+            </div>
+            <div className="tooltip-row">
+              <span className="tooltip-label">Churn</span>
+              <span className="tooltip-value" style={{ color: hoveredData.churnFrailty > 0 ? "#f87171" : "#4ade80" }}>
+                {hoveredData.churnFrailty > 0 ? "+" : ""}{hoveredData.churnFrailty.toFixed(2)}
+              </span>
+            </div>
+            <div className="tooltip-divider" />
+            <div className="tooltip-row">
+              <span className="tooltip-label">Net value</span>
+              <span className="tooltip-value" style={{ color: hoveredData.value > 0 ? "#4ade80" : "#f87171", fontWeight: 600 }}>
+                {hoveredData.value > 0 ? "+" : ""}{hoveredData.value.toFixed(2)}
+              </span>
+            </div>
+          </div>
+        )}
+      </div>
       
       <div className="frailty-caption">
-        <span>Each dot is a customer. Color shows implied CLV contribution.</span>
+        <span className="caption-main">
+          Each dot is a customer. {getCorrelationLabel()} frailties shape the distribution.
+        </span>
         <span className="caption-detail">
-          {correlation < 0 
-            ? "Negative correlation: customers who expand rarely churn."
-            : correlation > 0
-            ? "Positive correlation: risky customers are risky everywhere."
-            : "No correlation: expansion and churn are independent."}
+          {correlation < -0.3 
+            ? "When expansion and churn are negatively correlated, the best customers cluster in the bottom-right."
+            : correlation > 0.3
+            ? "When frailties are positively correlated, volatile customers are volatile in both directions."
+            : "With weak correlation, expansion and churn propensities are nearly independent."}
         </span>
       </div>
 
@@ -300,56 +327,147 @@ export function FrailtyVisual() {
           margin: var(--space-6) 0;
         }
         
-        .correlation-control {
+        .controls-row {
           display: flex;
           justify-content: center;
           margin-bottom: var(--space-4);
         }
         
-        .correlation-control label {
+        .correlation-control {
           display: flex;
           flex-direction: column;
           align-items: center;
           gap: var(--space-2);
+          padding: var(--space-3) var(--space-5);
+          background: var(--card-bg, #fafafa);
+          border-radius: 8px;
+          border: 1px solid var(--border);
         }
         
         .control-label {
-          font-size: 13px;
+          font-size: 12px;
+          font-weight: 500;
+          color: var(--muted);
+          text-transform: uppercase;
+          letter-spacing: 0.5px;
+        }
+        
+        .slider-row {
+          display: flex;
+          align-items: center;
+          gap: var(--space-2);
+        }
+        
+        .slider-end {
+          font-size: 11px;
+          color: var(--muted);
           font-family: var(--font-geist-mono), monospace;
-          color: var(--fg);
+          width: 20px;
+          text-align: center;
         }
         
         .correlation-control input[type="range"] {
-          width: 200px;
-          accent-color: var(--accent);
+          width: 180px;
+          height: 6px;
+          accent-color: var(--fg);
+          cursor: pointer;
+        }
+        
+        .correlation-value {
+          font-size: 18px;
+          font-family: var(--font-geist-mono), monospace;
+          font-weight: 600;
+          color: var(--fg);
+        }
+        
+        .chart-wrapper {
+          position: relative;
         }
         
         .frailty-svg {
           width: 100%;
-          max-width: 500px;
+          max-width: 520px;
           height: auto;
           display: block;
           margin: 0 auto;
         }
         
+        .customer-point {
+          cursor: pointer;
+        }
+        
+        .point-circle {
+          transition: r 0.15s ease, stroke-width 0.15s ease;
+        }
+        
+        .hover-ring {
+          animation: pulse 1s ease-in-out infinite;
+        }
+        
+        @keyframes pulse {
+          0%, 100% { opacity: 0.15; }
+          50% { opacity: 0.25; }
+        }
+        
+        .ellipse-path {
+          transition: d 0.3s ease;
+        }
+        
+        .tooltip {
+          position: absolute;
+          background: var(--bg);
+          border: 1px solid var(--border);
+          border-radius: 8px;
+          padding: var(--space-2) var(--space-3);
+          box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+          pointer-events: none;
+          z-index: 10;
+          min-width: 120px;
+        }
+        
+        .tooltip-row {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          gap: var(--space-3);
+          font-size: 12px;
+        }
+        
+        .tooltip-label {
+          color: var(--muted);
+        }
+        
+        .tooltip-value {
+          font-family: var(--font-geist-mono), monospace;
+        }
+        
+        .tooltip-divider {
+          height: 1px;
+          background: var(--border);
+          margin: var(--space-1) 0;
+        }
+        
         .frailty-caption {
           text-align: center;
-          margin-top: var(--space-3);
+          margin-top: var(--space-4);
           display: flex;
           flex-direction: column;
           gap: var(--space-1);
         }
         
-        .frailty-caption span {
-          font-size: 12px;
-          color: var(--muted);
+        .caption-main {
+          font-size: 13px;
+          color: var(--fg);
         }
         
         .caption-detail {
+          font-size: 12px;
+          color: var(--muted);
           font-style: italic;
+          max-width: 400px;
+          margin: 0 auto;
         }
       `}</style>
     </div>
   );
 }
-
