@@ -20,7 +20,7 @@ const navItems: NavItem[] = [
   { href: "/saas", label: "Problem" },
   { 
     href: "/saas/rewards", 
-    label: "Rewards",
+    label: "Value",
     subItems: [
       { id: "customer-equity", label: "Customer equity" },
       { id: "customer-lifetime-value", label: "Customer lifetime value" },
@@ -30,7 +30,7 @@ const navItems: NavItem[] = [
   },
   {
     href: "/saas/actions",
-    label: "Actions",
+    label: "Decisions",
     subItems: [
       { id: "crossing-the-boundary", label: "Crossing the boundary" },
       { id: "canonical-actions", label: "Canonical actions" },
@@ -42,7 +42,7 @@ const navItems: NavItem[] = [
   },
   { 
     href: "/saas/states", 
-    label: "States",
+    label: "Customer states",
     subItems: [
       { id: "observations", label: "Observations" },
       { id: "representation-learning", label: "Representation learning" },
