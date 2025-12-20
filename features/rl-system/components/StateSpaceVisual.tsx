@@ -2,12 +2,6 @@
 
 import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
-import dynamic from "next/dynamic";
-
-const StateSpaceVisual3D = dynamic(
-  () => import("./StateSpaceVisual3D").then((mod) => mod.StateSpaceVisual3D),
-  { ssr: false, loading: () => <div style={{ height: 400, display: "flex", alignItems: "center", justifyContent: "center" }}>Loading 3D...</div> }
-);
 
 // Customer trajectory through state space
 const trajectory = [
@@ -50,7 +44,6 @@ function valueToColor(v: number): string {
 }
 
 export function StateSpaceVisual() {
-  const [is3D, setIs3D] = useState(false);
   const [isAnimating, setIsAnimating] = useState(true);
   const [currentPointIndex, setCurrentPointIndex] = useState(0);
 
@@ -94,67 +87,8 @@ export function StateSpaceVisual() {
   const s1Display = currentPoint.x.toFixed(2);
   const s2Display = (1 - currentPoint.y).toFixed(2);
 
-  if (is3D) {
-    return (
-      <div className="state-space-container">
-        <div className="toggle-row">
-          <button className="toggle-btn" onClick={() => setIs3D(false)}>
-            2D
-          </button>
-          <button className="toggle-btn active" onClick={() => setIs3D(true)}>
-            3D
-          </button>
-        </div>
-        <StateSpaceVisual3D />
-        <style jsx>{`
-          .state-space-container {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: var(--space-3);
-            margin: var(--space-6) 0;
-          }
-          .toggle-row {
-            display: flex;
-            gap: 4px;
-            background: var(--surface);
-            padding: 4px;
-            border-radius: 8px;
-            border: 1px solid var(--border);
-          }
-          .toggle-btn {
-            padding: 6px 16px;
-            font-size: 13px;
-            font-weight: 500;
-            border: none;
-            background: transparent;
-            color: var(--muted);
-            border-radius: 6px;
-            cursor: pointer;
-            transition: all 0.15s ease;
-          }
-          .toggle-btn:hover {
-            color: var(--fg);
-          }
-          .toggle-btn.active {
-            background: var(--fg);
-            color: var(--bg);
-          }
-        `}</style>
-      </div>
-    );
-  }
-
   return (
     <div className="state-space-container">
-      <div className="toggle-row">
-        <button className="toggle-btn active" onClick={() => setIs3D(false)}>
-          2D
-        </button>
-        <button className="toggle-btn" onClick={() => setIs3D(true)}>
-          3D
-        </button>
-      </div>
       <svg
         viewBox={`0 0 ${width} ${height}`}
         className="state-space-svg"
@@ -348,32 +282,6 @@ export function StateSpaceVisual() {
           align-items: center;
           gap: var(--space-3);
           margin: var(--space-6) 0;
-        }
-        .toggle-row {
-          display: flex;
-          gap: 4px;
-          background: var(--surface);
-          padding: 4px;
-          border-radius: 8px;
-          border: 1px solid var(--border);
-        }
-        .toggle-btn {
-          padding: 6px 16px;
-          font-size: 13px;
-          font-weight: 500;
-          border: none;
-          background: transparent;
-          color: var(--muted);
-          border-radius: 6px;
-          cursor: pointer;
-          transition: all 0.15s ease;
-        }
-        .toggle-btn:hover {
-          color: var(--fg);
-        }
-        .toggle-btn.active {
-          background: var(--fg);
-          color: var(--bg);
         }
         .state-space-svg {
           display: block;
