@@ -109,14 +109,14 @@ async function triggerProcessing(jobId: string): Promise<void> {
 }
 
 /**
- * Poll job status
+ * Poll job status with progress
  */
 export async function getJobStatus(jobId: string): Promise<AnalysisResult> {
   const supabase = await createServerSupabaseClient()
 
   const { data: job, error } = await supabase
     .from('jobs')
-    .select('id, status, result, error_message')
+    .select('id, status, progress, result, error_message')
     .eq('id', jobId)
     .single()
 
@@ -127,6 +127,7 @@ export async function getJobStatus(jobId: string): Promise<AnalysisResult> {
   return {
     jobId: job.id,
     status: job.status,
+    progress: job.progress ?? 0,
     result: job.result ?? undefined,
     error: job.error_message ?? undefined,
   }

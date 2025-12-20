@@ -34,6 +34,7 @@ export function UploadDemo() {
   const [isDragging, setIsDragging] = useState(false);
   const [status, setStatus] = useState<"idle" | "uploading" | "processing" | "done" | "error">("idle");
   const [jobId, setJobId] = useState<string | null>(null);
+  const [progress, setProgress] = useState(0);
   const [result, setResult] = useState<unknown>(null);
   const [error, setError] = useState<string | null>(null);
   const [password, setPassword] = useState("");
@@ -71,7 +72,7 @@ export function UploadDemo() {
   }, []);
 
   const pollJobStatus = useCallback(async (id: string) => {
-    const maxAttempts = 60; // 5 minutes with 5s intervals
+    const maxAttempts = 120; // 10 minutes with 5s intervals
     let attempts = 0;
 
     const poll = async (): Promise<void> => {
@@ -79,7 +80,11 @@ export function UploadDemo() {
       try {
         const jobResult = await getJobStatus(id);
         
+        // Update progress
+        setProgress(jobResult.progress);
+        
         if (jobResult.status === "done") {
+          setProgress(100);
           setStatus("done");
           setResult(jobResult.result);
           return;
@@ -92,7 +97,7 @@ export function UploadDemo() {
         }
 
         if (attempts < maxAttempts) {
-          setTimeout(poll, 5000);
+          setTimeout(poll, 2000); // Poll every 2s for smoother progress
         } else {
           setStatus("error");
           setError("Job timed out");
@@ -137,6 +142,7 @@ export function UploadDemo() {
     setFile(null);
     setStatus("idle");
     setJobId(null);
+    setProgress(0);
     setResult(null);
     setError(null);
     setPassword("");
@@ -234,11 +240,25 @@ export function UploadDemo() {
         {(status === "uploading" || status === "processing") && (
           <>
             <Loader2 className="w-8 h-8 text-[var(--muted)] animate-spin mb-3 mx-auto" />
-            <p className="text-sm text-[var(--fg)]">
+            <p className="text-sm text-[var(--fg)] mb-3">
               {status === "uploading" ? "Uploading..." : "Processing..."}
             </p>
+            
+            {/* Progress Bar */}
+            {status === "processing" && (
+              <div className="w-full max-w-[300px] mx-auto mb-3">
+                <div className="h-2 bg-[var(--border)] rounded-full overflow-hidden">
+                  <div 
+                    className="h-full bg-[var(--fg)] transition-all duration-300 ease-out"
+                    style={{ width: `${progress}%` }}
+                  />
+                </div>
+                <p className="text-[11px] text-[var(--muted)] mt-1">{progress}%</p>
+              </div>
+            )}
+            
             {jobId && (
-              <p className="text-[11px] text-[var(--muted)] font-mono mt-2">
+              <p className="text-[11px] text-[var(--muted)] font-mono">
                 Job: {jobId.slice(0, 8)}...
               </p>
             )}

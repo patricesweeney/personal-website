@@ -38,6 +38,11 @@ def get_supabase_client():
     return create_client(url, key)
 
 
+def update_progress(supabase, job_id: str, progress: int):
+    """Update job progress (0-100)."""
+    supabase.table("jobs").update({"progress": progress}).eq("id", job_id).execute()
+
+
 @app.function(
     image=image,
     secrets=[modal.Secret.from_name("supabase-secrets")],
@@ -45,7 +50,7 @@ def get_supabase_client():
 )
 def process_job(job_id: str) -> dict:
     """
-    Process an analysis job.
+    Process an analysis job with progress updates.
     
     1. Fetch job from Supabase
     2. Download CSV
@@ -56,6 +61,7 @@ def process_job(job_id: str) -> dict:
     supabase = get_supabase_client()
     
     # 1. Fetch job
+    update_progress(supabase, job_id, 5)
     response = supabase.table("jobs").select("id, job_type, input_file_path, status").eq("id", job_id).single().execute()
     job = response.data
     
@@ -65,22 +71,28 @@ def process_job(job_id: str) -> dict:
     if job["status"] not in ("pending", "running"):
         return {"status": job["status"], "message": "Job already processed"}
     
-    # 2. Update status
-    supabase.table("jobs").update({"status": "running"}).eq("id", job_id).execute()
+    # 2. Update status to running
+    supabase.table("jobs").update({"status": "running", "progress": 10}).eq("id", job_id).execute()
     
     try:
         # 3. Download CSV
+        update_progress(supabase, job_id, 20)
         file_path = job["input_file_path"]
         file_bytes = supabase.storage.from_("analysis-uploads").download(file_path)
+        
+        update_progress(supabase, job_id, 30)
         df = pd.read_csv(io.BytesIO(file_bytes))
         
         # 4. Run analysis
-        result = run_analysis(job["job_type"], df)
+        update_progress(supabase, job_id, 40)
+        result = run_analysis(job["job_type"], df, lambda p: update_progress(supabase, job_id, 40 + int(p * 0.5)))
         
         # 5. Write results
+        update_progress(supabase, job_id, 95)
         supabase.table("jobs").update({
             "status": "done",
             "result": result,
+            "progress": 100,
         }).eq("id", job_id).execute()
         
         # 6. Cleanup
@@ -93,11 +105,12 @@ def process_job(job_id: str) -> dict:
         supabase.table("jobs").update({
             "status": "error",
             "error_message": str(e),
+            "progress": 0,
         }).eq("id", job_id).execute()
         raise
 
 
-def run_analysis(job_type: str, df: pd.DataFrame) -> dict:
+def run_analysis(job_type: str, df: pd.DataFrame, on_progress=None) -> dict:
     """Dispatch to analysis handler based on job_type."""
     base = {
         "processed_at": pd.Timestamp.now().isoformat(),
@@ -105,16 +118,25 @@ def run_analysis(job_type: str, df: pd.DataFrame) -> dict:
         "input_columns": list(df.columns),
     }
     
+    # Report progress during analysis (0.0 to 1.0 maps to 40% to 90% of total)
+    if on_progress:
+        on_progress(0.1)
+    
     if job_type == "poisson_factorization":
-        return {**base, **poisson_factorization(df)}
+        result = poisson_factorization(df)
     elif job_type == "survival_analysis":
-        return {**base, **survival_analysis(df)}
+        result = survival_analysis(df)
     elif job_type == "nrr_decomposition":
-        return {**base, **nrr_decomposition(df)}
+        result = nrr_decomposition(df)
     elif job_type == "propensity_model":
-        return {**base, **propensity_model(df)}
+        result = propensity_model(df)
     else:
-        return {**base, "type": "unknown", "message": "Unknown job type"}
+        result = {"type": "unknown", "message": "Unknown job type"}
+    
+    if on_progress:
+        on_progress(1.0)
+    
+    return {**base, **result}
 
 
 def poisson_factorization(df: pd.DataFrame) -> dict:

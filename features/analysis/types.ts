@@ -13,6 +13,7 @@ export type JobType =
 export interface AnalysisResult {
   jobId: string
   status: JobStatus
+  progress: number
   result?: unknown
   error?: string
 }
