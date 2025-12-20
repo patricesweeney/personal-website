@@ -89,10 +89,13 @@ export function StatesView() {
 
           <h3 id="frailty-models">Frailty models</h3>
           <p>
-            Not all variation in churn risk is explained by observed features. <strong>Frailty models</strong> add a random effect <InlineMath math="z_i" /> per customer: <InlineMath math="h(t|s_i, z_i) = z_i \cdot h_0(t)\exp(s_i^\top w)" />. The frailty <InlineMath math="z_i" /> captures unobserved heterogeneity—some customers are inherently more likely to churn, for reasons you can't measure.
+            Customers don't just churn—they expand, contract, or stay flat. These aren't independent. A customer prone to churn is probably also prone to contraction; one likely to expand is unlikely to churn. <strong>Multivariate frailty models</strong> capture this with correlated random effects across event types.
           </p>
           <p>
-            Typically <InlineMath math="z_i \sim \text{Gamma}(\theta, \theta)" /> with mean 1 and variance <InlineMath math="1/\theta" />. High <InlineMath math="\theta" /> means frailties are concentrated (observed features explain most variation). Low <InlineMath math="\theta" /> means wide dispersion (lots of unexplained heterogeneity). Ignoring frailty biases your hazard estimates and understates uncertainty.
+            For each customer <InlineMath math="i" /> and event type <InlineMath math="k \in \{\text{expand}, \text{contract}, \text{churn}\}" />, the hazard is <InlineMath math="h_k(t|s_i, z_{ik}) = z_{ik} \cdot h_{0k}(t)\exp(s_i^\top w_k)" />. The frailties <InlineMath math="z_i = (z_{i,\text{expand}}, z_{i,\text{contract}}, z_{i,\text{churn}})" /> are drawn from a multivariate distribution—typically multivariate Gamma or log-normal—with a covariance structure you estimate.
+          </p>
+          <p>
+            What you learn: which customers have correlated risks (high churn frailty implies high contraction frailty), and how much of the variation in each event type is explained by observed features vs. unobserved heterogeneity. This matters for CLV: a customer with high expansion frailty and low churn frailty is worth more than one with the same observed features but reversed frailties.
           </p>
 
           <h3 id="explainable-boosting-machines">Explainable boosting machines</h3>
