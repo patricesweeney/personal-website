@@ -110,16 +110,16 @@ export function StatesView() {
 
           <h3 id="explainable-boosting-machines">Explainable boosting machines</h3>
           <p>
-            Sometimes you don't need a learned representation at all. <strong>Explainable boosting machines</strong> (EBMs) are generalized additive models with automatic interaction detection:
+            To estimate a value function, you need a target. The natural choice is <strong>net revenue retention</strong> (NRR): next-period revenue divided by current-period revenue. NRR has better variance properties than total revenue because it's bounded and normalized. A customer paying $1M/year and one paying $1K/year both have NRR around 1 if they're healthy. Total revenue would be dominated by the large account; NRR treats them symmetrically.
           </p>
           <p>
-            Each feature gets its own shape function, learned via gradient boosting. The model automatically detects pairwise interactions worth including. You can inspect every component: "this is what usage_days does to churn probability, holding everything else fixed."
+            <strong>Explainable boosting machines</strong> (EBMs) are ideal for estimating <InlineMath math="V(s)" /> from state. They're generalized additive models with automatic interaction detection: <InlineMath math="V(s) = \sum_j f_j(s_j) + \sum_{jk} f_{jk}(s_j, s_k)" />. Each state factor gets its own shape function <InlineMath math="f_j" />, learned via gradient boosting. The model detects which pairwise interactions <InlineMath math="f_{jk}" /> are worth including.
           </p>
           <p>
-            EBMs match gradient-boosted trees on tabular benchmarks but remain fully interpretable. For SaaS, this matters: you can hand a plot to a CS leader and they'll understand it. No post-hoc explanation needed—the model <em>is</em> the explanation.
+            The payoff is decomposition. You can inspect every component: "this is what engagement score does to expected NRR, holding everything else fixed." You can attribute value to factors: 40% from usage depth, 30% from tenure, 20% from support health, 10% from interactions. You can hand a plot to a CS leader and they'll understand it. No post-hoc explanation needed—the model <em>is</em> the explanation.
           </p>
           <p>
-            The limitation: EBMs assume features are given, not learned. They're excellent for structured data (CRM fields, usage metrics, billing history) but won't help you encode raw event sequences.
+            For SaaS: fit NRR on state vectors from Poisson factorisation. You get a value function that's interpretable (you can see what drives value), decomposable (you can attribute value to factors), and auditable (you can check whether the shape functions make business sense). The limitation: EBMs assume features are given, not learned—they're excellent for structured state representations but won't encode raw event sequences.
           </p>
 
           <hr className="references-divider" />
