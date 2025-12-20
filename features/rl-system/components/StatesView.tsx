@@ -76,6 +76,9 @@ export function StatesView() {
           <p>
             For SaaS: fit on historical cohorts, predict time-to-churn for current customers, prioritize interventions by expected weeks remaining. Censored observations (customers still active) are handled naturally.
           </p>
+          <p>
+            For richer state representations, replace the linear <InlineMath math="s^\top w" /> with a neural network: <InlineMath math="h(t|o) = h_0(t)\exp(f_\theta(o))" />.<sup><a href="#ref-3" className="cite">3</a></sup> The network learns the mapping from raw observations <InlineMath math="o" /> to log-hazard directly, no manual feature engineering. Train end-to-end with the partial likelihood loss.
+          </p>
 
           <h3 id="sequence-encoders">Sequence encoders</h3>
           <p>
@@ -120,6 +123,7 @@ export function StatesView() {
             <ol>
               <li id="ref-1"><sup>1</sup> Gopalan, P., Hofman, J. M., & Blei, D. M. (2015). Scalable recommendation with hierarchical Poisson factorization. <em>Proceedings of the Conference on Uncertainty in Artificial Intelligence (UAI)</em>.</li>
               <li id="ref-2"><sup>2</sup> Acharya, A., Ghosh, J., & Zhou, M. (2015). Nonparametric Bayesian factor analysis for dynamic count matrices. <em>Proceedings of the International Conference on Artificial Intelligence and Statistics (AISTATS)</em>.</li>
+              <li id="ref-3"><sup>3</sup> Katzman, J. L., Shaham, U., Cloninger, A., Bates, J., Jiang, T., & Kluger, Y. (2018). DeepSurv: Personalized treatment recommender system using a Cox proportional hazards deep neural network. <em>BMC Medical Research Methodology</em>, 18(1), 24.</li>
             </ol>
           </div>
         </div>
