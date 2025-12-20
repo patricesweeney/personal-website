@@ -51,7 +51,7 @@ export function RewardsView() {
 
           <CustomerEquityVisual />
 
-          <p>
+          <p className="mt-8">
             Customer equity is an <strong>upper bound</strong> on enterprise value. It's revenue, not profit—you still have to pay for acquisition (CAC), cost of service (infrastructure, support), R&D, and overhead. Enterprise value is CE minus the present value of all those costs. But CE is the right objective for growth-stage decisions: if an action doesn't increase revenue, it can't increase value.
           </p>
 
