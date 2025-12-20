@@ -130,7 +130,7 @@ export function StatesView() {
             <ol>
               <li id="ref-1"><sup>1</sup> Gopalan, P., Hofman, J. M., & Blei, D. M. (2015). Scalable recommendation with hierarchical Poisson factorization. <em>Proceedings of the Conference on Uncertainty in Artificial Intelligence (UAI)</em>.</li>
               <li id="ref-2"><sup>2</sup> Acharya, A., Ghosh, J., & Zhou, M. (2015). Nonparametric Bayesian factor analysis for dynamic count matrices. <em>Proceedings of the International Conference on Artificial Intelligence and Statistics (AISTATS)</em>.</li>
-              <li id="ref-3"><sup>3</sup> Katzman, J. L., Shaham, U., Cloninger, A., Bates, J., Jiang, T., & Kluger, Y. (2018). DeepSurv: Personalized treatment recommender system using a Cox proportional hazards deep neural network. <em>BMC Medical Research Methodology</em>, 18(1), 24.</li>
+              <li id="ref-3"><sup>3</sup> Kvamme, H., Borgan, Ø., & Scheel, I. (2019). Time-to-event prediction with neural networks and Cox regression. <em>Journal of Machine Learning Research</em>, 20, 1–30.</li>
             </ol>
           </div>
         </div>
