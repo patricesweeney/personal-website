@@ -414,6 +414,8 @@ export function ValueDecompositionVisual() {
           gap: var(--space-4);
           align-items: stretch;
           min-height: 340px;
+          max-width: 620px;
+          margin: 0 auto;
         }
         
         .sliders-panel {
