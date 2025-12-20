@@ -33,7 +33,6 @@ const navItems: NavItem[] = [
     href: "/saas/states", 
     label: "Customer states",
     subItems: [
-      { id: "observations", label: "Observations" },
       { id: "representation-learning", label: "Representation learning" },
       { id: "poisson-factorisation", label: "Poisson factorisation" },
       { id: "survival-models", label: "Survival models" },

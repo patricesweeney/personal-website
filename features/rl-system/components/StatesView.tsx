@@ -47,16 +47,11 @@ export function StatesView() {
             You don't get <strong>states</strong> for free. You get <em>observations</em>: raw, high-dimensional, redundant. A state is a compressed summary that's good enough to act on. If two observations map to the same state, the right action should be the same for both. That's the bar.
           </p>
 
-          <h3 id="observations">Observations</h3>
-          <p>
-            The raw inputs come in three flavors:
-          </p>
-          <ObservationsMindMap />
-
           <h3 id="representation-learning" style={{ marginTop: "var(--space-8)" }}>Representation learning</h3>
           <p>
             For each customer <InlineMath math="i" /> at each time <InlineMath math="t" />, you observe a vector <InlineMath math="o \in \mathbb{R}^N" />—thousands of features from telemetry, CRM, billing, support. You need to compress it to a state <InlineMath math="s \in \mathbb{R}^M" /> where <InlineMath math="M \ll N" />. The function <InlineMath math="o \mapsto s" /> is the representation.
           </p>
+          <ObservationsMindMap />
           <p>
             Choosing <InlineMath math="M" /> is a tradeoff. More dimensions means more accuracy—the state captures finer distinctions that matter for predicting value. Fewer dimensions means less complexity—the state is parsimonious, interpretable, auditable. You want factors humans recognize (engagement, intent, satisfaction) because you need to inspect them, override them, and explain decisions based on them. A black-box embedding that predicts value perfectly but means nothing to a human is useless for building trust or catching errors.
           </p>
