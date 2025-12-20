@@ -47,16 +47,7 @@ export function StatesView() {
             Customer event data is counts: logins per week, features used per session, tickets opened per month. <strong>Poisson factorisation</strong> decomposes a count matrix into latent factors, assuming each count is Poisson-distributed with a rate determined by the product of user and item factors.
           </p>
           <p>
-            For a matrix <InlineMath math="O" /> of customers × events, you learn <InlineMath math="O_{ij} \sim \text{Poisson}(\theta_i^\top \beta_j)" /> where <InlineMath math="\theta_i" /> is customer <InlineMath math="i" />'s latent profile and <InlineMath math="\beta_j" /> characterizes event type <InlineMath math="j" />. The <InlineMath math="\theta_i" /> vectors are your state representations.
-          </p>
-          <p>
-            The advantage over PCA or autoencoders: Poisson is the right likelihood for count data. Zeros are meaningful (the customer didn't do something), and the model handles sparse, skewed distributions naturally. The factors are also non-negative, which makes them easier to interpret—a customer has "more" or "less" of each latent trait.
-          </p>
-          <p>
-            The limitation: no memory. Poisson factorisation sees counts aggregated over a window—it doesn't know what order events happened in. A customer who churned then re-engaged looks identical to one who engaged then churned. For static segmentation, this is fine. For trajectory-dependent decisions, you need sequence models.
-          </p>
-          <p>
-            What you get: a low-dimensional vector <InlineMath math="\theta_i" /> per customer, updated as new counts arrive. Accuracy is held-out log-likelihood—how well does the model predict counts it hasn't seen? Complexity is the rank <InlineMath math="M" />. Cross-validate to find the elbow where more factors stop improving prediction.
+            For a matrix <InlineMath math="O" /> of customers × events, you learn <InlineMath math="O_{ij} \sim \text{Poisson}(s_i^\top \beta_j)" /> where <InlineMath math="s_i" /> is customer <InlineMath math="i" />'s latent state and <InlineMath math="\beta_j" /> characterizes event type <InlineMath math="j" />. The <InlineMath math="s_i" /> vectors are your state representations.
           </p>
 
           <h3 id="sequence-encoders">Sequence encoders</h3>
