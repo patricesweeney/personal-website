@@ -1,6 +1,8 @@
 "use client";
 
 import dynamic from "next/dynamic";
+import "katex/dist/katex.min.css";
+import { InlineMath } from "react-katex";
 
 const ObservationsMindMap = dynamic(
   () => import("./ObservationsMindMap").then((mod) => mod.ObservationsMindMap),
@@ -28,10 +30,10 @@ export function StatesView() {
 
           <h3 id="representation-learning" style={{ marginTop: "var(--space-8)" }}>Representation learning</h3>
           <p>
-            For each customer <em>i</em> at each time <em>t</em>, you observe a vector in <strong>ℝ<sup>N</sup></strong>—thousands of features from telemetry, CRM, billing, support. You need to compress it to <strong>ℝ<sup>M</sup></strong> where <em>M</em> ≪ <em>N</em>. That compression is the representation.
+            For each customer <InlineMath math="i" /> at each time <InlineMath math="t" />, you observe a vector in <InlineMath math="\mathbb{R}^N" />—thousands of features from telemetry, CRM, billing, support. You need to compress it to <InlineMath math="\mathbb{R}^M" /> where <InlineMath math="M \ll N" />. That compression is the representation.
           </p>
           <p>
-            Ideally, the <em>M</em> dimensions correspond to factors humans recognize: engagement, sophistication, purchase intent, satisfaction. If the representation is opaque, you can't inspect it, override it, or explain decisions based on it.
+            Ideally, the <InlineMath math="M" /> dimensions correspond to factors humans recognize: engagement, sophistication, purchase intent, satisfaction. If the representation is opaque, you can't inspect it, override it, or explain decisions based on it.
           </p>
           <p>
             Time complicates this. Customer state isn't a snapshot—it's a trajectory. A customer who logged in yesterday after three months of silence is different from one who logs in daily. The representation must encode history, not just the current observation.
