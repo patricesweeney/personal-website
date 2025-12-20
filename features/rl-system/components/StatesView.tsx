@@ -19,6 +19,11 @@ const FactorLoadingsVisual = dynamic(
   { ssr: false }
 );
 
+const SurvivalVisual = dynamic(
+  () => import("./SurvivalVisual").then((mod) => mod.SurvivalVisual),
+  { ssr: false }
+);
+
 export function StatesView() {
   return (
     <section className="section" style={{ paddingTop: "var(--space-6)" }}>
@@ -79,6 +84,8 @@ export function StatesView() {
           <p>
             For richer state representations, replace the linear <InlineMath math="s^\top w" /> with a neural network: <InlineMath math="h(t|o) = h_0(t)\exp(f_\theta(o))" />.<sup><a href="#ref-3" className="cite">3</a></sup> The network learns the mapping from raw observations <InlineMath math="o" /> to log-hazard directly, no manual feature engineering. Train end-to-end with the partial likelihood loss.
           </p>
+
+          <SurvivalVisual />
 
           <h3 id="sequence-encoders">Sequence encoders</h3>
           <p>
