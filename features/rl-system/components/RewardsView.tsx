@@ -108,10 +108,7 @@ export function RewardsView() {
           <BlockMath math="V^\pi(s) = \mathbb{E}\left[ \mathrm{CE}(\pi) \;\middle|\; s_0 = s \right]" />
 
           <p>
-            In SaaS, this is often as good as it gets. Most companies don't log actions—only outcomes. Without <InlineMath math="(s, a, r)" /> tuples, you can't estimate <InlineMath math="Q" />. You're left predicting value from state alone.
-          </p>
-          <p>
-            But <InlineMath math="V" /> is still useful. It tells you where to look. High-value customers deserve protection; low-value customers either need intervention or graceful exit. You can prioritize, segment, and allocate resources—even without knowing which specific action to take. The value function is a map of the terrain. It won't tell you which path to walk, but it shows you which hills are worth climbing.
+            In SaaS, this is often as good as it gets. Most companies don't log actions—only outcomes. Without <InlineMath math="(s, a, r)" /> tuples, you can't estimate <InlineMath math="Q" />.
           </p>
 
           <h3 id="action-value">Action value</h3>
