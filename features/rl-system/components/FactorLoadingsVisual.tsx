@@ -55,7 +55,7 @@ export function FactorLoadingsVisual() {
   
   const cellSize = 44;
   const labelWidth = 100;
-  const labelHeight = 70;
+  const labelHeight = 90;
   const width = labelWidth + data.observations.length * cellSize;
   const height = labelHeight + data.factors.length * cellSize;
 
@@ -77,17 +77,17 @@ export function FactorLoadingsVisual() {
       </div>
 
       <svg viewBox={`0 0 ${width} ${height}`} className="heatmap-svg">
-        {/* Column labels (observations) */}
+        {/* Column labels (observations) - rotated 90 degrees */}
         {data.observations.map((obs, i) => (
           <text
             key={obs}
-            x={labelWidth + i * cellSize + cellSize / 2}
-            y={labelHeight - 8}
-            textAnchor="end"
-            fontSize="10"
+            x={0}
+            y={0}
+            textAnchor="start"
+            fontSize="11"
             fill="var(--fg)"
             fontFamily="var(--font-geist-sans), system-ui"
-            transform={`rotate(-45, ${labelWidth + i * cellSize + cellSize / 2}, ${labelHeight - 8})`}
+            transform={`translate(${labelWidth + i * cellSize + cellSize / 2 + 4}, ${labelHeight - 10}) rotate(-90)`}
           >
             {obs}
           </text>
