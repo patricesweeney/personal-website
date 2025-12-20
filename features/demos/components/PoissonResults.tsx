@@ -6,7 +6,8 @@ import {
   Layers, 
   BarChart3,
   TrendingUp,
-  AlertCircle
+  AlertCircle,
+  GitBranch
 } from "lucide-react";
 
 interface PoissonResult {
@@ -17,6 +18,9 @@ interface PoissonResult {
   n_factors: number;
   reconstruction_error: number;
   factor_weights: number[][];
+  factors_tested?: number[];
+  errors_by_k?: number[];
+  customer_scores_sample?: number[][];
   error?: string;
 }
 
@@ -194,6 +198,53 @@ export function PoissonResults({ result }: PoissonResultsProps) {
         </div>
       </div>
 
+      {/* Elbow Plot - Factor Selection */}
+      {result.factors_tested && result.errors_by_k && (
+        <div className="elbow-section">
+          <h3>
+            <GitBranch size={18} />
+            Optimal Factor Selection
+          </h3>
+          <p className="elbow-description">
+            The model tested {result.factors_tested.length} different factor counts and selected <strong>{result.n_factors}</strong> using the elbow method.
+          </p>
+          
+          <div className="elbow-chart">
+            <div className="chart-y-axis">
+              <span>Error</span>
+            </div>
+            <div className="chart-area">
+              {result.errors_by_k.map((error, idx) => {
+                const k = result.factors_tested![idx];
+                const maxError = Math.max(...result.errors_by_k!);
+                const minError = Math.min(...result.errors_by_k!);
+                const range = maxError - minError || 1;
+                const height = ((error - minError) / range) * 80 + 10; // 10-90% height
+                const isOptimal = k === result.n_factors;
+                
+                return (
+                  <div key={k} className="chart-bar-container">
+                    <div 
+                      className={`chart-bar ${isOptimal ? 'optimal' : ''}`}
+                      style={{ height: `${height}%` }}
+                      title={`k=${k}: error=${error.toFixed(2)}`}
+                    >
+                      <span className="bar-value">{error.toFixed(1)}</span>
+                    </div>
+                    <span className={`chart-label ${isOptimal ? 'optimal' : ''}`}>
+                      {k}{isOptimal ? '✓' : ''}
+                    </span>
+                  </div>
+                );
+              })}
+            </div>
+            <div className="chart-x-axis">
+              <span>Number of Factors (k)</span>
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* Interpretation Guide */}
       <div className="interpretation-section">
         <h3>How to Interpret</h3>
@@ -207,6 +258,11 @@ export function PoissonResults({ result }: PoissonResultsProps) {
           <div className="interpretation-item">
             <strong>Low reconstruction error</strong> indicates the model captures the data patterns well.
           </div>
+          {result.factors_tested && (
+            <div className="interpretation-item">
+              <strong>Elbow method</strong> selects the number of factors where adding more yields diminishing returns.
+            </div>
+          )}
         </div>
       </div>
 
@@ -445,6 +501,124 @@ export function PoissonResults({ result }: PoissonResultsProps) {
           font-family: var(--font-geist-mono), monospace;
           text-align: right;
           color: var(--muted);
+        }
+
+        /* Elbow Chart */
+        .elbow-section {
+          background: var(--bg);
+          border: 1px solid var(--border);
+          border-radius: 12px;
+          padding: var(--space-5);
+        }
+
+        .elbow-section h3 {
+          display: flex;
+          align-items: center;
+          gap: var(--space-2);
+          font-size: 1rem;
+          font-weight: 600;
+          margin-bottom: var(--space-2);
+        }
+
+        .elbow-description {
+          font-size: 13px;
+          color: var(--muted);
+          margin-bottom: var(--space-4);
+        }
+
+        .elbow-description strong {
+          color: var(--fg);
+          background: #d1fae5;
+          padding: 2px 6px;
+          border-radius: 4px;
+        }
+
+        .elbow-chart {
+          display: grid;
+          grid-template-columns: 24px 1fr;
+          grid-template-rows: 1fr 24px;
+          gap: var(--space-2);
+          height: 180px;
+        }
+
+        .chart-y-axis {
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          writing-mode: vertical-rl;
+          text-orientation: mixed;
+          transform: rotate(180deg);
+          font-size: 11px;
+          color: var(--muted);
+          font-weight: 500;
+        }
+
+        .chart-area {
+          display: flex;
+          align-items: flex-end;
+          gap: 4px;
+          padding: var(--space-2);
+          background: rgba(0, 0, 0, 0.02);
+          border-radius: 8px;
+          border: 1px solid var(--border);
+        }
+
+        .chart-bar-container {
+          flex: 1;
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          height: 100%;
+          gap: 4px;
+        }
+
+        .chart-bar {
+          width: 100%;
+          max-width: 40px;
+          background: linear-gradient(180deg, #94a3b8, #64748b);
+          border-radius: 4px 4px 0 0;
+          display: flex;
+          align-items: flex-start;
+          justify-content: center;
+          padding-top: 4px;
+          transition: all 0.2s;
+          position: relative;
+        }
+
+        .chart-bar.optimal {
+          background: linear-gradient(180deg, #10b981, #059669);
+        }
+
+        .chart-bar:hover {
+          transform: scaleY(1.02);
+        }
+
+        .bar-value {
+          font-size: 9px;
+          font-weight: 600;
+          color: white;
+          text-shadow: 0 1px 2px rgba(0,0,0,0.3);
+        }
+
+        .chart-label {
+          font-size: 11px;
+          font-weight: 500;
+          color: var(--muted);
+        }
+
+        .chart-label.optimal {
+          color: #059669;
+          font-weight: 700;
+        }
+
+        .chart-x-axis {
+          grid-column: 2;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          font-size: 11px;
+          color: var(--muted);
+          font-weight: 500;
         }
 
         /* Interpretation */

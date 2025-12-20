@@ -242,23 +242,61 @@ def run_analysis(job_type: str, df, on_progress=None) -> dict:
 
 
 def _run_poisson(df) -> dict:
-    """Poisson factorization using NMF."""
+    """
+    Poisson factorization using NMF with automatic factor selection.
+    
+    Uses the elbow method: fit models with k=1..max_k factors, find where
+    the marginal improvement in reconstruction error drops below threshold.
+    """
     from sklearn.decomposition import NMF
+    import numpy as np
     
     numeric_df = df.select_dtypes(include=["number"]).fillna(0).clip(lower=0)
     
     if numeric_df.empty or numeric_df.shape[1] < 2:
         return {"type": "poisson_factorization", "error": "Need at least 2 numeric columns"}
     
-    n_components = min(3, numeric_df.shape[1])
-    model = NMF(n_components=n_components, max_iter=200, random_state=42)
-    model.fit_transform(numeric_df.values)
+    X = numeric_df.values
+    max_k = min(10, numeric_df.shape[1], numeric_df.shape[0] // 2)  # Reasonable upper bound
+    max_k = max(2, max_k)  # At least try 2 factors
+    
+    # Fit models for k=1..max_k and track reconstruction errors
+    errors = []
+    models = []
+    for k in range(1, max_k + 1):
+        model = NMF(n_components=k, max_iter=300, random_state=42, init='nndsvda')
+        model.fit(X)
+        errors.append(model.reconstruction_err_)
+        models.append(model)
+    
+    # Find optimal k using elbow method
+    # Look for where marginal improvement drops below 10% of first improvement
+    optimal_k = 1
+    if len(errors) >= 2:
+        improvements = [errors[i-1] - errors[i] for i in range(1, len(errors))]
+        if improvements:
+            threshold = improvements[0] * 0.1  # 10% of first improvement
+            for i, imp in enumerate(improvements):
+                if imp < threshold:
+                    optimal_k = i + 1  # k is 1-indexed
+                    break
+                optimal_k = i + 2  # Last k that had significant improvement
+    
+    # Clamp to reasonable range
+    optimal_k = max(2, min(optimal_k, max_k))
+    
+    # Use the model with optimal k
+    best_model = models[optimal_k - 1]
+    W = best_model.fit_transform(X)  # Customer factor scores
     
     return {
         "type": "poisson_factorization",
-        "n_factors": n_components,
-        "reconstruction_error": float(model.reconstruction_err_),
-        "factor_weights": model.components_.tolist(),
+        "n_factors": optimal_k,
+        "reconstruction_error": float(best_model.reconstruction_err_),
+        "factor_weights": best_model.components_.tolist(),
+        "factors_tested": list(range(1, max_k + 1)),
+        "errors_by_k": [float(e) for e in errors],
+        "customer_scores_sample": W[:min(10, len(W))].tolist(),  # First 10 customers
     }
 
 
