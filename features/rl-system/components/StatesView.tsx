@@ -30,7 +30,7 @@ export function StatesView() {
 
           <h3 id="representation-learning" style={{ marginTop: "var(--space-8)" }}>Representation learning</h3>
           <p>
-            For each customer <InlineMath math="i" /> at each time <InlineMath math="t" />, you observe a vector in <InlineMath math="\mathbb{R}^N" />—thousands of features from telemetry, CRM, billing, support. You need to compress it to <InlineMath math="\mathbb{R}^M" /> where <InlineMath math="M \ll N" />. That compression is the representation.
+            For each customer <InlineMath math="i" /> at each time <InlineMath math="t" />, you observe a vector <InlineMath math="o \in \mathbb{R}^N" />—thousands of features from telemetry, CRM, billing, support. You need to compress it to a state <InlineMath math="s \in \mathbb{R}^M" /> where <InlineMath math="M \ll N" />. The function <InlineMath math="o \mapsto s" /> is the representation.
           </p>
           <p>
             Ideally, the <InlineMath math="M" /> dimensions correspond to factors humans recognize: engagement, sophistication, purchase intent, satisfaction. If the representation is opaque, you can't inspect it, override it, or explain decisions based on it.
