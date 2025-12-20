@@ -40,13 +40,6 @@ export function StatesView() {
           <p>
             Choosing <InlineMath math="M" /> is a tradeoff. More dimensions means more accuracy—the state captures finer distinctions that matter for predicting value. Fewer dimensions means less complexity—the state is parsimonious, interpretable, auditable. You want factors humans recognize (engagement, intent, satisfaction) because you need to inspect them, override them, and explain decisions based on them. A black-box embedding that predicts value perfectly but means nothing to a human is useless for building trust or catching errors.
           </p>
-          <p>
-            Time complicates this. Customer state isn't a snapshot—it's a trajectory. A customer who logged in yesterday after three months of silence is different from one who logs in daily. The representation must encode history, not just the current observation.
-          </p>
-          <p>
-            Scale complicates it further. You have thousands of customers, each with their own trajectory. The representation must generalize: learn shared structure across customers while capturing individual differences. Pool too aggressively and you miss heterogeneity. Pool too little and you overfit to noise.
-          </p>
-
           <StateSpaceVisual />
 
           <h3 id="sequence-encoders">Sequence encoders</h3>
