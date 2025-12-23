@@ -18,7 +18,8 @@ import {
   Package,
   Tags,
   ArrowUpRight,
-  Filter
+  Filter,
+  UserCheck
 } from "lucide-react";
 
 interface NavItem {
@@ -38,6 +39,11 @@ const navSections: NavSection[] = [
     title: "Acquisition",
     icon: <Users size={16} />,
     items: [
+      { 
+        href: "/product/icp-identification", 
+        label: "ICP identification",
+        icon: <UserCheck size={18} />,
+      },
       { 
         href: "/product/channel-attribution", 
         label: "Channel attribution",

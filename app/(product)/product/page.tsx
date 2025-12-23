@@ -15,7 +15,8 @@ import {
   Layers,
   ArrowUpRight,
   Heart,
-  Info
+  Info,
+  UserCheck
 } from "lucide-react";
 
 interface BusinessMetrics {
@@ -49,6 +50,24 @@ interface FeatureImpact {
 
 const features: FeatureImpact[] = [
   // Acquisition
+  {
+    id: "icp-identification",
+    name: "ICP identification",
+    icon: <UserCheck size={18} />,
+    category: "acquisition",
+    lever: "Customer Quality",
+    leverDescription: "Target highest-LTV customer profiles, improving unit economics",
+    baselineMetric: "cac",
+    impactType: "reduction",
+    defaultUplift: 20,
+    maxUplift: 50,
+    computeImpact: (metrics, uplift) => {
+      // Better ICP = higher LTV customers at similar CAC
+      const ltvIncrease = (metrics.monthlyArpu * 12 * metrics.grossMargin) / metrics.annualChurnRate * (uplift / 100) * 0.3;
+      const annualNewCustomers = metrics.monthlyNewCustomers * 12;
+      return ltvIncrease * annualNewCustomers;
+    },
+  },
   {
     id: "channel-attribution",
     name: "Channel attribution",
