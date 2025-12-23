@@ -11,7 +11,9 @@ import {
   Heart,
   FlaskConical,
   PanelLeftClose,
-  PanelLeft
+  PanelLeft,
+  Target,
+  PieChart
 } from "lucide-react";
 
 interface NavItem {
@@ -30,7 +32,18 @@ const navSections: NavSection[] = [
   {
     title: "Acquisition",
     icon: <Users size={16} />,
-    items: [],
+    items: [
+      { 
+        href: "/product/lead-scoring", 
+        label: "Lead scoring",
+        icon: <Target size={18} />,
+      },
+      { 
+        href: "/product/marketing-mix", 
+        label: "Marketing Mix Models",
+        icon: <PieChart size={18} />,
+      },
+    ],
   },
   {
     title: "Monetization",
