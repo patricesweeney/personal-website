@@ -2,13 +2,13 @@ import { Metadata } from "next";
 import { AnalysisPage } from "@/features/demos/components/AnalysisPage";
 
 export const metadata: Metadata = {
-  title: "Marketing Mix Models | Product",
+  title: "Channel Attribution | Product",
   description: "Measure channel effectiveness and optimize marketing spend",
 };
 
 const config = {
   type: "nrr_decomposition" as const,
-  title: "Marketing Mix Models",
+  title: "Channel Attribution",
   description: "Decompose revenue attribution across marketing channels using Bayesian media mix modeling. Understand ROI by channel, optimize budget allocation, and measure incrementality.",
   columns: [
     {
@@ -62,7 +62,6 @@ const config = {
   ],
 };
 
-export default function MarketingMixPage() {
+export default function ChannelAttributionPage() {
   return <AnalysisPage config={config} />;
 }
-

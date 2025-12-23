@@ -43,8 +43,8 @@ const navSections: NavSection[] = [
         icon: <Target size={18} />,
       },
       { 
-        href: "/product/marketing-mix", 
-        label: "Marketing Mix Models",
+        href: "/product/channel-attribution", 
+        label: "Channel attribution",
         icon: <PieChart size={18} />,
       },
     ],
