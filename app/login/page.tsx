@@ -1,10 +1,10 @@
 "use client";
 
-import { useState } from "react";
+import { Suspense, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Lock } from "lucide-react";
 
-export default function LoginPage() {
+function LoginForm() {
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
@@ -38,6 +38,25 @@ export default function LoginPage() {
   };
 
   return (
+    <form onSubmit={handleSubmit}>
+      <input
+        type="password"
+        value={password}
+        onChange={(e) => setPassword(e.target.value)}
+        placeholder="Password"
+        autoFocus
+        disabled={loading}
+      />
+      {error && <span className="error">{error}</span>}
+      <button type="submit" disabled={loading}>
+        {loading ? "Checking..." : "Enter"}
+      </button>
+    </form>
+  );
+}
+
+export default function LoginPage() {
+  return (
     <div className="login-container">
       <div className="login-card">
         <div className="login-icon">
@@ -46,20 +65,9 @@ export default function LoginPage() {
         <h1>Protected Area</h1>
         <p>Enter the password to continue</p>
         
-        <form onSubmit={handleSubmit}>
-          <input
-            type="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            placeholder="Password"
-            autoFocus
-            disabled={loading}
-          />
-          {error && <span className="error">{error}</span>}
-          <button type="submit" disabled={loading}>
-            {loading ? "Checking..." : "Enter"}
-          </button>
-        </form>
+        <Suspense fallback={<div className="loading">Loading...</div>}>
+          <LoginForm />
+        </Suspense>
       </div>
 
       <style jsx>{`
@@ -101,13 +109,18 @@ export default function LoginPage() {
           margin-bottom: var(--space-6);
         }
 
-        form {
+        .loading {
+          color: var(--muted);
+          font-size: 14px;
+        }
+
+        :global(.login-card form) {
           display: flex;
           flex-direction: column;
           gap: var(--space-3);
         }
 
-        input {
+        :global(.login-card input) {
           width: 100%;
           padding: var(--space-3);
           border: 1px solid var(--border);
@@ -118,21 +131,21 @@ export default function LoginPage() {
           text-align: center;
         }
 
-        input:focus {
+        :global(.login-card input:focus) {
           outline: none;
           border-color: var(--fg);
         }
 
-        input:disabled {
+        :global(.login-card input:disabled) {
           opacity: 0.6;
         }
 
-        .error {
+        :global(.login-card .error) {
           color: #e53e3e;
           font-size: 13px;
         }
 
-        button {
+        :global(.login-card button) {
           width: 100%;
           padding: var(--space-3);
           background: var(--fg);
@@ -145,11 +158,11 @@ export default function LoginPage() {
           transition: opacity 0.15s;
         }
 
-        button:hover:not(:disabled) {
+        :global(.login-card button:hover:not(:disabled)) {
           opacity: 0.9;
         }
 
-        button:disabled {
+        :global(.login-card button:disabled) {
           opacity: 0.6;
           cursor: not-allowed;
         }
@@ -157,4 +170,3 @@ export default function LoginPage() {
     </div>
   );
 }
-
