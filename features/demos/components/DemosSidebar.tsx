@@ -16,7 +16,8 @@ import {
   PieChart,
   Zap,
   Package,
-  Tags
+  Tags,
+  ArrowUpRight
 } from "lucide-react";
 
 interface NavItem {
@@ -77,6 +78,11 @@ const navSections: NavSection[] = [
         href: "/product/use-cases", 
         label: "Use cases",
         icon: <Layers size={18} />,
+      },
+      { 
+        href: "/product/expansion-drivers", 
+        label: "Expansion drivers",
+        icon: <ArrowUpRight size={18} />,
       },
       { 
         href: "/product/retention-drivers", 
