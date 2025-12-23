@@ -1,6 +1,6 @@
 import { DemosSidebar } from "@/features/demos/components/DemosSidebar";
 
-export default function DemosLayout({
+export default function ProductLayout({
   children,
 }: {
   children: React.ReactNode;

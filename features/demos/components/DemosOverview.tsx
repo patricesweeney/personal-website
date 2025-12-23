@@ -12,28 +12,28 @@ import {
 
 const analyses = [
   {
-    href: "/demos/poisson",
+    href: "/product/poisson",
     title: "Poisson Factorisation",
     icon: BarChart3,
     description: "Decompose customer × event counts into latent behavioral factors using non-negative matrix factorization.",
     useCase: "Discover hidden customer segments based on product usage patterns.",
   },
   {
-    href: "/demos/survival",
+    href: "/product/survival",
     title: "Survival Analysis",
     icon: Clock,
     description: "Fit Cox proportional hazards models to understand time-to-churn and identify risk factors.",
     useCase: "Predict which customers are at risk and when they might churn.",
   },
   {
-    href: "/demos/nrr",
+    href: "/product/nrr",
     title: "NRR Decomposition",
     icon: TrendingUp,
     description: "Break down Net Revenue Retention into interpretable components using explainable ML.",
     useCase: "Understand what drives expansion, contraction, and retention.",
   },
   {
-    href: "/demos/propensity",
+    href: "/product/propensity",
     title: "Propensity Model",
     icon: Target,
     description: "Score deals with win probability, expected value, and time-to-close predictions.",

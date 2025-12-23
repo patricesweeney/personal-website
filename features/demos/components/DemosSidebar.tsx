@@ -22,31 +22,31 @@ interface NavItem {
 
 const navItems: NavItem[] = [
   { 
-    href: "/demos", 
+    href: "/product", 
     label: "Overview",
     icon: <FlaskConical size={18} />,
     description: "About these demos"
   },
   { 
-    href: "/demos/poisson", 
+    href: "/product/poisson", 
     label: "Poisson Factorisation",
     icon: <BarChart3 size={18} />,
     description: "Customer behavior clustering"
   },
   { 
-    href: "/demos/survival", 
+    href: "/product/survival", 
     label: "Survival Analysis",
     icon: <Clock size={18} />,
     description: "Time-to-churn modeling"
   },
   { 
-    href: "/demos/nrr", 
+    href: "/product/nrr", 
     label: "NRR Decomposition",
     icon: <TrendingUp size={18} />,
     description: "Revenue driver analysis"
   },
   { 
-    href: "/demos/propensity", 
+    href: "/product/propensity", 
     label: "Propensity Model",
     icon: <Target size={18} />,
     description: "Win probability scoring"
@@ -60,7 +60,7 @@ export function DemosSidebar() {
   return (
     <aside className={`demos-sidebar ${isCollapsed ? "collapsed" : ""}`}>
       <div className="sidebar-header">
-        {!isCollapsed && <span className="meta">Demos</span>}
+        {!isCollapsed && <span className="meta">Product</span>}
         <button 
           className="collapse-btn"
           onClick={() => setIsCollapsed(!isCollapsed)}
