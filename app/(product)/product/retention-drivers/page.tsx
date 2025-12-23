@@ -2,13 +2,13 @@ import { Metadata } from "next";
 import { AnalysisPage } from "@/features/demos/components/AnalysisPage";
 
 export const metadata: Metadata = {
-  title: "Survival Analysis | Analysis Demos",
+  title: "Retention Drivers | Product",
   description: "Model time-to-churn with Cox proportional hazards",
 };
 
 const config = {
   type: "survival_analysis" as const,
-  title: "Survival Analysis",
+  title: "Retention Drivers",
   description: "Fit a Cox proportional hazards model to understand time-to-churn and identify which factors accelerate or delay customer departure. Get hazard ratios for each feature.",
   columns: [
     {
@@ -56,7 +56,6 @@ const config = {
   ],
 };
 
-export default function SurvivalPage() {
+export default function RetentionDriversPage() {
   return <AnalysisPage config={config} />;
 }
-

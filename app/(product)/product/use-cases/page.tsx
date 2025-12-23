@@ -2,13 +2,13 @@ import { Metadata } from "next";
 import { AnalysisPage } from "@/features/demos/components/AnalysisPage";
 
 export const metadata: Metadata = {
-  title: "Poisson Factorisation | Analysis Demos",
+  title: "Use Cases | Product",
   description: "Decompose customer behavior counts into latent factors",
 };
 
 const config = {
   type: "poisson_factorization" as const,
-  title: "Poisson Factorisation",
+  title: "Use Cases",
   description: "Decompose a customer × event count matrix into latent behavioral factors using Non-negative Matrix Factorization (NMF). This reveals hidden customer segments based on their product usage patterns.",
   columns: [
     {
@@ -44,7 +44,6 @@ const config = {
   ],
 };
 
-export default function PoissonPage() {
+export default function UseCasesPage() {
   return <AnalysisPage config={config} />;
 }
-

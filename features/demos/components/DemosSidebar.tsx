@@ -4,10 +4,11 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useState } from "react";
 import { 
-  BarChart3, 
-  Clock, 
-  TrendingUp, 
-  Target,
+  Users,
+  DollarSign,
+  TrendingUp,
+  Layers,
+  Heart,
   FlaskConical,
   PanelLeftClose,
   PanelLeft
@@ -17,39 +18,40 @@ interface NavItem {
   href: string;
   label: string;
   icon: React.ReactNode;
-  description: string;
 }
 
-const navItems: NavItem[] = [
-  { 
-    href: "/product", 
-    label: "Overview",
-    icon: <FlaskConical size={18} />,
-    description: "About these demos"
+interface NavSection {
+  title: string;
+  icon: React.ReactNode;
+  items: NavItem[];
+}
+
+const navSections: NavSection[] = [
+  {
+    title: "Acquisition",
+    icon: <Users size={16} />,
+    items: [],
   },
-  { 
-    href: "/product/poisson", 
-    label: "Poisson Factorisation",
-    icon: <BarChart3 size={18} />,
-    description: "Customer behavior clustering"
+  {
+    title: "Monetization",
+    icon: <DollarSign size={16} />,
+    items: [],
   },
-  { 
-    href: "/product/survival", 
-    label: "Survival Analysis",
-    icon: <Clock size={18} />,
-    description: "Time-to-churn modeling"
-  },
-  { 
-    href: "/product/nrr", 
-    label: "NRR Decomposition",
-    icon: <TrendingUp size={18} />,
-    description: "Revenue driver analysis"
-  },
-  { 
-    href: "/product/propensity", 
-    label: "Propensity Model",
-    icon: <Target size={18} />,
-    description: "Win probability scoring"
+  {
+    title: "NRR",
+    icon: <TrendingUp size={16} />,
+    items: [
+      { 
+        href: "/product/use-cases", 
+        label: "Use cases",
+        icon: <Layers size={18} />,
+      },
+      { 
+        href: "/product/retention-drivers", 
+        label: "Retention drivers",
+        icon: <Heart size={18} />,
+      },
+    ],
   },
 ];
 
@@ -70,22 +72,45 @@ export function DemosSidebar() {
           {isCollapsed ? <PanelLeft size={18} /> : <PanelLeftClose size={18} />}
         </button>
       </div>
+      
       <nav className="sidebar-nav">
-        {navItems.map((item) => {
-          const isActive = pathname === item.href;
+        <Link
+          href="/product"
+          className={`demo-nav-link ${pathname === "/product" ? "active" : ""}`}
+          title={isCollapsed ? "Overview" : undefined}
+        >
+          <span className="nav-icon"><FlaskConical size={18} /></span>
+          {!isCollapsed && <span className="nav-label">Overview</span>}
+        </Link>
 
-          return (
-            <Link
-              key={item.href}
-              href={item.href}
-              className={`demo-nav-link ${isActive ? "active" : ""}`}
-              title={isCollapsed ? item.label : undefined}
-            >
-              <span className="nav-icon">{item.icon}</span>
-              {!isCollapsed && <span className="nav-label">{item.label}</span>}
-            </Link>
-          );
-        })}
+        {navSections.map((section) => (
+          <div key={section.title} className="nav-section">
+            {!isCollapsed && (
+              <div className="section-header">
+                <span className="section-icon">{section.icon}</span>
+                <span className="section-title">{section.title}</span>
+              </div>
+            )}
+            {section.items.length > 0 ? (
+              section.items.map((item) => {
+                const isActive = pathname === item.href;
+                return (
+                  <Link
+                    key={item.href}
+                    href={item.href}
+                    className={`demo-nav-link ${isActive ? "active" : ""}`}
+                    title={isCollapsed ? item.label : undefined}
+                  >
+                    <span className="nav-icon">{item.icon}</span>
+                    {!isCollapsed && <span className="nav-label">{item.label}</span>}
+                  </Link>
+                );
+              })
+            ) : (
+              !isCollapsed && <span className="empty-section">Coming soon</span>
+            )}
+          </div>
+        ))}
       </nav>
 
       <style jsx>{`
@@ -140,6 +165,42 @@ export function DemosSidebar() {
           display: flex;
           flex-direction: column;
           gap: var(--space-1);
+        }
+
+        .nav-section {
+          margin-top: var(--space-4);
+        }
+
+        .section-header {
+          display: flex;
+          align-items: center;
+          gap: var(--space-2);
+          padding: var(--space-1) var(--space-3);
+          margin-bottom: var(--space-1);
+        }
+
+        .section-icon {
+          display: flex;
+          align-items: center;
+          color: var(--muted);
+          opacity: 0.6;
+        }
+
+        .section-title {
+          font-size: 11px;
+          font-weight: 600;
+          text-transform: uppercase;
+          letter-spacing: 0.05em;
+          color: var(--muted);
+        }
+
+        .empty-section {
+          display: block;
+          padding: var(--space-2) var(--space-3);
+          font-size: 12px;
+          color: var(--muted);
+          opacity: 0.5;
+          font-style: italic;
         }
 
         :global(.demo-nav-link) {
@@ -209,6 +270,18 @@ export function DemosSidebar() {
           }
 
           .collapse-btn {
+            display: none;
+          }
+
+          .nav-section {
+            margin-top: var(--space-2);
+          }
+
+          .section-header {
+            display: none;
+          }
+
+          .empty-section {
             display: none;
           }
 

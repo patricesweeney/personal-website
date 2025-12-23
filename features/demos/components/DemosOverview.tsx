@@ -2,42 +2,26 @@
 
 import Link from "next/link";
 import { 
-  BarChart3, 
-  Clock, 
-  TrendingUp, 
-  Target,
+  Layers,
+  Heart,
   ArrowRight,
   FlaskConical
 } from "lucide-react";
 
 const analyses = [
   {
-    href: "/product/poisson",
-    title: "Poisson Factorisation",
-    icon: BarChart3,
+    href: "/product/use-cases",
+    title: "Use Cases",
+    icon: Layers,
     description: "Decompose customer × event counts into latent behavioral factors using non-negative matrix factorization.",
     useCase: "Discover hidden customer segments based on product usage patterns.",
   },
   {
-    href: "/product/survival",
-    title: "Survival Analysis",
-    icon: Clock,
+    href: "/product/retention-drivers",
+    title: "Retention Drivers",
+    icon: Heart,
     description: "Fit Cox proportional hazards models to understand time-to-churn and identify risk factors.",
     useCase: "Predict which customers are at risk and when they might churn.",
-  },
-  {
-    href: "/product/nrr",
-    title: "NRR Decomposition",
-    icon: TrendingUp,
-    description: "Break down Net Revenue Retention into interpretable components using explainable ML.",
-    useCase: "Understand what drives expansion, contraction, and retention.",
-  },
-  {
-    href: "/product/propensity",
-    title: "Propensity Model",
-    icon: Target,
-    description: "Score deals with win probability, expected value, and time-to-close predictions.",
-    useCase: "Prioritize pipeline and forecast revenue more accurately.",
   },
 ];
 
@@ -196,4 +180,3 @@ export function DemosOverview() {
     </div>
   );
 }
-
