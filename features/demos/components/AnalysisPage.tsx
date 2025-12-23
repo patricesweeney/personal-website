@@ -5,20 +5,46 @@ import {
   Upload, 
   FileSpreadsheet, 
   Loader2, 
-  CheckCircle2, 
   AlertCircle,
   Info,
-  RotateCcw
+  RotateCcw,
+  Target,
+  Lightbulb,
+  Users,
+  Zap,
+  MessageSquare,
+  Quote,
+  Shield,
+  Sparkles,
+  Gift
 } from "lucide-react";
 import { uploadAndCreateJob, getJobStatus } from "@/features/analysis";
 import type { JobType } from "@/features/analysis";
 import { PoissonResults } from "./PoissonResults";
 import { ColumnPicker, type ColumnConfig } from "./ColumnPicker";
 
+interface MarketingSection {
+  headline: string;
+  problem: string;
+  solution: string;
+  targetProfile: string;
+  trigger: string;
+  objections: string[];
+  testimonial?: {
+    quote: string;
+    author: string;
+    role: string;
+  };
+  riskReversal: string;
+  uniqueness: string;
+  offerAndRtr: string;
+}
+
 interface AnalysisConfig {
   type: JobType;
   title: string;
   description: string;
+  marketing?: MarketingSection;
 }
 
 interface AnalysisPageProps {
@@ -74,6 +100,174 @@ function parseCSVLine(line: string): string[] {
 }
 
 type Status = "idle" | "parsing" | "configuring" | "uploading" | "processing" | "done" | "error";
+
+function MarketingSections({ marketing }: { marketing: MarketingSection }) {
+  return (
+    <div className="marketing-sections">
+      <section className="marketing-section headline-section">
+        <h3><Target size={18} /> Headline</h3>
+        <p className="headline-text">{marketing.headline}</p>
+      </section>
+
+      <section className="marketing-section">
+        <h3><AlertCircle size={18} /> Problem</h3>
+        <p>{marketing.problem}</p>
+      </section>
+
+      <section className="marketing-section">
+        <h3><Lightbulb size={18} /> Solution</h3>
+        <p>{marketing.solution}</p>
+      </section>
+
+      <section className="marketing-section">
+        <h3><Users size={18} /> Target Profile</h3>
+        <p>{marketing.targetProfile}</p>
+      </section>
+
+      <section className="marketing-section">
+        <h3><Zap size={18} /> Trigger</h3>
+        <p>{marketing.trigger}</p>
+      </section>
+
+      <section className="marketing-section">
+        <h3><MessageSquare size={18} /> Objections</h3>
+        <ul className="objections-list">
+          {marketing.objections.map((obj, i) => (
+            <li key={i}>{obj}</li>
+          ))}
+        </ul>
+      </section>
+
+      {marketing.testimonial && (
+        <section className="marketing-section testimonial-section">
+          <h3><Quote size={18} /> Testimonials</h3>
+          <blockquote>
+            <p>"{marketing.testimonial.quote}"</p>
+            <footer>
+              <strong>{marketing.testimonial.author}</strong>
+              <span>{marketing.testimonial.role}</span>
+            </footer>
+          </blockquote>
+        </section>
+      )}
+
+      <section className="marketing-section">
+        <h3><Shield size={18} /> Risk Reversal</h3>
+        <p>{marketing.riskReversal}</p>
+      </section>
+
+      <section className="marketing-section">
+        <h3><Sparkles size={18} /> Uniqueness</h3>
+        <p>{marketing.uniqueness}</p>
+      </section>
+
+      <section className="marketing-section offer-section">
+        <h3><Gift size={18} /> Offer & RTR</h3>
+        <p>{marketing.offerAndRtr}</p>
+      </section>
+
+      <style jsx>{`
+        .marketing-sections {
+          display: flex;
+          flex-direction: column;
+          gap: var(--space-5);
+          margin-bottom: var(--space-8);
+        }
+
+        .marketing-section {
+          padding: var(--space-4);
+          background: rgba(0, 0, 0, 0.02);
+          border-radius: 10px;
+          border-left: 3px solid var(--border);
+        }
+
+        .marketing-section h3 {
+          display: flex;
+          align-items: center;
+          gap: var(--space-2);
+          font-size: 13px;
+          font-weight: 600;
+          text-transform: uppercase;
+          letter-spacing: 0.03em;
+          color: var(--muted);
+          margin-bottom: var(--space-3);
+        }
+
+        .marketing-section p {
+          font-size: 15px;
+          line-height: 1.6;
+          color: var(--fg);
+          margin: 0;
+        }
+
+        .headline-section {
+          border-left-color: var(--fg);
+          background: var(--fg);
+          color: var(--bg);
+        }
+
+        .headline-section h3 {
+          color: var(--bg);
+          opacity: 0.7;
+        }
+
+        .headline-text {
+          font-size: 1.5rem !important;
+          font-weight: 600;
+          color: var(--bg) !important;
+        }
+
+        .objections-list {
+          margin: 0;
+          padding-left: var(--space-5);
+        }
+
+        .objections-list li {
+          font-size: 15px;
+          line-height: 1.6;
+          margin-bottom: var(--space-2);
+        }
+
+        .objections-list li:last-child {
+          margin-bottom: 0;
+        }
+
+        .testimonial-section blockquote {
+          margin: 0;
+          padding: var(--space-4);
+          background: var(--bg);
+          border-radius: 8px;
+        }
+
+        .testimonial-section blockquote p {
+          font-size: 15px;
+          font-style: italic;
+          margin-bottom: var(--space-3);
+        }
+
+        .testimonial-section blockquote footer {
+          display: flex;
+          flex-direction: column;
+          gap: 2px;
+        }
+
+        .testimonial-section blockquote footer strong {
+          font-size: 14px;
+        }
+
+        .testimonial-section blockquote footer span {
+          font-size: 12px;
+          color: var(--muted);
+        }
+
+        .offer-section {
+          border-left-color: #10b981;
+          background: rgba(16, 185, 129, 0.08);
+        }
+      `}</style>
+    </div>
+  );
+}
 
 export function AnalysisPage({ config }: AnalysisPageProps) {
   const [file, setFile] = useState<File | null>(null);
@@ -389,7 +583,7 @@ export function AnalysisPage({ config }: AnalysisPageProps) {
     );
   }
 
-  // Default: Upload view
+  // Default: Upload view with marketing sections
   return (
     <div className="analysis-page">
       <header className="analysis-header">
@@ -397,7 +591,10 @@ export function AnalysisPage({ config }: AnalysisPageProps) {
         <p className="description">{config.description}</p>
       </header>
 
+      {config.marketing && <MarketingSections marketing={config.marketing} />}
+
       <section className="upload-section">
+        <h3 className="upload-title">Try It Now</h3>
         <div
           className={`drop-zone ${isDragging ? "dragging" : ""} ${file ? "has-file" : ""}`}
           onDragOver={handleDragOver}
@@ -537,6 +734,12 @@ export function AnalysisPage({ config }: AnalysisPageProps) {
           border: 1px solid var(--border);
           border-radius: 12px;
           padding: var(--space-5);
+        }
+
+        .upload-title {
+          font-size: 1rem;
+          font-weight: 600;
+          margin-bottom: var(--space-4);
         }
 
         .drop-zone {
