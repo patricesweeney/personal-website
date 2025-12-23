@@ -17,7 +17,8 @@ import {
   Zap,
   Package,
   Tags,
-  ArrowUpRight
+  ArrowUpRight,
+  Filter
 } from "lucide-react";
 
 interface NavItem {
@@ -38,14 +39,19 @@ const navSections: NavSection[] = [
     icon: <Users size={16} />,
     items: [
       { 
+        href: "/product/channel-attribution", 
+        label: "Channel attribution",
+        icon: <PieChart size={18} />,
+      },
+      { 
         href: "/product/lead-scoring", 
         label: "Lead scoring",
         icon: <Target size={18} />,
       },
       { 
-        href: "/product/channel-attribution", 
-        label: "Channel attribution",
-        icon: <PieChart size={18} />,
+        href: "/product/sales-funnel", 
+        label: "Sales funnel analysis",
+        icon: <Filter size={18} />,
       },
     ],
   },
