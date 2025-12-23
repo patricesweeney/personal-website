@@ -13,7 +13,10 @@ import {
   PanelLeftClose,
   PanelLeft,
   Target,
-  PieChart
+  PieChart,
+  Zap,
+  Package,
+  Tags
 } from "lucide-react";
 
 interface NavItem {
@@ -48,7 +51,23 @@ const navSections: NavSection[] = [
   {
     title: "Monetization",
     icon: <DollarSign size={16} />,
-    items: [],
+    items: [
+      { 
+        href: "/product/activation-drivers", 
+        label: "Activation drivers",
+        icon: <Zap size={18} />,
+      },
+      { 
+        href: "/product/packaging", 
+        label: "Packaging",
+        icon: <Package size={18} />,
+      },
+      { 
+        href: "/product/pricing", 
+        label: "Pricing",
+        icon: <Tags size={18} />,
+      },
+    ],
   },
   {
     title: "NRR",
