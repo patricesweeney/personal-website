@@ -1,14 +1,26 @@
 import Nango from '@nangohq/frontend';
 
-let nangoInstance: Nango | null = null;
+// Create Nango client with session token (fetched from backend)
+export function createNangoClient(sessionToken: string) {
+  return new Nango({
+    connectSessionToken: sessionToken,
+  });
+}
 
-export function getNangoClient() {
-  if (!nangoInstance) {
-    nangoInstance = new Nango({
-      publicKey: process.env.NEXT_PUBLIC_NANGO_PUBLIC_KEY!,
-    });
+// Fetch a session token from our backend
+export async function getSessionToken(connectionId: string): Promise<string> {
+  const response = await fetch('/api/nango/session', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ connectionId }),
+  });
+  
+  if (!response.ok) {
+    throw new Error('Failed to get session token');
   }
-  return nangoInstance;
+  
+  const { sessionToken } = await response.json();
+  return sessionToken;
 }
 
 // Supported integrations for B2B product analytics
@@ -34,4 +46,3 @@ export const INTEGRATIONS = {
 } as const;
 
 export type IntegrationId = keyof typeof INTEGRATIONS;
-

@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { Link2, Check, Loader2, X } from "lucide-react";
-import { getNangoClient, INTEGRATIONS, type IntegrationId } from "@/lib/nango/browser";
+import { createNangoClient, getSessionToken, INTEGRATIONS, type IntegrationId } from "@/lib/nango/browser";
 
 interface ConnectionStatus {
   [key: string]: "disconnected" | "connecting" | "connected" | "error";
@@ -43,7 +43,11 @@ export function NangoConnect({ connectionId, onConnectionChange }: NangoConnectP
     setError(null);
 
     try {
-      const nango = getNangoClient();
+      // Get a session token from our backend
+      const sessionToken = await getSessionToken(connectionId);
+      
+      // Create Nango client with the session token
+      const nango = createNangoClient(sessionToken);
       await nango.auth(integrationId, connectionId);
       
       setStatuses(prev => ({ ...prev, [integrationId]: "connected" }));
