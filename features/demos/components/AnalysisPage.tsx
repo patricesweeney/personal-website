@@ -26,6 +26,7 @@ import { uploadAndCreateJob, getJobStatus } from "@/features/analysis";
 import type { JobType } from "@/features/analysis";
 import { PoissonResults } from "./PoissonResults";
 import { ColumnPicker, type ColumnConfig } from "./ColumnPicker";
+import { LoopEmailCapture } from "./LoopEmailCapture";
 
 interface MarketingSection {
   headline: string;
@@ -908,6 +909,8 @@ export function AnalysisPage({ config }: AnalysisPageProps) {
           <Info size={14} />
           <span>Data is processed on-demand and not stored permanently.</span>
         </div>
+
+        <LoopEmailCapture />
       </section>
 
       <style jsx>{`
