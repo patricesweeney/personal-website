@@ -3,10 +3,11 @@
 import { useState } from "react";
 import { Mail, Loader2, CheckCircle2, AlertCircle } from "lucide-react";
 
-// Replace with your Loop.so form ID from https://app.loops.so/forms
 const LOOP_FORM_ID = "cmjjex00500nq0i06cgl0przr";
 
 export function LoopEmailCapture() {
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
   const [email, setEmail] = useState("");
   const [status, setStatus] = useState<"idle" | "loading" | "success" | "error">("idle");
   const [errorMessage, setErrorMessage] = useState("");
@@ -14,13 +15,13 @@ export function LoopEmailCapture() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    if (!email.trim()) return;
+    if (!email.trim() || !firstName.trim() || !lastName.trim()) return;
     
     setStatus("loading");
     setErrorMessage("");
 
     try {
-      const formBody = `email=${encodeURIComponent(email)}`;
+      const formBody = `email=${encodeURIComponent(email)}&firstName=${encodeURIComponent(firstName)}&lastName=${encodeURIComponent(lastName)}`;
       
       const response = await fetch(`https://app.loops.so/api/newsletter-form/${LOOP_FORM_ID}`, {
         method: "POST",
@@ -35,6 +36,8 @@ export function LoopEmailCapture() {
       }
 
       setStatus("success");
+      setFirstName("");
+      setLastName("");
       setEmail("");
     } catch {
       setStatus("error");
@@ -81,21 +84,41 @@ export function LoopEmailCapture() {
       </div>
       
       <form onSubmit={handleSubmit} className="capture-form">
-        <input
-          type="email"
-          placeholder="you@company.com"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          disabled={status === "loading"}
-          required
-        />
-        <button type="submit" disabled={status === "loading" || !email.trim()}>
-          {status === "loading" ? (
-            <Loader2 size={16} className="spinner" />
-          ) : (
-            "Subscribe"
-          )}
-        </button>
+        <div className="name-row">
+          <input
+            type="text"
+            placeholder="First name"
+            value={firstName}
+            onChange={(e) => setFirstName(e.target.value)}
+            disabled={status === "loading"}
+            required
+          />
+          <input
+            type="text"
+            placeholder="Last name"
+            value={lastName}
+            onChange={(e) => setLastName(e.target.value)}
+            disabled={status === "loading"}
+            required
+          />
+        </div>
+        <div className="email-row">
+          <input
+            type="email"
+            placeholder="you@company.com"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            disabled={status === "loading"}
+            required
+          />
+          <button type="submit" disabled={status === "loading" || !email.trim() || !firstName.trim() || !lastName.trim()}>
+            {status === "loading" ? (
+              <Loader2 size={16} className="spinner" />
+            ) : (
+              "Subscribe"
+            )}
+          </button>
+        </div>
       </form>
 
       {status === "error" && (
@@ -125,11 +148,29 @@ export function LoopEmailCapture() {
 
         .capture-form {
           display: flex;
+          flex-direction: column;
           gap: var(--space-2);
         }
 
-        .capture-form input {
+        .name-row {
+          display: flex;
+          gap: var(--space-2);
+        }
+
+        .name-row input {
           flex: 1;
+        }
+
+        .email-row {
+          display: flex;
+          gap: var(--space-2);
+        }
+
+        .email-row input {
+          flex: 1;
+        }
+
+        .capture-form input {
           padding: var(--space-2) var(--space-3);
           border: 1px solid var(--border);
           border-radius: 6px;
@@ -191,7 +232,10 @@ export function LoopEmailCapture() {
         }
 
         @media (max-width: 500px) {
-          .capture-form {
+          .name-row {
+            flex-direction: column;
+          }
+          .email-row {
             flex-direction: column;
           }
           .capture-form button {
