@@ -9,7 +9,8 @@ import {
   TrendingUp,
   FlaskConical,
   PanelLeftClose,
-  PanelLeft
+  PanelLeft,
+  Settings
 } from "lucide-react";
 
 interface NavItem {
@@ -38,6 +39,11 @@ const navSections: NavSection[] = [
   {
     title: "Retention",
     icon: <TrendingUp size={16} />,
+    items: [],
+  },
+  {
+    title: "Ops",
+    icon: <Settings size={16} />,
     items: [],
   },
 ];
