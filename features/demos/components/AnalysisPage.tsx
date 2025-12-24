@@ -16,7 +16,11 @@ import {
   Quote,
   Shield,
   Sparkles,
-  Gift
+  Gift,
+  Table,
+  Cpu,
+  Check,
+  X
 } from "lucide-react";
 import { uploadAndCreateJob, getJobStatus } from "@/features/analysis";
 import type { JobType } from "@/features/analysis";
@@ -40,11 +44,20 @@ interface MarketingSection {
   offerAndRtr: string;
 }
 
+interface ColumnSpec {
+  name: string;
+  type: "required" | "optional";
+  description: string;
+  example: string;
+}
+
 interface AnalysisConfig {
   type: JobType;
   title: string;
   description: string;
   marketing?: MarketingSection;
+  columns?: ColumnSpec[];
+  mlSolution?: string;
 }
 
 interface AnalysisPageProps {
@@ -263,6 +276,189 @@ function MarketingSections({ marketing }: { marketing: MarketingSection }) {
         .offer-section {
           border-left-color: #10b981;
           background: rgba(16, 185, 129, 0.08);
+        }
+      `}</style>
+    </div>
+  );
+}
+
+function DataSchemaTable({ columns }: { columns: ColumnSpec[] }) {
+  const requiredCols = columns.filter(c => c.type === "required");
+  const optionalCols = columns.filter(c => c.type === "optional");
+
+  return (
+    <div className="data-schema">
+      <div className="schema-header">
+        <Table size={20} />
+        <h3>Required Data Format</h3>
+      </div>
+      
+      <div className="schema-table-wrapper">
+        <table className="schema-table">
+          <thead>
+            <tr>
+              <th>Column</th>
+              <th>Required</th>
+              <th>Description</th>
+              <th>Example</th>
+            </tr>
+          </thead>
+          <tbody>
+            {requiredCols.map((col) => (
+              <tr key={col.name} className="required-row">
+                <td className="col-name"><code>{col.name}</code></td>
+                <td className="col-required"><Check size={14} className="check-icon" /></td>
+                <td className="col-desc">{col.description}</td>
+                <td className="col-example"><code>{col.example}</code></td>
+              </tr>
+            ))}
+            {optionalCols.map((col) => (
+              <tr key={col.name} className="optional-row">
+                <td className="col-name"><code>{col.name}</code></td>
+                <td className="col-required"><X size={14} className="x-icon" /></td>
+                <td className="col-desc">{col.description}</td>
+                <td className="col-example"><code>{col.example}</code></td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+
+      <style jsx>{`
+        .data-schema {
+          margin-bottom: var(--space-6);
+          border: 1px solid var(--border);
+          border-radius: 12px;
+          overflow: hidden;
+        }
+
+        .schema-header {
+          display: flex;
+          align-items: center;
+          gap: var(--space-2);
+          padding: var(--space-4);
+          background: var(--fg);
+          color: var(--bg);
+        }
+
+        .schema-header h3 {
+          font-size: 14px;
+          font-weight: 600;
+          margin: 0;
+        }
+
+        .schema-table-wrapper {
+          overflow-x: auto;
+        }
+
+        .schema-table {
+          width: 100%;
+          border-collapse: collapse;
+          font-size: 13px;
+        }
+
+        .schema-table th {
+          text-align: left;
+          padding: var(--space-3);
+          background: rgba(0, 0, 0, 0.03);
+          font-weight: 600;
+          font-size: 11px;
+          text-transform: uppercase;
+          letter-spacing: 0.03em;
+          color: var(--muted);
+          border-bottom: 1px solid var(--border);
+        }
+
+        .schema-table td {
+          padding: var(--space-3);
+          border-bottom: 1px solid var(--border);
+          vertical-align: top;
+        }
+
+        .schema-table tr:last-child td {
+          border-bottom: none;
+        }
+
+        .required-row {
+          background: rgba(16, 185, 129, 0.04);
+        }
+
+        .col-name code {
+          font-family: var(--font-geist-mono), monospace;
+          font-size: 12px;
+          background: rgba(0, 0, 0, 0.05);
+          padding: 2px 6px;
+          border-radius: 4px;
+        }
+
+        .col-required {
+          text-align: center;
+          width: 70px;
+        }
+
+        .col-required :global(.check-icon) {
+          color: #10b981;
+        }
+
+        .col-required :global(.x-icon) {
+          color: var(--muted);
+          opacity: 0.5;
+        }
+
+        .col-desc {
+          color: var(--muted);
+          max-width: 300px;
+        }
+
+        .col-example code {
+          font-family: var(--font-geist-mono), monospace;
+          font-size: 11px;
+          color: var(--muted);
+        }
+      `}</style>
+    </div>
+  );
+}
+
+function MLSolutionBox({ solution }: { solution: string }) {
+  return (
+    <div className="ml-solution">
+      <div className="ml-header">
+        <Cpu size={18} />
+        <h3>ML Approach</h3>
+      </div>
+      <p>{solution}</p>
+
+      <style jsx>{`
+        .ml-solution {
+          margin-bottom: var(--space-6);
+          padding: var(--space-4);
+          background: linear-gradient(135deg, rgba(99, 102, 241, 0.08) 0%, rgba(168, 85, 247, 0.08) 100%);
+          border: 1px solid rgba(99, 102, 241, 0.2);
+          border-radius: 12px;
+        }
+
+        .ml-header {
+          display: flex;
+          align-items: center;
+          gap: var(--space-2);
+          margin-bottom: var(--space-3);
+          color: #6366f1;
+        }
+
+        .ml-header h3 {
+          font-size: 13px;
+          font-weight: 600;
+          margin: 0;
+          text-transform: uppercase;
+          letter-spacing: 0.03em;
+        }
+
+        p {
+          font-size: 14px;
+          line-height: 1.6;
+          color: var(--fg);
+          margin: 0;
         }
       `}</style>
     </div>
@@ -595,6 +791,14 @@ export function AnalysisPage({ config }: AnalysisPageProps) {
 
       <section className="upload-section">
         <h3 className="upload-title">Try It Now</h3>
+        
+        {config.columns && config.columns.length > 0 && (
+          <DataSchemaTable columns={config.columns} />
+        )}
+        
+        {config.mlSolution && (
+          <MLSolutionBox solution={config.mlSolution} />
+        )}
         <div
           className={`drop-zone ${isDragging ? "dragging" : ""} ${file ? "has-file" : ""}`}
           onDragOver={handleDragOver}

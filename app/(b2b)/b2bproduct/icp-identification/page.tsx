@@ -86,6 +86,7 @@ const config = {
       example: "1 or 0",
     },
   ],
+  mlSolution: "We use gradient boosted trees (XGBoost) with SHAP values for interpretability. The model predicts LTV from customer attributes, then SHAP decomposition shows which attributes drive predictions. We also run statistical tests (chi-squared, Kruskal-Wallis) to validate significance. Output includes feature importance rankings, segment-level LTV distributions, and decision rules for targeting.",
 };
 
 export default function ICPIdentificationPage() {

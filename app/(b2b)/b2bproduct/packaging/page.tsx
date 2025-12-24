@@ -74,6 +74,7 @@ const config = {
       example: "99",
     },
   ],
+  mlSolution: "We apply Non-negative Matrix Factorization (NMF) to discover latent feature usage patterns, then analyze upgrade probability by cluster. Includes association rule mining to find feature combinations that predict upgrades, and uplift modeling to estimate the revenue impact of ungating specific features.",
 };
 
 export default function PackagingPage() {

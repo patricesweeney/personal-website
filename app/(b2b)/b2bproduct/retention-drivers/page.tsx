@@ -74,6 +74,7 @@ const config = {
       example: "8",
     },
   ],
+  mlSolution: "We fit Cox proportional hazards models with time-varying covariates to predict churn timing. Hazard ratios quantify the impact of each risk factor. Includes survival curves by segment, at-risk account scoring, and expected time-to-churn estimates for intervention prioritization.",
 };
 
 export default function RetentionDriversPage() {

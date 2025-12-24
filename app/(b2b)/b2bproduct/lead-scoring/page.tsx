@@ -74,6 +74,7 @@ const config = {
       example: "1 or 0",
     },
   ],
+  mlSolution: "We train a calibrated gradient boosting classifier (LightGBM) to predict conversion probability. Calibration ensures predicted probabilities match actual conversion rates. Output includes probability scores, expected value (probability × deal size), and SHAP explanations showing why each lead scored high or low.",
 };
 
 export default function LeadScoringPage() {

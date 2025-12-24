@@ -80,6 +80,7 @@ const config = {
       example: "1 or 0",
     },
   ],
+  mlSolution: "We estimate price elasticity using regression with instrumental variables to handle endogeneity. Segment-level elasticity curves show where you have pricing power. Includes revenue optimization under constraints and simulation of price change scenarios with confidence intervals.",
 };
 
 export default function PricingPage() {

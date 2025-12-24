@@ -80,6 +80,7 @@ const config = {
       example: "4",
     },
   ],
+  mlSolution: "We train multi-output models to predict expansion type (seats, usage, upgrade) and timing. Uses gradient boosting with SHAP explanations to show which behaviors trigger expansion readiness. Includes account scoring and optimal intervention timing recommendations.",
 };
 
 export default function ExpansionDriversPage() {

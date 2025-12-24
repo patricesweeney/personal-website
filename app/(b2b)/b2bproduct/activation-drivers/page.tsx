@@ -74,6 +74,7 @@ const config = {
       example: "3",
     },
   ],
+  mlSolution: "We use logistic regression with L1 regularization for interpretable feature selection, plus causal inference techniques (propensity score matching) to distinguish correlation from causation. Output shows which actions causally drive activation vs. which are just signals of already-engaged users.",
 };
 
 export default function ActivationDriversPage() {

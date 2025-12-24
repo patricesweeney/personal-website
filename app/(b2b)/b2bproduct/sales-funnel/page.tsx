@@ -80,6 +80,7 @@ const config = {
       example: "smb, mid-market, enterprise",
     },
   ],
+  mlSolution: "We apply survival analysis (Cox proportional hazards) at each stage to model time-to-transition. This captures both conversion probability AND velocity. Hazard ratios show which factors accelerate or delay deals. We also fit competing risks models to distinguish won vs. lost outcomes.",
 };
 
 export default function SalesFunnelPage() {

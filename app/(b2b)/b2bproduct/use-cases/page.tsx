@@ -62,6 +62,7 @@ const config = {
       example: "3",
     },
   ],
+  mlSolution: "We use Non-negative Matrix Factorization (NMF) to decompose the customer × event matrix into latent factors representing use cases. Each customer gets a use case profile, and we compute retention/expansion metrics by dominant use case. Includes silhouette analysis for optimal cluster count.",
 };
 
 export default function UseCasesPage() {

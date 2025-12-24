@@ -80,6 +80,7 @@ const config = {
       example: "25000",
     },
   ],
+  mlSolution: "We implement Bayesian Media Mix Modeling (MMM) using PyMC. The model estimates channel-level ROI with adstock transformations for carryover effects and saturation curves for diminishing returns. Includes posterior distributions for confidence intervals, scenario simulation for budget optimization, and incremental lift estimation vs. baseline.",
 };
 
 export default function ChannelAttributionPage() {
