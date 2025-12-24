@@ -20,12 +20,14 @@ export function LoopEmailCapture() {
     setErrorMessage("");
 
     try {
+      const formBody = `email=${encodeURIComponent(email)}`;
+      
       const response = await fetch(`https://app.loops.so/api/newsletter-form/${LOOP_FORM_ID}`, {
         method: "POST",
         headers: {
-          "Content-Type": "application/json",
+          "Content-Type": "application/x-www-form-urlencoded",
         },
-        body: JSON.stringify({ email }),
+        body: formBody,
       });
 
       if (!response.ok) {
