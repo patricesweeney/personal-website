@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 
-const PROTECTED_PATHS = ["/saas", "/product"];
+const PROTECTED_PATHS = ["/saas", "/b2bproduct", "/b2cproduct"];
 
 export function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
@@ -29,6 +29,6 @@ export function middleware(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/saas/:path*", "/product/:path*"],
+  matcher: ["/saas/:path*", "/b2bproduct/:path*", "/b2cproduct/:path*"],
 };
 

@@ -40,22 +40,22 @@ const navSections: NavSection[] = [
     icon: <Users size={16} />,
     items: [
       { 
-        href: "/product/icp-identification", 
+        href: "/b2bproduct/icp-identification", 
         label: "ICP identification",
         icon: <UserCheck size={18} />,
       },
       { 
-        href: "/product/channel-attribution", 
+        href: "/b2bproduct/channel-attribution", 
         label: "Channel attribution",
         icon: <PieChart size={18} />,
       },
       { 
-        href: "/product/lead-scoring", 
+        href: "/b2bproduct/lead-scoring", 
         label: "Lead scoring",
         icon: <Target size={18} />,
       },
       { 
-        href: "/product/sales-funnel", 
+        href: "/b2bproduct/sales-funnel", 
         label: "Sales funnel analysis",
         icon: <Filter size={18} />,
       },
@@ -66,17 +66,17 @@ const navSections: NavSection[] = [
     icon: <DollarSign size={16} />,
     items: [
       { 
-        href: "/product/activation-drivers", 
+        href: "/b2bproduct/activation-drivers", 
         label: "Activation drivers",
         icon: <Zap size={18} />,
       },
       { 
-        href: "/product/packaging", 
+        href: "/b2bproduct/packaging", 
         label: "Packaging",
         icon: <Package size={18} />,
       },
       { 
-        href: "/product/pricing", 
+        href: "/b2bproduct/pricing", 
         label: "Pricing",
         icon: <Tags size={18} />,
       },
@@ -87,17 +87,17 @@ const navSections: NavSection[] = [
     icon: <TrendingUp size={16} />,
     items: [
       { 
-        href: "/product/use-cases", 
+        href: "/b2bproduct/use-cases", 
         label: "Use cases",
         icon: <Layers size={18} />,
       },
       { 
-        href: "/product/expansion-drivers", 
+        href: "/b2bproduct/expansion-drivers", 
         label: "Expansion drivers",
         icon: <ArrowUpRight size={18} />,
       },
       { 
-        href: "/product/retention-drivers", 
+        href: "/b2bproduct/retention-drivers", 
         label: "Retention drivers",
         icon: <Heart size={18} />,
       },
@@ -105,14 +105,14 @@ const navSections: NavSection[] = [
   },
 ];
 
-export function DemosSidebar() {
+export function B2BSidebar() {
   const pathname = usePathname();
   const [isCollapsed, setIsCollapsed] = useState(false);
 
   return (
     <aside className={`demos-sidebar ${isCollapsed ? "collapsed" : ""}`}>
       <div className="sidebar-header">
-        {!isCollapsed && <span className="meta">Product</span>}
+        {!isCollapsed && <span className="meta">B2B Product</span>}
         <button 
           className="collapse-btn"
           onClick={() => setIsCollapsed(!isCollapsed)}
@@ -125,8 +125,8 @@ export function DemosSidebar() {
       
       <nav className="sidebar-nav">
         <Link
-          href="/product"
-          className={`demo-nav-link ${pathname === "/product" ? "active" : ""}`}
+          href="/b2bproduct"
+          className={`demo-nav-link ${pathname === "/b2bproduct" ? "active" : ""}`}
           title={isCollapsed ? "Overview" : undefined}
         >
           <span className="nav-icon"><FlaskConical size={18} /></span>
@@ -357,3 +357,4 @@ export function DemosSidebar() {
     </aside>
   );
 }
+
