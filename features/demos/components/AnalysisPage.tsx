@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useCallback } from "react";
+import { useState, useCallback, useMemo } from "react";
 import { 
   Upload, 
   FileSpreadsheet, 
@@ -27,6 +27,7 @@ import type { JobType } from "@/features/analysis";
 import { PoissonResults } from "./PoissonResults";
 import { ColumnPicker, type ColumnConfig } from "./ColumnPicker";
 import { LoopEmailCapture } from "./LoopEmailCapture";
+import { NangoConnect } from "./NangoConnect";
 
 interface MarketingSection {
   headline: string;
@@ -910,6 +911,12 @@ export function AnalysisPage({ config }: AnalysisPageProps) {
           <span>Data is processed on-demand and not stored permanently.</span>
         </div>
 
+        <div className="or-divider">
+          <span>or connect directly</span>
+        </div>
+
+        <NangoConnect connectionId={`session-${Date.now()}`} />
+
         <LoopEmailCapture />
       </section>
 
@@ -1203,6 +1210,29 @@ export function AnalysisPage({ config }: AnalysisPageProps) {
           border-radius: 6px;
           font-size: 12px;
           color: var(--muted);
+        }
+
+        .or-divider {
+          display: flex;
+          align-items: center;
+          margin-top: var(--space-6);
+          margin-bottom: var(--space-2);
+        }
+
+        .or-divider::before,
+        .or-divider::after {
+          content: '';
+          flex: 1;
+          height: 1px;
+          background: var(--border);
+        }
+
+        .or-divider span {
+          padding: 0 var(--space-3);
+          font-size: 12px;
+          color: var(--muted);
+          text-transform: uppercase;
+          letter-spacing: 0.05em;
         }
       `}</style>
     </div>
