@@ -19,7 +19,7 @@ export async function POST(request: NextRequest) {
       },
     });
 
-    return NextResponse.json({ sessionToken: session.token });
+    return NextResponse.json({ sessionToken: session.data.token });
   } catch (error) {
     console.error("Failed to create session:", error);
     return NextResponse.json({ error: "Failed to create session" }, { status: 500 });
