@@ -4,6 +4,20 @@ import { useState, useEffect } from "react";
 import { Link2, Check, Loader2, X } from "lucide-react";
 import { createNangoClient, getSessionToken, INTEGRATIONS, type IntegrationId } from "@/lib/nango/browser";
 
+// Brand icons as inline SVGs
+const IntegrationIcons: Record<string, React.ReactNode> = {
+  stripe: (
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+      <path d="M13.976 9.15c-2.172-.806-3.356-1.426-3.356-2.409 0-.831.683-1.305 1.901-1.305 2.227 0 4.515.858 6.09 1.631l.89-5.494C18.252.975 15.697 0 12.165 0 9.667 0 7.589.654 6.104 1.872 4.56 3.147 3.757 4.992 3.757 7.218c0 4.039 2.467 5.76 6.476 7.219 2.585.92 3.445 1.574 3.445 2.583 0 .98-.84 1.545-2.354 1.545-1.875 0-4.965-.921-6.99-2.109l-.9 5.555C5.175 22.99 8.385 24 11.714 24c2.641 0 4.843-.624 6.328-1.813 1.664-1.305 2.525-3.236 2.525-5.732 0-4.128-2.524-5.851-6.591-7.305z"/>
+    </svg>
+  ),
+  shopify: (
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+      <path d="M15.337 3.415c-.042-.03-.138-.045-.21-.015-.06.015-1.347.42-1.347.42s-.893-.87-1.167-1.11c-.285-.24-.555-.27-.78-.24-.03-.09-.06-.165-.105-.255-.285-.555-.72-.855-1.23-.855-.035 0-.075 0-.11.003-.015-.02-.03-.037-.048-.054-.285-.30-.66-.45-1.11-.42-.87.06-1.74.66-2.46 1.68-.51.72-.9 1.62-1.005 2.31-.945.285-1.605.495-1.65.51-.495.15-.51.165-.57.63-.045.345-1.32 10.2-1.32 10.2l10.5 1.83v-11.22c0-.015-.015-.03-.03-.03zm-3.15-1.665c0 .06 0 .135-.015.195-.51.15-1.065.33-1.65.51.315-1.23 1.065-1.83 1.59-1.83.03 0 .06 0 .075.015zm-.765-1.05c.06 0 .12.015.165.045-.765.375-1.59 1.32-1.93 3.21-.465.15-.93.285-1.365.42.375-1.23 1.17-3.69 3.13-3.675zm-.39 8.7c.06 0 .12.015.165.045-.765.375-1.59 1.32-1.93 3.21-.465.15-.93.285-1.365.42.375-1.23 1.17-3.69 3.13-3.675zm1.08 1.74c-.54-.27-1.17-.42-1.92-.42s-1.38.15-1.92.42c-.54.27-.99.69-1.35 1.26-.36-.57-.81-.99-1.35-1.26-.54-.27-1.17-.42-1.92-.42-.75 0-1.38.15-1.92.42-.54.27-.99.69-1.35 1.26V9.15h12v2.85c-.36-.57-.81-.99-1.35-1.26zM15.337 23.415l5.385-1.35s-2.31-15.66-2.325-15.75c-.015-.09-.09-.135-.15-.15-.06-.015-1.245-.03-1.245-.03s-.87-.855-1.2-1.14v18.42z"/>
+    </svg>
+  ),
+};
+
 interface ConnectionStatus {
   [key: string]: "disconnected" | "connecting" | "connected" | "error";
 }
@@ -87,7 +101,7 @@ export function NangoConnect({ connectionId, onConnectionChange }: NangoConnectP
           return (
             <div key={integration.id} className={`integration-card ${status}`}>
               <div className="integration-info">
-                <span className="integration-icon">{integration.icon}</span>
+                <span className="integration-icon">{IntegrationIcons[integration.id]}</span>
                 <div className="integration-details">
                   <span className="integration-name">{integration.name}</span>
                   <span className="integration-desc">{integration.description}</span>
@@ -192,7 +206,14 @@ export function NangoConnect({ connectionId, onConnectionChange }: NangoConnectP
         }
 
         .integration-icon {
-          font-size: 20px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          width: 36px;
+          height: 36px;
+          background: rgba(0, 0, 0, 0.04);
+          border-radius: 8px;
+          color: var(--fg);
         }
 
         .integration-details {

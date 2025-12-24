@@ -29,19 +29,11 @@ export const INTEGRATIONS = {
     id: 'stripe',
     name: 'Stripe',
     description: 'Revenue, subscriptions, churn data',
-    icon: '💳',
   },
-  hubspot: {
-    id: 'hubspot',
-    name: 'HubSpot',
-    description: 'CRM, leads, deals, pipeline',
-    icon: '🧲',
-  },
-  segment: {
-    id: 'segment',
-    name: 'Segment',
-    description: 'Product usage events',
-    icon: '📊',
+  shopify: {
+    id: 'shopify',
+    name: 'Shopify',
+    description: 'Orders, customers, products',
   },
 } as const;
 
